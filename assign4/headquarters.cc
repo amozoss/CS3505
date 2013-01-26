@@ -9,8 +9,8 @@
  */
 #include "warehouse.h"
 
-warehouse::warehouse(string name, set<food_item> &foodSet){
-  *foods = foodSet;
+warehouse::warehouse(string name, set<food_item> *foodSet){
+  foods = foodSet;
 
 }
 
