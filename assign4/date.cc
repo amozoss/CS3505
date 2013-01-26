@@ -17,7 +17,7 @@ public:
 
   date(string date);
 private:
-  string date;
+  string the_date;
 };
 
 #endif
