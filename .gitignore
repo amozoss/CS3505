@@ -6,6 +6,10 @@
 *.DS_Store
 *.swp
 *.out
+*.cc#
+*.h#
+*.cc~
+*.#
 
 # Compiled Dynamic libraries
 *.so
