@@ -23,8 +23,8 @@ private:
 #endif
 
 // implementation
-date::date(string date) 
-  :date(date) {
+date::date(string date) {
     // this is the fancy custom date class
 
+  this->the_date = date;
 }
