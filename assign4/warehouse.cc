@@ -5,6 +5,7 @@
  * Dan Willoughby and Michael Banks
  */
 #include "warehouse.h"
+#include "headquarters.h"
 
 warehouse::warehouse(string name, set<food_item> *foodSet){
   foods = foodSet;
