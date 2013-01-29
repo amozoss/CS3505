@@ -61,7 +61,7 @@ string warehouse::reportFoodDeficit(){
  * has a surplus.  If a certain item is in stock it will be added to
  * the list that is being returned.
  */
-list<food_item>  warehouse::reportFoodsInStock(const list<food_item> &foods){
+list<food_item>  warehouse::reportFoodsInStock(){
 
 
 

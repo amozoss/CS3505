@@ -25,10 +25,11 @@ using namespace std;
 
 class easy_date {
 public:
-  easy_date(string start_date); 
-  string next_date();
+  easy_date(string startDate); 
+  easy_date();
+  string nextDate();
 private:
-  date the_date;
+  date theDate;
 };
 
 #endif
@@ -40,9 +41,15 @@ private:
  *
  * The format of the string must be MM/DD/YYYY. Ex. 05/01/2010
  */
-easy_date::easy_date(string start_date)  {
-  this->easy_date::the_date = from_uk_string(start_date);
+easy_date::easy_date(string startDate)  {
+  this->easy_date::theDate = from_uk_string(startDate);
   //cout << the_date << endl;
+}
+
+
+
+easy_date::easy_date() {
+
 }
 
 /*
@@ -50,8 +57,8 @@ easy_date::easy_date(string start_date)  {
  *
  * If date is null, calls the start date constructor with current date
  */
-string easy_date::next_date() {
+string easy_date::nextDate() {
   //Add duration to both begin and end.
-  date_period dp(the_date, days(1));
+  date_period dp(theDate, days(1));
   // dp == 2005-Jan-04 to 2005-Jan-05
 } 
