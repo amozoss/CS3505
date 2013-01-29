@@ -6,14 +6,10 @@
  * Dan Willoughby and Michael Banks
  */
 
-#ifndef WAREHOUSE_HEADER
-#define WAREHOUSE_HEADER
+#ifndef WAREHOUSE_HEADER_IKL
+#define WAREHOUSE_HEADER_IKL
 
-#include <string>
-#include <set>
-#include <list>
-#include "food_item.cc"
-#include "date.cc"
+#include "headquarters.h"
 
 using namespace std;
 
@@ -31,7 +27,7 @@ class warehouse{
 
  private:
   string name;
-  date effectiveDate;
+  easy_date effectiveDate;
   set<food_item> *foods;
   string convertInt_toString();
 
