@@ -19,7 +19,7 @@ using namespace std;
 
 class warehouse{
  public:
-  warehouse(string name, set<food_item> &foodSet);
+  warehouse(string name, set<food_item> *foodSet);
   ~warehouse();
 
   void receive(string theReceive);
