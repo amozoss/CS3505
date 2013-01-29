@@ -8,16 +8,20 @@
 
 #ifndef TRANSACTION_HEADER_IKL
 #define TRANSACTION_HEADER_IKL
-
-#include "headquarters.h"
+#include <string>
 using namespace std;
 
 class transaction
 {
 public:
-  transaction();
-  ~transaction();
-  //@todo enum
+  transaction(string);
+/*  enum transaction_type
+  {
+    RED,
+      BLUE,
+      WHITE
+  }*/
+
 
 private:
   int typeOfTransaction;   // Receive or request
@@ -28,10 +32,11 @@ private:
 };
 #endif
 
-transaction::transaction(){
+
+transaction::transaction(string s){
 
 }
 
-transaction::~transaction(){
+//transaction::~transaction(){
 
-}
+//}
