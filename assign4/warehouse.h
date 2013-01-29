@@ -19,7 +19,7 @@ class warehouse{
   ~warehouse();
 
   void receive(string theReceive);
-  void request(string theRequest);
+  void request(string theRequest);  
   string reportBusiestDay();        // Returns name, date and transaction quantity of busiest day.
   string reportFoodDeficit();
   list<food_item> reportFoodsInStock();
