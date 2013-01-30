@@ -10,6 +10,7 @@
 using namespace std;
 warehouse::warehouse(string name, set<food_item> *foodSet){
   foods = foodSet;
+  this->name = name;
 
 }
 
