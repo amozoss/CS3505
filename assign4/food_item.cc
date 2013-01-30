@@ -5,31 +5,8 @@
  *  Shelf life (number in days)
  *  name (a string of words) 
  */
-#ifndef FOOD_ITEM
-#define FOOD_ITEM
-
 #include <string>
-
-using namespace std;
-
-class food_item {
-public:
-  string getUPC();
-  string getName();
- void decShelfLife();
-  int getShelfLife();
-private:
-  string upc_code;
-  int shelf_life;
-  string name;
- 
-
-  food_item(const string upc_code,int shelf_life, const string name); // public constructor
-};
-
-
-#endif
-
+#include "food_item.h"
 // implementation
 food_item::food_item(const string upc_code,int  shelf_life, const string name) {
   this->upc_code = upc_code;
@@ -41,15 +18,15 @@ food_item::food_item(const string upc_code,int  shelf_life, const string name) {
 /*
  * Subtracts one from the shelf life of the food. Stops when shelf life equals 0.
  */
-void food_item::decShelfLife()
+void food_item::dec_shelf_life()
 {
-  if(shelfLife > 0)
-    shelfLife--;
+  if(shelf_life > 0)
+    shelf_life--;
 }
 /*
  * Returns the upc code of the food.
  */
-string food_item::getUPC()
+string food_item::get_UPC()
 {
   return upc_code;
 }
@@ -57,7 +34,7 @@ string food_item::getUPC()
 /*
  * Returns the name of the food.
  */
-string getName()
+string food_item::get_name()
 {
   return name;
 }
@@ -65,7 +42,7 @@ string getName()
 /*
  * Returns the shelf life of the food.
  */
-int getShelfLife()
+int food_item::get_shelf_life()
 {
   return shelf_life;
 }
