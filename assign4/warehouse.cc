@@ -1,12 +1,13 @@
 /* 
  * Warehouse file comment
- *
+ * warehouse.cc
  *
  * Dan Willoughby and Michael Banks
  */
 #include "warehouse.h"
-#include "headquarters.h"
 
+
+using namespace std;
 warehouse::warehouse(string name, set<food_item> *foodSet){
   foods = foodSet;
 

@@ -21,7 +21,7 @@ public:
   food_item(const string upc_code, const string shelf_life, const string name); // public constructor
 };
 
-#endif
+
 
 // implementation
 food_item::food_item(const string upc_code, const string shelf_life, const string name) {
@@ -33,6 +33,6 @@ food_item::food_item(const string upc_code, const string shelf_life, const strin
 
 
 
-
+#endif
 
 

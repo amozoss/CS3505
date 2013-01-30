@@ -28,10 +28,4 @@ class headquarters
  private:
  set<food_item> foodList;
 };
-
-
-
-
-
-
 #endif
