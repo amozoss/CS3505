@@ -28,6 +28,7 @@ private:
 };
 
 
+#endif
 
 // implementation
 food_item::food_item(const string upc_code,int  shelf_life, const string name) {
@@ -69,6 +70,5 @@ int getShelfLife()
   return shelf_life;
 }
 
-#endif
 
 

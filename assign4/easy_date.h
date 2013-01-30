@@ -12,23 +12,24 @@
 
 #include <string>
 #include <iostream>
-#include "boost/date_time/gregorian/gregorian.hpp" //include all types plus i/o
-#include "boost/date_time/gregorian/parsers.hpp"
+//#include "boost/date_time/gregorian/gregorian.hpp" //include all types plus i/o
+//#include "boost/date_time/gregorian/parsers.hpp"
 //#include <locale>
 //#include <boost/date_time.hpp>
 //using std::locale;
 
 //using namespace boost::local_time;
-using namespace boost::gregorian;
+//using namespace boost::gregorian;
 
 //using namespace std;
 
 class easy_date {
 public:
   easy_date(std::string &startDate); 
+  easy_date();
   std::string nextDate();
   std::string to_str();
 private:
-  date theDate;
+  //date theDate;
 };
 #endif
