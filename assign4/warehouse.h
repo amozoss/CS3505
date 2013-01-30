@@ -13,7 +13,7 @@
 #include "easy_date.h"
 #include <list>
 #include <set>
-
+#include "transaction.cc"
 using namespace std;
 
 class warehouse{

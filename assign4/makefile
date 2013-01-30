@@ -2,7 +2,7 @@
 #	a.out #g++ -c easy_date.o food_item.o headquarters.o transaction.o warehouse.o
 
 a.out: easy_date.o food_item.o headquarters.o transaction.o warehouse.o
-	g++ -c easy_date.cc food_item.cc headquarters.cc headquarters.h transaction.o warehouse.h warehouse.cc
+	g++ -c easy_date.cc easy_date.h food_item.cc headquarters.cc headquarters.h transaction.o warehouse.h warehouse.cc
 
 
 

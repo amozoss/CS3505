@@ -43,8 +43,8 @@ food_item::food_item(const string upc_code,int  shelf_life, const string name) {
  */
 void food_item::decShelfLife()
 {
-  if(shelfLife > 0)
-    shelfLife--;
+  if(shelf_life > 0)
+    shelf_life--;
 }
 /*
  * Returns the upc code of the food.
@@ -57,7 +57,7 @@ string food_item::getUPC()
 /*
  * Returns the name of the food.
  */
-string getName()
+string food_item::getName()
 {
   return name;
 }
@@ -65,7 +65,7 @@ string getName()
 /*
  * Returns the shelf life of the food.
  */
-int getShelfLife()
+int food_item::getShelfLife()
 {
   return shelf_life;
 }
