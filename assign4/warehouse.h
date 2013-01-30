@@ -9,7 +9,7 @@
 #ifndef WAREHOUSE_HEADER_IKL
 #define WAREHOUSE_HEADER_IKL
 
-#include "headquarters.h"
+
 
 using namespace std;
 
