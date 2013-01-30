@@ -17,6 +17,7 @@ public:
   string getUPC();
   string getName();
  void decShelfLife();
+  int getShelfLife();
 private:
   string upc_code;
   int shelf_life;
@@ -36,10 +37,36 @@ food_item::food_item(const string upc_code,int  shelf_life, const string name) {
 
 }
 
+/*
+ * Subtracts one from the shelf life of the food. Stops when shelf life equals 0.
+ */
 void food_item::decShelfLife()
 {
   if(shelfLife > 0)
     shelfLife--;
+}
+/*
+ * Returns the upc code of the food.
+ */
+string food_item::getUPC()
+{
+  return upc_code;
+}
+
+/*
+ * Returns the name of the food.
+ */
+string getName()
+{
+  return name;
+}
+
+/*
+ * Returns the shelf life of the food.
+ */
+int getShelfLife()
+{
+  return shelf_life;
 }
 
 #endif
