@@ -15,11 +15,13 @@
  * The format of the string must be MM/DD/YYYY. Ex. 05/01/2010
  */
 easy_date::easy_date(std::string &startDate)  {
-  date theCreatedDate = from_us_string(startDate);
-  this->theDate = theCreatedDate;
-  std::cout << theDate << std::endl;
+//  date theCreatedDate = from_us_string(startDate);
+//  this->theDate = theCreatedDate;
+//  std::cout << theDate << std::endl;
 }
 
+easy_date::easy_date()  {
+}
 /*
  * Increments the date by one day
  *

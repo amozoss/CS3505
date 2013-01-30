@@ -10,7 +10,7 @@
 #define WAREHOUSE_HEADER_IKL
 
 #include "food_item.cc"
-#include "easy_date.cc"
+#include "easy_date.h"
 #include <list>
 #include <set>
 
