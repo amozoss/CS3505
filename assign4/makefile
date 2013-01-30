@@ -1,14 +1,15 @@
-#all: a.out
-#	a.out #g++ -c easy_date.o food_item.o headquarters.o transaction.o warehouse.o
+all: program 
+	g++ easy_date.o food_item.o headquarters.o transaction.o warehouse.o transaction_simulation_program.o
 
-a.out: easy_date.o food_item.o headquarters.o transaction.o warehouse.o
-	g++ -c easy_date.cc easy_date.h food_item.cc headquarters.cc headquarters.h transaction.o warehouse.h warehouse.cc
-
+#a.out: transation_simulation_program.o easy_date.o food_item.o headquarters.o transaction.o warehouse.o
+	#g++ -c easy_date.cc easy_date.h food_item.cc headquarters.cc headquarters.h transaction.cc warehouse.h warehouse.cc transaction_simulation_program.cc
+#	g++ -c transation_simulation_program.cc
+#a.out: program
 
 
 
 headquarters: easy_date food_item warehouse headquarters.o
-	g++ -c headquarters.cc easy_date.cc food_item.cc warehouse.cc warehouse.h
+	g++ -c headquarters.cc 
 
 easy_date: easy_date.o
 	g++ -c easy_date.cc
@@ -18,4 +19,6 @@ food_item: food_item.o
 
 warehouse: warehouse.o
 	g++ -c warehouse.cc warehouse.h
+program: headquarters
+	g++ -c transaction_simulation_program.cc
 
