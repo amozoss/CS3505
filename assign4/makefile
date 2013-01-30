@@ -8,11 +8,13 @@ all: program
 
 
 
-headquarters: easy_date food_item warehouse headquarters.o
+headquarters: easy_date food_item transaction warehouse headquarters.o
 	g++ -c headquarters.cc 
 
 easy_date: easy_date.o
 	g++ -c easy_date.cc
+transation: transaction.o
+	g++ -c transaction.cc
 
 food_item: food_item.o
 	g++ -c food_item.cc
