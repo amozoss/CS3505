@@ -16,12 +16,12 @@ class transaction
 {
 public:
   transaction(string);
-/*  enum transaction_type
+  ~transaction();
+  enum transaction_type
   {
-    RED,
-      BLUE,
-      WHITE
-  }*/
+    request,
+     receive
+  }
 
 
 private:

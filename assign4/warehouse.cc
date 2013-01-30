@@ -5,6 +5,7 @@
  * Dan Willoughby and Michael Banks
  */
 #include "warehouse.h"
+#include <string>
 
 
 using namespace std;
@@ -14,16 +15,21 @@ warehouse::warehouse(string name, set<food_item> *foodSet){
 
 }
 
-warehouse::~warehouse(){
+warehouse::~warehouse()
+{
 
 }
 
 /*
  * Is sent items that have been received by the warehouse, 
- * adds them to the data structure of transactions.
+ * adds them to the list of transactions.
  */
-void warehouse::receive(string theReceive){
+void warehouse::receive(string theReceive)
+{
+  string tempReceive = theReceive.substr(
 
+
+  trans_list.insert(theReceive);
 
 }
 
@@ -31,8 +37,8 @@ void warehouse::receive(string theReceive){
  * Is sent items that have been requested by the warehouse, 
  * adds them to the data structure of transactions.
  */
-void warehouse::request(string theRequest){
-
+void warehouse::request(string theRequest)
+{
 
 }
 
