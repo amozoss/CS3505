@@ -11,10 +11,10 @@
 #include <string>
 #include <set>
 #include <list>
-#include "food_item.cc"
-#include "easy_date.cc"
+#include "food_item.h"
+#include "easy_date.h"
 #include "warehouse.h"
-#include "transaction.cc"
+#include "transaction.h"
 
 using namespace std;
 
@@ -24,8 +24,9 @@ class headquarters
   headquarters(string filePath); 
   ~headquarters();
   void generateReport();
+  
 
  private:
- set<food_item> foodList;
+  set<food_item> foodList;
 };
 #endif

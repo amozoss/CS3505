@@ -6,6 +6,7 @@
  *
  */
 
+#include "transaction.h"
 
 transaction::transaction(string s){
 
