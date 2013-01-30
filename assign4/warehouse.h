@@ -9,7 +9,10 @@
 #ifndef WAREHOUSE_HEADER_IKL
 #define WAREHOUSE_HEADER_IKL
 
-#include "headquarters.h"
+#include "food_item.cc"
+#include "easy_date.cc"
+#include <list>
+#include <set>
 
 using namespace std;
 
