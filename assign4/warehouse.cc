@@ -26,10 +26,10 @@ warehouse::~warehouse()
  */
 void warehouse::receive(string theReceive)
 {
-  string tempReceive = theReceive.substr(
+  // string tempReceive = theReceive.substr(
 
 
-  trans_list.insert(theReceive);
+ // trans_list.insert(theReceive);
 
 }
 
@@ -39,7 +39,7 @@ void warehouse::receive(string theReceive)
  */
 void warehouse::request(string theRequest)
 {
-
+  //transaction::transaction_type::request;
 }
 
 /*

@@ -21,7 +21,8 @@ public:
   {
     request,
      receive
-  }
+  };
+  int getType();
 
 
 private:
