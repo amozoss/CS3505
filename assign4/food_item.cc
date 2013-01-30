@@ -14,25 +14,34 @@ using namespace std;
 
 class food_item {
 public:
+  string getUPC();
+  string getName();
+ void decShelfLife();
+private:
   string upc_code;
-  string shelf_life;
+  int shelf_life;
   string name;
+ 
 
-  food_item(const string upc_code, const string shelf_life, const string name); // public constructor
+  food_item(const string upc_code,int shelf_life, const string name); // public constructor
 };
 
 
 #endif
 
 // implementation
-food_item::food_item(const string upc_code, const string shelf_life, const string name) {
+food_item::food_item(const string upc_code,int  shelf_life, const string name) {
   this->upc_code = upc_code;
   this->shelf_life = shelf_life;
   this->name = name;
 
 }
 
-
+void food_item::decShelfLife()
+{
+  if(shelfLife > 0)
+    shelfLife--;
+}
 
 
 

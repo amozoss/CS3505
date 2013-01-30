@@ -15,10 +15,12 @@
 #include <iterator>
 #include <string>
 #include "easy_date.h"
+#include "food_item.cc"
 
 using namespace std;
 // forward declarations
 void test_easy_date (int pass_count, int test_count);
+void test_warehouse();
 int main ()
 {
 
@@ -41,5 +43,11 @@ void test_easy_date (int pass_count, int test_count)
     else 
       cout << "Test 2 remove - Failed\n Set still contains a removed item\n";
     test_count++;
+
+}
+
+void test_warehouse()
+{
+
 
 }
