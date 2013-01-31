@@ -15,7 +15,7 @@ using namespace std;
 class transaction
 {
 public:
-  transaction(string);
+  transaction(string trans, string da_date);
   ~transaction();
 
   enum transaction_type
