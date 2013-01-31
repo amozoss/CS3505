@@ -8,22 +8,24 @@
 
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include "headquarters.h"
-#include "transaction.h"
 
 using namespace std;
 
 int main (int argc, char* argv[])
 {
-
-  cout << transaction::request << endl;
-
   // Check console parameter count
   if (argc != 2) {
     cout << "Invalid number of parameters.\n";
     return 0;
   } 
-  string filepath = argv[1];
+  string filepath;
+  filepath =  argv[1];
   headquarters head(filepath);
+  ifstream in("data1.txt");
+
+  // generate the report
+  //head.generate_report();
 } 
