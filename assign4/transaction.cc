@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include <string>
 
-transaction::transaction(string s)
+transaction::transaction(string s, string date)
 {
   // Determine if receive or request.
   if(s[2] == 'c')
@@ -25,7 +25,7 @@ transaction::transaction(string s)
       cout << s[i];
     if(s[i] == ' ')
       {
-      s = s.substr(i, s.npos);
+      s = s.substr(i + 1, s.npos);
       break;
       }
     }
@@ -55,11 +55,12 @@ transaction::transaction(string s)
     if(s[i] == ' ')
       {
       this->quantity = atof(s.substr(0, i).c_str());
+      break;
       }
 
   cout << this->quantity << " is the quantity." << endl;
 
-  
+  the_date = date;
 
 
 }
@@ -73,20 +74,20 @@ transaction::~transaction()
 
 int transaction::get_type()
 {
-  return type_of_transaction;
+  return this->type_of_transaction;
 }
 
 string transaction::get_upc_code()
 {
-
+  return this->upc_code;
 }
 
 string transaction::get_date()
 {
-
+  return this->the_date;
 }
 
 int transaction::get_quantity()
 {
-
+  return this->quantity;
 }
