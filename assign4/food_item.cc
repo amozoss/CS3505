@@ -8,7 +8,33 @@
 #include <string>
 #include "food_item.h"
 // implementation
-food_item::food_item(const string upc_code,int  shelf_life, const string name) {
+food_item::food_item(string item) {
+
+  // Remove "FoodItem - UPC Code: " from the string.
+  for(int i = 0, ws_counter = 0; i < item.length; i++)
+    {
+      if(item[i] = ' ')
+	{
+	++ws_counter;
+	if(ws_counter == 4)
+	  {
+	    item = item.substr(i + 1, item.npos);
+	  break;
+	  }
+	}
+    }
+
+  for(int i = 0; i < item.length; i++)
+    {
+      if(item[i] = ' ')
+	{
+	  this->upc_code = item.substr(0, i);
+	  item = item.substr(i + 1, item.npos);
+	  break;
+	}
+    }
+
+
   this->upc_code = upc_code;
   this->shelf_life = shelf_life;
   this->name = name;
