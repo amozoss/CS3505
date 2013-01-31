@@ -15,7 +15,7 @@ headquarters::headquarters(string file_path)
   {
     // Read a line 
     string line;
-    in >> line;
+    getline(in,line);
 
     // If the read failed, we're probably at end of file
     //   (or else the disk went bad).  Exit the loop.
