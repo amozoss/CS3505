@@ -25,7 +25,7 @@ transaction::transaction(string s)
       cout << s[i];
     if(s[i] == ' ')
       {
-      s = s.substr(i, s.npos);
+      s = s.substr(i + 1, s.npos);
       break;
       }
     }
@@ -55,6 +55,7 @@ transaction::transaction(string s)
     if(s[i] == ' ')
       {
       this->quantity = atof(s.substr(0, i).c_str());
+      break;
       }
 
   cout << this->quantity << " is the quantity." << endl;
