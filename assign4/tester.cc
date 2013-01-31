@@ -16,6 +16,7 @@
 #include <string>
 #include "easy_date.h"
 #include "food_item.h"
+#include "transaction.h"
 
 using namespace std;
 // forward declarations
