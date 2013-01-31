@@ -33,7 +33,7 @@ class warehouse{
   easy_date effectiveDate;
   set<food_item> *foods;
   string convertInt_toString();
-  list<transaction> trans_list;
+  list<transaction> *transList;
 
 };
 #endif
