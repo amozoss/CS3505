@@ -58,5 +58,5 @@ void test_warehouse()
 
 void test_transaction()
 {
-  transaction h("Receive: 0984523912 7 Tacoma");
+  transaction h("Request: 0984523912 7 Tacoma", "hello");
 }
