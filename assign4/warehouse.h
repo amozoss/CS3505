@@ -1,7 +1,6 @@
 /* 
  * warehouse.h
  * Warehouse file comment
- *asdf
  *
  * Dan Willoughby and Michael Banks
  */

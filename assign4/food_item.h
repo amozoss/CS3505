@@ -10,6 +10,9 @@ using namespace std;
 
 class food_item {
 public:
+  food_item(string);
+  food_item();
+  ~food_item();
   string get_UPC();
   string get_name();
  void dec_shelf_life();
@@ -18,10 +21,6 @@ private:
   string upc_code;
   int shelf_life;
   string name;
- 
-
   food_item(const string upc_code,int shelf_life, const string name); // public constructor
 };
-
-
 #endif

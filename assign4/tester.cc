@@ -23,6 +23,7 @@ using namespace std;
 void test_easy_date (int pass_count, int test_count);
 void test_warehouse();
 void test_transaction();
+void test_food_item();
 
 
 int main ()
@@ -33,6 +34,7 @@ int main ()
 
   test_warehouse();
   test_transaction();
+  test_food_item();
   // test_easy_date(pass_count,test_count);
   
 }
@@ -60,4 +62,10 @@ void test_warehouse()
 void test_transaction()
 {
   transaction h("Request: 0984523912 7 Tacoma", "hello");
+}
+
+void test_food_item()
+{
+  food_item f("FoodItem - UPC Code: 0556467522  Shelf life: 15  Name: absolute vanilla vodka");
+  cout << f.get_UPC() << " is UPC\n" << f.get_name() << " is name\n" << f.get_shelf_life() << " is shelf life\n";
 }

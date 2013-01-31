@@ -22,7 +22,7 @@ transaction::transaction(string s, string date)
   // Remove transaction type from string.
   for(int i = 0; i < s.length(); i++)
     {
-      cout << s[i];
+      
     if(s[i] == ' ')
       {
       s = s.substr(i + 1, s.npos);
@@ -30,7 +30,6 @@ transaction::transaction(string s, string date)
       }
     }
 
-  cout << " is the transaction type." << endl;
 
   // Assign upc code to upc_code
   for(int i = 0; i < s.length(); i++)
@@ -44,11 +43,11 @@ transaction::transaction(string s, string date)
     }
 
 
-  cout << "Transaction type " << this->type_of_transaction << endl;
+  
 
 
 
-  cout << this->upc_code << " is the UPC code." << endl;
+
 
   // Assign quantity to quantity.
   for(int i = 0; i < s.length(); i++)
@@ -57,12 +56,13 @@ transaction::transaction(string s, string date)
       this->quantity = atof(s.substr(0, i).c_str());
       break;
       }
-
+  /*
+  cout << this->upc_code << " is the UPC code." << endl;
   cout << this->quantity << " is the quantity." << endl;
+  cout << "Transaction type " << this->type_of_transaction << endl;
+  */
 
   the_date = date;
-
-
 }
 
 transaction::~transaction()
