@@ -24,7 +24,6 @@ int main (int argc, char* argv[])
   string filepath;
   filepath =  argv[1];
   headquarters head(filepath);
-  ifstream in("data1.txt");
 
   // generate the report
   //head.generate_report();

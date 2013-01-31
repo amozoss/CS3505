@@ -21,14 +21,18 @@ using namespace std;
 // forward declarations
 void test_easy_date (int pass_count, int test_count);
 void test_warehouse();
+void test_transaction();
+
+
 int main ()
 {
 
   int pass_count = 0; // keeps track of how many tests passed
   int test_count = 0; // total number of tests   
 
-
-  test_easy_date(pass_count,test_count);
+  test_warehouse();
+  test_transaction();
+  // test_easy_date(pass_count,test_count);
   
 }
 
@@ -50,4 +54,9 @@ void test_warehouse()
 {
 
 
+}
+
+void test_transaction()
+{
+  transaction h("Receive: 0984523912 7 Tacoma");
 }

@@ -17,18 +17,23 @@ class transaction
 public:
   transaction(string);
   ~transaction();
+
   enum transaction_type
   {
     request,
      receive
   };
-  int getType();
+  int get_type();
+  string get_upc_code();
+  string get_date();
+  int get_quantity();
+
 
 
 private:
-  int typeOfTransaction;   // Receive or request
-  string upcCode;
-  string theDate;
+  int type_of_transaction;
+  string upc_code;
+  string the_date;
   int quantity;
 
 };
