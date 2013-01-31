@@ -13,7 +13,7 @@ headquarters: easy_date food_item transaction warehouse headquarters.o
 
 easy_date: easy_date.o
 	g++ -c easy_date.cc
-transation: transaction.o
+transaction: transaction.o
 	g++ -c transaction.cc
 
 food_item: food_item.o
