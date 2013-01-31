@@ -25,6 +25,7 @@ int main (int argc, char* argv[])
   filepath =  argv[1];
   headquarters head(filepath);
 
+
   // generate the report
   //head.generate_report();
 } 
