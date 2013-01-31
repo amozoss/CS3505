@@ -7,26 +7,59 @@
  */
 
 #include "transaction.h"
-#include <vector>
+#include <iostream>
+#include <cstdlib>
+#include <string>
 
 transaction::transaction(string s)
 {
+  // Determine if receive or request.
   if(s[2] == 'c')
-    type_of_transaction = receive;
+    this->type_of_transaction = receive;
+  else
+    this->type_of_transaction = request;
 
-  vector<string> words = s.split(' ');
+  // Remove transaction type from string.
+  for(int i = 0; i < s.length(); i++)
+    {
+      cout << s[i];
+    if(s[i] == ' ')
+      {
+      s = s.substr(i, s.npos);
+      break;
+      }
+    }
 
-  upc_code = words[2];
+  cout << " is the transaction type." << endl;
 
-  cout << "Transaction type " << type_of_transaction << endl;
+  // Assign upc code to upc_code
+  for(int i = 0; i < s.length(); i++)
+    {
+    if(s[i] == ' ')
+      {
+      this->upc_code = s.substr(0, i);
+      s = s.substr(i + 1, s.npos);
+      break;
+      }
+    }
 
-  cout << upc_code << endl;
 
-  shelf_life = atoi(words[3].c_str());
-
-  cout << shelf_life << " is the shelf life." << endl;
+  cout << "Transaction type " << this->type_of_transaction << endl;
 
 
+
+  cout << this->upc_code << " is the UPC code." << endl;
+
+  // Assign quantity to quantity.
+  for(int i = 0; i < s.length(); i++)
+    if(s[i] == ' ')
+      {
+      this->quantity = atof(s.substr(0, i).c_str());
+      }
+
+  cout << this->quantity << " is the quantity." << endl;
+
+  
 
 
 }
@@ -43,7 +76,7 @@ int transaction::get_type()
   return type_of_transaction;
 }
 
-int transaction::get_upc_code()
+string transaction::get_upc_code()
 {
 
 }

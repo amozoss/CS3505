@@ -14,10 +14,12 @@
 
 using namespace std;
 
+
+
 int main (int argc, char* argv[])
 {
 
-  cout << transaction::request << endl;
+
 
   // Check console parameter count
   if (argc != 2) {
@@ -27,3 +29,4 @@ int main (int argc, char* argv[])
   string filepath = argv[1];
   headquarters head(filepath);
 } 
+
