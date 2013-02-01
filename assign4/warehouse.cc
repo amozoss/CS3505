@@ -17,25 +17,26 @@ using namespace std;
  * Constructs a warehouse using the line from the data text 
  * and parses the name.
  */
-warehouse::warehouse(string warehouse_data, map<string, food_item> *food_set){
+warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
   
   // Remove "Warehouse - " from the string.
   // That is 2 spaces.
   string warehouse_name;
-  for(int i = 0, ws_counter = 0; i < item.length(); i++)
+  for(int i = 0, ws_counter = 0; i < warehouse_data.length(); i++)
   {
-    if(item[i] == ' ')
+    if(warehouse_data[i] == ' ')
     {
       ws_counter++;
       if(ws_counter == 2)
       {
-        warehouse_name = item.substr(i + 1, item.npos);
+        warehouse_name = warehouse_data.substr(i + 1, warehouse_data.npos);
+//        cout << "warehouse: " << warehouse_name << endl;
         break;
       }
     }
   }
 
-  foods = food_set;
+  foods = food_map;
   this->name = warehouse_name;
 
 }
@@ -91,6 +92,13 @@ string warehouse::report_food_deficit()
 
 }
 
+/* 
+ * Returns warehouse's name
+ */
+string warehouse::get_name()
+{
+  return name;
+}
 /*
  * At the end of the reporting period this function receives 
  * a list of all the foods and checks to see whether its own list
