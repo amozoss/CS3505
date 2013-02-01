@@ -63,14 +63,18 @@ void test_easy_date(int pass_count, int test_count)
 
     //test easy dates
     easy_date date(line);
-    cout << line << endl;
+    //cout << line << endl;
     if (date.to_str() != line)
       cout << "easy_date constuctor was " << date.to_str() << " should be " << line << endl;
     
-    if (begin_date.next_date() != line && line != "01/01/2001")
-      cout << "easy_date next_day() was " << begin_date.next_date() << " should be " << line << endl;
+    string next_date = begin_date.to_str();
+    //cout << "begin_date " << begin_date.to_str() << endl;
+
+    if (next_date != line && line != "01/01/2001")
+      cout << "easy_date next_day() was " << next_date << " should be " << line << endl;
+    //cout << "begin_date " << begin_date.to_str() << endl;
     if (line != "01/01/2001") 
-      begin_date = easy_date(begin_date.next_date());
+      begin_date.next_date();
 
 
   }
