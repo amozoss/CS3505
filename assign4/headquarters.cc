@@ -109,6 +109,7 @@ void headquarters::read_data_lines ()
       food_items.insert ( pair<string,food_item>(food.get_UPC(),food) );
     }
     else if (which_class == "Warehouse") {
+      //cout << line << endl;
       warehouse wh(line,food_items); // create warehouse and then map it
       string name = wh.get_name();
       cout << "Added warehouse : " << name <<  "00" << endl;
@@ -147,6 +148,80 @@ headquarters::~headquarters()
 
 
 void headquarters::generate_report(){
+  /*On a single line, print out the title: "Report by " followed by your names.
+   *Print a single blank line following the title.
+   */
+  cout << "Report by Dan Willoughby and Michael Banks" << endl << endl;
+
+  // On a single line, print out "Unstocked Products:".
+  cout << "Unstocked Products:" << endl;
+
+  // Create a set of all the UPC codes.
+  set<string> default_set;
+  map<string, food_item>::iterator food_it = food_items.begin();
+  // for(int i = 0; i < food_items.size(); i++)
+  //{
+  //  default_set.insert(food_items[i].get_upc_code());
+  //}
+
+
+  for(int i = 0 /* i isn't used */; food_it != food_items.end(); food_it++)
+    {
+      default_set.insert(food_it->first);
+    }
+
+
+  set<string> deficit_set = default_set;    // Will hold all upc codes that are out in a particular warehouse
+  set<string> difference;
+  map<string, warehouse>::iterator it = warehouses.begin();
+
+  // Put all warehouse deficit items into one set.
+  for(; it != warehouses.end(); it++)
+    {
+      warehouse w = it->second;
+      set<string> out_of = w.report_food_deficit();
+      //set_intersection(deficit_set.begin(), deficit_set.end(), out_of.begin(), out_of.end(), 
+      difference.insert(out_of.begin(), out_of.end());
+    }
+
+
+
+
+
+  /*
+    Determine which products do not exist in any warehouse..  On a single line, print out "Unstocked Products:". 
+    On the following lines, print out a list of the products that do not exist in any warehouse (in any order,
+    no duplicates).  For each food item, only print out its UPC and name, as follows:
+
+    Unstocked Products:
+    0984713912 pizza
+    0278374752 bagels
+
+    Don't print out any other information, such as expiration dates, warehouse names, or quantities. 
+    Just list the products (no duplicates) that are absent from every warehouse.
+
+    Print a single blank line following the unstocked product list.
+
+    Determine which products still exist in every warehouse.  On a single line, print out "Fully-Stocked 
+    Products:".  On the following lines, print out a list of the products that have positive quantities 
+    in every warehouse (in any order, no duplicates).  For each food item, only print out its UPC and name, as follows:
+
+    Fully-Stocked Products:
+    0984712812 mushroom ice cream
+    0278374652 seaweed cereal
+
+    To be clear, if a product has a positive quantity in only 9 out of 10 warehouses, it would not be on this list. 
+
+    Print a single blank line following the fully-stocked product list.
+
+    Determine the single busiest day for each warehouse.  The single busiest day for each warehouse is the day with the most products received and shipped (added together), with ties going to later days.  On a single line, print out "Busiest Days:".  On the following lines, print out one line for each warehouse.  Print out the warehouse name, the date (as MM/DD/YYYY), and the sum of all the transaction quantities for that day, as follows:
+
+    Busiest Days:
+    Miami 03/16/2005 19283
+    Nome 12/24/2007 1827364
+    Barstow 10/01/2006 12
+
+
 
 
 }

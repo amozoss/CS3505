@@ -8,6 +8,7 @@
 #include "transaction.h"
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <map>
 #include <cstdlib>
 #include <sstream>
@@ -137,14 +138,17 @@ set<string>  warehouse::report_foods_in_stock()
 }
 
 /*
-warehouse
-warehouse
  * This function is called when it is the next day.
  */
 void warehouse::forward_date(){
-  // Decrement shelf life
-  // Forward food date.
-  // 
+  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
+    {
+      (*iter).dec_shelf_life();
+    }
+
+  this->effective_date.next_date();
+
+ 
 }
 
 /* 
@@ -157,6 +161,20 @@ void warehouse::set_start_date(string date)
 }
 
 
+string warehouse::convert_int_to_str(int the_number)
+{
+  stringstream ss;
+  ss << the_number;
+  string s = ss.str();
+  return s;
+}
 
 
+string warehouse::convert_char_to_str(char the_char)
+{
+ stringstream ss;
+  ss << the_char;
+  string s = ss.str();
+  return s;
 
+}
