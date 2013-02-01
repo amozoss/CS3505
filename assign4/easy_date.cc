@@ -27,7 +27,7 @@ easy_date::easy_date()  {
  *
  * If date is null, calls the start date constructor with current date
  */
-std::string easy_date::nextDate() {
+std::string easy_date::next_date() {
   //Add duration to both begin and end.
   //date_period dp(theDate, days(1));
   // dp == 2005-Jan-04 to 2005-Jan-05
