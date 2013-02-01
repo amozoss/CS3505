@@ -10,11 +10,11 @@
 
 #include <string>
 #include <set>
-#include <list>
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
+#include <map>
+#include <list>
 #include "food_item.h"
 #include "easy_date.h"
 #include "warehouse.h"
@@ -27,16 +27,15 @@ class headquarters
  public:
   headquarters(string file_path); 
   headquarters();
-  ~headquarters();
-  void generate_report();
   
+  ~headquarters();
+  void generate_report ();
 
  private:
-  list<food_item> food_list;
-  vector<string> file_data; // stores all the lines in the data file
+
+  map<string, food_item> food_items;
+  list<string> file_data; // stores all the lines in the data file
   void read_file(string file_path);
   void read_data_lines (); 
-
-
 };
 #endif
