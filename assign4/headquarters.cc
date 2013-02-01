@@ -165,8 +165,6 @@ headquarters::~headquarters()
 
 
 void headquarters::generate_report(){
-
-<<<<<<< HEAD
   /*On a single line, print out the title: "Report by " followed by your names.
    *Print a single blank line following the title.
    */
@@ -242,7 +240,5 @@ void headquarters::generate_report(){
 
 
    */
-=======
->>>>>>> c6b57aaa57c5e59657b052e81adaa7a4f8531867
 
 }
