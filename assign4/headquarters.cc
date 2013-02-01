@@ -3,6 +3,7 @@
  * Authors: Michael Banks and Dan Willoughby
  */
 #include "headquarters.h"
+#include <algorithm>
 
 headquarters::headquarters(string file_path)
 {
@@ -190,17 +191,17 @@ void headquarters::generate_report(){
 
   set<string> deficit_set = default_set;    // Will hold all upc codes that are out in a particular warehouse
   set<string> difference;
-
   map<string, warehouse>::iterator it = warehouses.begin();
 
-  // Find the difference of every set returned.
+  // Put all warehouse deficit items into one set.
   for(; it != warehouses.end(); it++)
     {
-      //warehouse w = (*it);
-      //set<string> out_of = w.report_food_day();
-      //set_difference(deficit_set.begin(), deficit_set.end(), out_of
-
+      warehouse w = it->second;
+      set<string> out_of = w.report_food_deficit();
+      difference.insert(out_of.begin(), out_of.end());
     }
+
+
 
 
 
