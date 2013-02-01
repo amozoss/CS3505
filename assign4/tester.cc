@@ -48,7 +48,10 @@ int main ()
 
 void data1_test ()
 {
-  set<string> columbus = headquarters_test.get_warehouse("Columbus").report_foods_in_stock();
+  cout << "entering test" << endl;
+  warehouse w = headquarters_test.get_warehouse("Columbus ");
+  cout << "test_warehouse: " << w.get_name();
+  w.report_foods_in_stock();
  // for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
    // cout << *it << endl;
   

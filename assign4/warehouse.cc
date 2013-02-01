@@ -8,7 +8,6 @@
 #include "transaction.h"
 #include <string>
 #include <iostream>
-#include <sstream>
 #include <map>
 
 
@@ -22,7 +21,7 @@ warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
   
   // Remove "Warehouse - " from the string.
   // That is 2 spaces.
-  string warehouse_name;
+  string warehouse_name("");
   for(int i = 0, ws_counter = 0; i < warehouse_data.length(); i++)
   {
     if(warehouse_data[i] == ' ')
@@ -31,7 +30,8 @@ warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
       if(ws_counter == 2)
       {
         warehouse_name = warehouse_data.substr(i + 1, warehouse_data.npos);
-//        cout << "warehouse: " << warehouse_name << endl;
+        //cout << "warehouse: " << warehouse_data << "--" << endl;
+        cout << warehouse_name << " 00" << endl;
         break;
       }
     }
@@ -39,6 +39,11 @@ warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
 
   foods = food_map;
   this->name = warehouse_name;
+
+}
+
+warehouse::warehouse() 
+{
 
 }
 
@@ -97,33 +102,8 @@ void warehouse::add_transaction(string trans)
  */
 string warehouse::report_busiest_day()
 {
-  string current_date = "";
-  string busiest_date = "";
-  int c_quantity = 0;          // Current day's quantity.
-  int b_quantity = 0;          // Busiest day's quantity.
-  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
-    {
-      transaction t = *iter;
-      // Check to see if date is the same as yesterday.
-      // If it is, add the transactions quantity to the current day's quantity.
-      if(current_date == t.get_date())
-	{
-	  c_quantity += t.get_quantity();
-	}
-      else
-	{
-	  // If it isn't, check to see if c_quantity is greater than b_quantity.
-	  //    If it is, assign it to b_quantity and assign current date to busiest date.
-	  if(c_quantity > b_quantity)
-	    {
-	      busiest_date = current_date;
-	      b_quantity = c_quantity;
-	    }
-	  current_date = t.get_date();
-	  c_quantity = 0;
-	}
-    }
-  return this->get_name() + " " + busiest_date + " " + this->convert_int_to_str(b_quantity);
+
+
 }
 
 /*
@@ -153,11 +133,11 @@ string warehouse::get_name()
 set<string>  warehouse::report_foods_in_stock()
 {
   set<string> s;
-  for(map<string, int>::iterator iterator = food_inventory.begin(); iterator != food_inventory.end(); iterator++) {
-    cout << iterator->first << " : " << iterator->second << endl;
-    if (iterator->second > 0)
-      s.insert(iterator->first);
-  }
+ // for(map<string, int>::iterator iterator = food_inventory.begin(); iterator != food_inventory.end(); iterator++) {
+    //cout << iterator->first << " : " << iterator->second << endl;
+   // if (iterator->second > 0)
+     // s.insert(iterator->first);
+ // }
 
   return s;
 
@@ -169,11 +149,9 @@ warehouse
  * This function is called when it is the next day.
  */
 void warehouse::forward_date(){
-  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
-    {
-      (*iter).dec_shelf_life();
-    }
-  this->effective_date.next_date(); 
+  // Decrement shelf life
+  // Forward food date.
+  // 
 }
 
 /* 
@@ -187,10 +165,5 @@ void warehouse::set_start_date(string date)
 
 
 
-string warehouse::convert_int_to_str(int the_number)
-{
-  stringstream ss;
-  ss << the_number;
-  string s = ss.str();
-  return s;
-}
+
+

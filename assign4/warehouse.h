@@ -19,6 +19,7 @@ using namespace std;
 class warehouse{
  public:
   warehouse(string warehouse_data, map<string, food_item> );
+  warehouse();
   ~warehouse();
 
   void add_transaction(string trans); 
