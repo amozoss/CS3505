@@ -102,11 +102,3 @@ string easy_date::convert_int(int the_number)
 }
 
 
-std::string easy_date::to_str() {
-//  date dt(from_string(ds));
-//  date_facet *f=new date_facet("%Y-%m-%d");
- // std::string s(to_simple_string(theDate));
-
- // return s;
-}
-  
