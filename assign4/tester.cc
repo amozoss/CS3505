@@ -70,11 +70,11 @@ void test_easy_date(int pass_count, int test_count)
     string next_date = begin_date.to_str();
     //cout << "begin_date " << begin_date.to_str() << endl;
 
-    if (next_date != line && line != "01/01/2001")
+    if (next_date != line)
       cout << "easy_date next_day() was " << next_date << " should be " << line << endl;
     //cout << "begin_date " << begin_date.to_str() << endl;
-    if (line != "01/01/2001") 
-      begin_date.next_date();
+
+    begin_date.next_date();
 
 
   }
@@ -101,5 +101,5 @@ void test_transaction()
 void test_food_item()
 {
   food_item f("FoodItem - UPC Code: 0556467522  Shelf life: 15  Name: absolute vanilla vodka");
-  //cout << f.get_UPC() << " is UPC\n" << f.get_name() << " is name\n" << f.get_shelf_life() << " is shelf life\n";
+  cout << f.get_UPC() << " is UPC\n" << f.get_name() << " is name\n" << f.get_shelf_life() << " is shelf life\n";
 }
