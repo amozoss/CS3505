@@ -75,8 +75,32 @@ void warehouse::add_transaction(string trans)
  */
 string warehouse::report_busiest_day()
 {
-
-
+  string current_date = "";
+  string busiest_date = "";
+  int c_quantity = 0;          // Current day's quantity.
+  int b_quantity = 0;          // Busiest day's quantity.
+  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
+    {
+      transaction t = *iter;
+      // Check to see if date is the same as yesterday.
+      // If it is, add the transactions quantity to the current day's quantity.
+      if(current_date == t.get_date())
+	{
+	  c_quantity += t.get_quantity();
+	}
+      else
+	{
+	  // If it isn't, check to see if c_quantity is greater than b_quantity.
+	  //    If it is, assign it to b_quantity and assign current date to busiest date.
+	  if(c_quantity > b_quantity)
+	    {
+	      busiest_date = current_date;
+	      b_quantity = c_quantity;
+	    }
+	  current_date = t.get_date();
+	  c_quantity = 0;
+	}
+    }
 }
 
 /*
@@ -114,9 +138,11 @@ set<string>  warehouse::report_foods_in_stock(){
  * This function is called when it is the next day.
  */
 void warehouse::forward_date(){
-  // Decrement shelf life
-  // Forward food date.
-  // 
+  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
+    {
+      (*iter).dec_shelf_life();
+    }
+  this->effective_date.forward_date(); 
 }
 
 /* 
