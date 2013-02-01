@@ -30,6 +30,7 @@ class headquarters
   
   ~headquarters();
   void generate_report ();
+  warehouse get_warehouse(string);
 
  private:
 

@@ -34,6 +34,15 @@ headquarters::headquarters(string file_path)
   read_data_lines();
   
 }
+
+/*
+ * returns warehouse
+ */
+warehouse headquarters::get_warehouse(string warehouse) 
+{
+  return warehouses.find(warehouse)->second;
+}
+
 string parse_start_date(string line)
 {
 
@@ -55,6 +64,9 @@ string parse_start_date(string line)
   }
   return date;
 }
+
+
+
 
 string parse_warehouse_name(string line)
 {
@@ -112,7 +124,7 @@ void headquarters::read_data_lines ()
       
     }
     else if (which_class == "Request:" || which_class == "Receive:") {
-      warehouse w = warehouses.find(parse_warehouse_name(line))->second; // get the warehouse from the map
+      warehouse w = get_warehouse(parse_warehouse_name(line));
       //cout << w.get_name() << endl;
       w.add_transaction(line);
     }

@@ -15,6 +15,7 @@
 #include <map>
 #include <iterator>
 #include <string>
+#include "headquarters.h"
 #include "easy_date.h"
 #include "food_item.h"
 #include "transaction.h"
@@ -27,6 +28,7 @@ void test_easy_date (int pass_count, int test_count);
 void test_warehouse();
 void test_transaction();
 void test_food_item();
+headquarters headquarters_test("data1.txt");
 
 
 int main ()
@@ -40,6 +42,13 @@ int main ()
   test_food_item();
   test_easy_date(pass_count,test_count);
   
+}
+
+void data1_test ()
+{
+  
+
+
 }
 
 void test_easy_date(int pass_count, int test_count)
