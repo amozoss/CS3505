@@ -38,21 +38,44 @@ int main ()
   test_warehouse();
   test_transaction();
   test_food_item();
-  // test_easy_date(pass_count,test_count);
+  test_easy_date(pass_count,test_count);
   
 }
 
-void test_easy_date (int pass_count, int test_count)
+void test_easy_date(int pass_count, int test_count)
 {
 
-//    string date = "05/01/2010";
- //   easy_date e(date);
- //   e.to_str();
-    if (true)
-      pass_count++;
-    else 
-      cout << "Test 2 remove - Failed\n Set still contains a removed item\n";
-    test_count++;
+  ifstream in("dates.txt");
+  easy_date begin_date("01/01/2001");
+
+  while (true)
+  {
+    // Read a line 
+    string line;
+    getline(in,line);
+
+    // If the read failed, we're probably at end of file
+    //   (or else the disk went bad).  Exit the loop.
+    if (in.fail()) {
+      break;
+    }
+
+
+    //test easy dates
+    easy_date date(line);
+    cout << line << endl;
+    if (date.to_str() != line)
+      cout << "easy_date constuctor was " << date.to_str() << " should be " << line << endl;
+    
+    if (begin_date.next_date() != line && line != "01/01/2001")
+      cout << "easy_date next_day() was " << begin_date.next_date() << " should be " << line << endl;
+    if (line != "01/01/2001") 
+      begin_date = easy_date(begin_date.next_date());
+
+
+  }
+  in.close();
+
 
 }
 
