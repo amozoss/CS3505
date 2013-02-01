@@ -127,6 +127,7 @@ void headquarters::read_data_lines ()
       food_items.insert ( pair<string,food_item>(food.get_UPC(),food) );
     }
     else if (which_class == "Warehouse") {
+      //cout << line << endl;
       warehouse wh(line,food_items); // create warehouse and then map it
       string name = wh.get_name();
       cout << "Added warehouse : " << name <<  "00" << endl;

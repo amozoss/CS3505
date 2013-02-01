@@ -54,9 +54,6 @@ void data1_test ()
   w.report_foods_in_stock();
  // for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
    // cout << *it << endl;
-  
-
-
 }
 
 void test_easy_date(int pass_count, int test_count)

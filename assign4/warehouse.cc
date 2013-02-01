@@ -8,6 +8,7 @@
 #include "transaction.h"
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <map>
 
 
@@ -22,22 +23,24 @@ warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
   // Remove "Warehouse - " from the string.
   // That is 2 spaces.
   string warehouse_name("");
+
+
   for(int i = 0, ws_counter = 0; i < warehouse_data.length(); i++)
   {
     if(warehouse_data[i] == ' ')
     {
-      // ws_counter++;   This was in the wrong place.
+      ws_counter++;  // This was in the wrong place.
       if(ws_counter == 2)
       {
         warehouse_name = warehouse_data.substr(i + 1, warehouse_data.npos);
         //cout << "warehouse: " << warehouse_data << "--" << endl;
-        cout << warehouse_name << " 00" << endl;
+        cout << warehouse_name << endl;//" 00" << endl;
         break;
       }
-      ws_counter++;
+      // ws_counter++;
     }
   }
-
+  
   foods = food_map;
   this->name = warehouse_name;
 
@@ -145,14 +148,17 @@ set<string>  warehouse::report_foods_in_stock()
 }
 
 /*
-warehouse
-warehouse
  * This function is called when it is the next day.
  */
 void warehouse::forward_date(){
-  // Decrement shelf life
-  // Forward food date.
-  // 
+  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
+    {
+      (*iter).dec_shelf_life();
+    }
+
+  this->effective_date.next_date();
+
+ 
 }
 
 /* 
@@ -165,6 +171,20 @@ void warehouse::set_start_date(string date)
 }
 
 
+string warehouse::convert_int_to_str(int the_number)
+{
+  stringstream ss;
+  ss << the_number;
+  string s = ss.str();
+  return s;
+}
 
 
+string warehouse::convert_char_to_str(char the_char)
+{
+ stringstream ss;
+  ss << the_char;
+  string s = ss.str();
+  return s;
 
+}
