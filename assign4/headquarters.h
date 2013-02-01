@@ -34,6 +34,7 @@ class headquarters
  private:
 
   map<string, food_item> food_items;
+  map<string, warehouse> warehouses;
   list<string> file_data; // stores all the lines in the data file
   void read_file(string file_path);
   void read_data_lines (); 

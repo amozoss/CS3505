@@ -8,7 +8,6 @@ headquarters::headquarters(string file_path)
 {
   ifstream in(file_path.c_str());
   //ifstream in("word dog\n wahoo!");
- 
 
   // Loop for reading the file.  Note that it is controlled
   //   from within the loop (see the 'break').
@@ -34,6 +33,28 @@ headquarters::headquarters(string file_path)
 
   read_data_lines();
   
+}
+
+string parse_warehouse_name(string line)
+{
+
+  // Get the name of the warehouse from transaction.
+  // That is 3 spaces.
+  string warehouse_name;
+  for(int i = 0, ws_counter = 0; i < line.length(); i++)
+  {
+    if(line[i] == ' ')
+    {
+      ws_counter++;
+      if(ws_counter == 3)
+      {
+        warehouse_name = line.substr(i + 1, line.npos);
+        //        cout << "warehouse: " << warehouse_name << endl;
+        break;
+      }
+    }
+  }
+  return warehouse_name;
 }
 
 /* 
@@ -64,9 +85,15 @@ void headquarters::read_data_lines ()
       food_items.insert ( pair<string,food_item>(food.get_UPC(),food) );
     }
     else if (which_class == "Warehouse") {
+      warehouse wh(line,food_items); // create warehouse and then map it
+      cout << "Added warehouse : " << wh.get_name()<< endl;
+      warehouses.insert ( pair<string,warehouse>(wh.get_name(),wh) );
       
     }
     else if (which_class == "Request:" || which_class == "Receive:") {
+      warehouse w = warehouses.find(parse_warehouse_name(line))->second; // get the warehouse from the map
+      cout << w.get_name() << endl;
+      w.add_transaction(line);
 
     }
   }

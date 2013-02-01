@@ -58,10 +58,10 @@ void test_easy_date (int pass_count, int test_count)
 
 void test_warehouse()
 {
-  map<string, food_item> *da_set;
+  map<string, food_item> da_set;
   warehouse w("Tacoma", da_set);
 
-  w.add_transaction("Request: 0984523912 7");
+  w.add_transaction("Request: 0984523912  7 Tacoma");
 
 }
 

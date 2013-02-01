@@ -18,7 +18,7 @@ using namespace std;
 
 class warehouse{
  public:
-  warehouse(string name, map<string, food_item> *foodSet);
+  warehouse(string warehouse_data, map<string, food_item> );
   ~warehouse();
 
   void add_transaction(string trans); 
@@ -26,11 +26,12 @@ class warehouse{
   string report_food_deficit();
   list<food_item> report_foods_in_stock();
   void forward_date();        // Forward date will also update shelf life of food items.
+  string get_name();
 
   private:
   string name;
   easy_date effective_date;   // If a request/receive is given, this is the date is happened on.
-  map<string, food_item> *foods;
+  map<string, food_item> foods; // copies in the whole food map, simply avoid the hassle of pointers
   string convertInt_toString();
   list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
   list<transaction>::iterator iter;

@@ -43,20 +43,19 @@ transaction::transaction(string s, string date)
       break;
     }
   }
-
   // Assign quantity to quantity.
   for(int i = 0; i < s.length(); i++)
     if(s[i] == ' ')
     {
-      this->quantity = atof(s.substr(0, i).c_str());
+      this->quantity = atoi(s.substr(0, i).c_str());
       break;
     }
-  /*
-
+  
+/*
   cout << this->upc_code << " is the UPC code." << endl;
   cout << this->quantity << " is the quantity." << endl;
   cout << "Transaction type " << this->type_of_transaction << endl;
-  */
+*/ 
   this->the_date = date;
 }
 
