@@ -21,17 +21,18 @@ class warehouse{
   ~warehouse();
 
   void add_transaction(string trans); 
-  string reportBusiestDay();        // Returns name, date and transaction quantity of busiest day.
-  string reportFoodDeficit();
-  list<food_item> reportFoodsInStock();
-  void forwardDate();        // Forward date will also update shelf life of food items.
+  string report_busiest_day();        // Returns name, date and transaction quantity of busiest day.
+  string report_food_deficit();
+  list<food_item> report_foods_in_stock();
+  void forward_date();        // Forward date will also update shelf life of food items.
 
  private:
   string name;
-  easy_date effectiveDate;   // If a request/receive is given, this is the date is happened on.
+  easy_date effective_date;   // If a request/receive is given, this is the date is happened on.
   set<food_item> *foods;
   string convertInt_toString();
-  list<transaction> *trans_list;  // trans_list is a list of all transactions of this warehouse.
+  list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
+  list<transaction>::iterator iter;
 
 };
 #endif

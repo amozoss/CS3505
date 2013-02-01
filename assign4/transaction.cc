@@ -42,13 +42,6 @@ transaction::transaction(string s, string date)
       }
     }
 
-
-  
-
-
-
-
-
   // Assign quantity to quantity.
   for(int i = 0; i < s.length(); i++)
     if(s[i] == ' ')
@@ -74,20 +67,20 @@ transaction::~transaction()
 
 int transaction::get_type()
 {
-  return this->type_of_transaction;
+  return type_of_transaction;
 }
 
 string transaction::get_upc_code()
 {
-  return this->upc_code;
+  return upc_code;
 }
 
 string transaction::get_date()
 {
-  return this->the_date;
+  return the_date;
 }
 
 int transaction::get_quantity()
 {
-  return this->quantity;
+  return quantity;
 }
