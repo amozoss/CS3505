@@ -27,7 +27,7 @@ class easy_date {
 public:
   easy_date(std::string &startDate); 
   easy_date();
-  std::string nextDate();
+  std::string next_date();
   std::string to_str();
 private:
   //date theDate;
