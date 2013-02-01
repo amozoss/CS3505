@@ -31,16 +31,17 @@ void warehouse::add_transaction(string trans)
 {
   int s_l = 2;
  
-  transaction r(trans,"this->effective_date.to_str()", s_l);
+  transaction r(trans,"this->effective_date.to_str()");
+  r.set_shelf_life(5);
  
   trans_list.push_back(r);
 
   for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
     {
       transaction t = *iter;
-      cout << t.get_date() << " " << t.get_quantity() << " " << t.get_upc_code() << " " << t.get_type() << " " <<t.get_shelf_life();
+      // cout << t.get_date() << " " << t.get_quantity() << " " << t.get_upc_code() << " " << t.get_type() << " " <<t.get_shelf_life();
     }
-  cout << endl;
+  // cout << endl;
 }
 
 /*

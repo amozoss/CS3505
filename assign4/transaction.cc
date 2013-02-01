@@ -12,7 +12,7 @@
 #include <cstdlib>
 #include <string>
 
-transaction::transaction(string s, string date, int the_shelf_life)
+transaction::transaction(string s, string date)
 {
 
   // Determine if receive or request.
@@ -56,7 +56,6 @@ transaction::transaction(string s, string date, int the_shelf_life)
   cout << this->quantity << " is the quantity." << endl;
   cout << "Transaction type " << this->type_of_transaction << endl;
   */
-  this->shelf_life = the_shelf_life;
   this->the_date = date;
 }
 
@@ -71,6 +70,12 @@ transaction::~transaction()
 int transaction::get_shelf_life()
 {
   return shelf_life;
+}
+
+
+void transaction::set_shelf_life(int the_shelf_life)
+{
+  this->shelf_life = the_shelf_life;
 }
 
 void transaction::dec_shelf_life()

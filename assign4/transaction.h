@@ -15,7 +15,7 @@ using namespace std;
 class transaction
 {
 public:
-  transaction(string trans, string da_date, int shelf_life);
+  transaction(string trans, string da_date);
   ~transaction();
 
   enum transaction_type
@@ -28,6 +28,7 @@ public:
   string get_date();
   int get_quantity();
   int get_shelf_life();
+  void set_shelf_life(int t_s_l);
   void dec_shelf_life();
 private:
   int type_of_transaction;

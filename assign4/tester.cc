@@ -67,7 +67,8 @@ void test_warehouse()
 
 void test_transaction()
 {
-  transaction h("Request: 0984523912 7 Tacoma", "hello", 6);
+  transaction h("Request: 0984523912 7 Tacoma", "hello");
+  h.set_shelf_life(7);
 }
 
 void test_food_item()
