@@ -28,4 +28,5 @@ int main (int argc, char* argv[])
 
   // generate the report
   //head.generate_report();
+  return 0;
 } 
