@@ -8,6 +8,7 @@
 #include "transaction.h"
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <map>
 
 
@@ -101,6 +102,7 @@ string warehouse::report_busiest_day()
 	  c_quantity = 0;
 	}
     }
+  return this->get_name() + " " + busiest_date + " " + this->convert_int_to_str(b_quantity);
 }
 
 /*
@@ -142,7 +144,7 @@ void warehouse::forward_date(){
     {
       (*iter).dec_shelf_life();
     }
-  this->effective_date.forward_date(); 
+  this->effective_date.next_date(); 
 }
 
 /* 
@@ -156,5 +158,10 @@ void warehouse::set_start_date(string date)
 
 
 
-
-
+string warehouse::convert_int_to_str(int the_number)
+{
+  stringstream ss;
+  ss << the_number;
+  string s = ss.str();
+  return s;
+}
