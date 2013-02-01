@@ -12,12 +12,13 @@
 #include "easy_date.h"
 #include <list>
 #include <set>
+#include <map>
 #include "transaction.h"
 using namespace std;
 
 class warehouse{
  public:
-  warehouse(string name, set<food_item> *foodSet);
+  warehouse(string name, map<string, food_item> *foodSet);
   ~warehouse();
 
   void add_transaction(string trans); 
@@ -29,7 +30,7 @@ class warehouse{
  private:
   string name;
   easy_date effective_date;   // If a request/receive is given, this is the date is happened on.
-  set<food_item> *foods;
+  map<string, food_item> *foods;
   string convertInt_toString();
   list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
   list<transaction>::iterator iter;

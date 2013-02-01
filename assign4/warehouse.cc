@@ -7,10 +7,12 @@
 #include "warehouse.h"
 #include "transaction.h"
 #include <string>
+#include <iostream>
+#include <map>
 
 
 using namespace std;
-warehouse::warehouse(string name, set<food_item> *food_set){
+warehouse::warehouse(string name, map<string, food_item> *food_set){
   foods = food_set;
   this->name = name;
 
@@ -28,8 +30,17 @@ warehouse::~warehouse()
 void warehouse::add_transaction(string trans)
 {
   int s_l = 2;
-  iter = trans_list.end();
-  trans_list.insert(iter, transaction(trans, this->effective_date.to_str(), s_l));
+ 
+  transaction r(trans,"this->effective_date.to_str()", s_l);
+ 
+  trans_list.push_back(r);
+
+  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
+    {
+      transaction t = *iter;
+      cout << t.get_date() << " " << t.get_quantity() << " " << t.get_upc_code() << " " << t.get_type() << " " <<t.get_shelf_life();
+    }
+  cout << endl;
 }
 
 /*
