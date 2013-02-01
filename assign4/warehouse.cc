@@ -54,13 +54,34 @@ void warehouse::add_transaction(string trans)
 {
   // int s_l = 2;
   transaction r(trans,this->effective_date.to_str());
-  map<string,food_item>::iterator it = foods.find(r.get_upc_code());
-  if(it != foods.end())
+  map<string,food_item>::iterator iter = foods.find(r.get_upc_code());
+  if(iter != foods.end())
   {
-    food_item food = it->second;
+    food_item food = iter->second;
     r.set_shelf_life(food.get_shelf_life());
   }
 
+  map<string,int>::iterator it = food_inventory.find(r.get_upc_code());
+  if(it != food_inventory.end())
+  {
+    //  element found update quantity
+    //  receive adds to quantity, request subtracts
+    //  if the receive transaction shelf life is zero it is expired and should not be added to the 
+    //  total quantity
+    if (r.get_type() == transaction::receive && r.get_shelf_life() != 0) 
+      it->second += r.get_quantity();
+    else {
+      it->second -= r.get_quantity();
+
+      if (it->second <= 0) // if the quantity falls to zero remove food from inventory
+        food_inventory.erase(it); 
+    }
+  }
+  // element not found, insert food into inventory if its a receive transaction 
+  else {
+    if (r.get_type() == transaction::receive)
+      food_inventory.insert( pair<string,int>(r.get_upc_code(),r.get_quantity()));
+  }
 
   trans_list.push_back(r);
 }
@@ -103,14 +124,22 @@ string warehouse::get_name()
  * has a surplus.  If a certain item is in stock it will be added to
  * the list that is being returned.
  */
-set<string>  warehouse::report_foods_in_stock(){
+set<string>  warehouse::report_foods_in_stock()
+{
+  set<string> s;
+  for(map<string, int>::iterator iterator = food_inventory.begin(); iterator != food_inventory.end(); iterator++) {
+    cout << iterator->first << " : " << iterator->second << endl;
+    if (iterator->second > 0)
+      s.insert(iterator->first);
+  }
 
-
+  return s;
 
 }
 
-
 /*
+warehouse
+warehouse
  * This function is called when it is the next day.
  */
 void warehouse::forward_date(){

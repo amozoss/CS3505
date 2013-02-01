@@ -33,6 +33,7 @@ class warehouse{
   string name;
   easy_date effective_date;   // If a request/receive is given, this is the date is happened on.
   map<string, food_item> foods; // copies in the whole food map, simply avoid the hassle of pointers
+  map<string,int> food_inventory; // value = UPC, int = current quantity
   string convertInt_toString();
   list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
   list<transaction>::iterator iter;
