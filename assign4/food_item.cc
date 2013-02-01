@@ -15,18 +15,18 @@ food_item::food_item(string item) {
   // Remove "FoodItem - UPC Code: " from the string.
   // That is 4 spaces.
   for(int i = 0, ws_counter = 0; i < item.length(); i++)
+  {
+    if(item[i] == ' ')
     {
-      if(item[i] == ' ')
-	{
-	
-	if(ws_counter == 3)
-	  {
-	    item = item.substr(i + 1, item.npos);
-	  break;
-	  }
-	++ws_counter;
-	}
+
+      if(ws_counter == 3)
+      {
+        item = item.substr(i + 1, item.npos);
+        break;
+      }
+      ++ws_counter;
     }
+  }
 
   // Get upc code and then remove it from item string.
   // String looks like this before for loop:

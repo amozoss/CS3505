@@ -27,7 +27,7 @@ class warehouse{
   list<food_item> report_foods_in_stock();
   void forward_date();        // Forward date will also update shelf life of food items.
 
- private:
+  private:
   string name;
   easy_date effective_date;   // If a request/receive is given, this is the date is happened on.
   map<string, food_item> *foods;

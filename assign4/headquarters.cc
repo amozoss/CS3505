@@ -63,7 +63,10 @@ void headquarters::read_data_lines ()
       cout << "Added food item: " <<food.get_name() << endl;
       food_items.insert ( pair<string,food_item>(food.get_UPC(),food) );
     }
-    if (which_class == "Request:" || which_class == "Receive:") {
+    else if (which_class == "Warehouse") {
+      
+    }
+    else if (which_class == "Request:" || which_class == "Receive:") {
 
     }
   }
@@ -73,6 +76,7 @@ void headquarters::read_data_lines ()
 
 
 headquarters::headquarters() {
+
 }
 
 

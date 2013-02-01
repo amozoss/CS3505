@@ -12,9 +12,31 @@
 
 
 using namespace std;
-warehouse::warehouse(string name, map<string, food_item> *food_set){
+
+/*
+ * Constructs a warehouse using the line from the data text 
+ * and parses the name.
+ */
+warehouse::warehouse(string warehouse_data, map<string, food_item> *food_set){
+  
+  // Remove "Warehouse - " from the string.
+  // That is 2 spaces.
+  string warehouse_name;
+  for(int i = 0, ws_counter = 0; i < item.length(); i++)
+  {
+    if(item[i] == ' ')
+    {
+      ws_counter++;
+      if(ws_counter == 2)
+      {
+        warehouse_name = item.substr(i + 1, item.npos);
+        break;
+      }
+    }
+  }
+
   foods = food_set;
-  this->name = name;
+  this->name = warehouse_name;
 
 }
 
