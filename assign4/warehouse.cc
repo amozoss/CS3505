@@ -21,25 +21,13 @@ warehouse::~warehouse()
 }
 
 /*
- * Is sent items that have been received by the warehouse, 
- * adds them to the list of transactions.
+ * Is sent items that have been recieved/requested
+ * by this warehouse.
  */
-void warehouse::receive(string theReceive)
+void warehouse::add_transaction(string trans)
 {
-  // string tempReceive = theReceive.substr(
 
 
- // trans_list.insert(theReceive);
-
-}
-
-/*
- * Is sent items that have been requested by the warehouse, 
- * adds them to the data structure of transactions.
- */
-void warehouse::request(string theRequest)
-{
-  //transaction::transaction_type::request;
 }
 
 /*
