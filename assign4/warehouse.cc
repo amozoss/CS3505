@@ -26,7 +26,7 @@ warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
   {
     if(warehouse_data[i] == ' ')
     {
-      ws_counter++;
+      // ws_counter++;   This was in the wrong place.
       if(ws_counter == 2)
       {
         warehouse_name = warehouse_data.substr(i + 1, warehouse_data.npos);
@@ -34,6 +34,7 @@ warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
         cout << warehouse_name << " 00" << endl;
         break;
       }
+      ws_counter++;
     }
   }
 
