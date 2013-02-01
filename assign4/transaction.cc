@@ -73,19 +73,26 @@ int transaction::get_shelf_life()
 }
 
 /*
- * Sets the shelf-life to the specified length.
+ * Sets the shelf life to the specified length.
  */
 void transaction::set_shelf_life(int the_shelf_life)
 {
   this->shelf_life = the_shelf_life;
 }
 
+/*
+ * Decrements the shelf life of the food, if the shelf life
+ * is zero it will not go any lower.
+ */
 void transaction::dec_shelf_life()
 {
   if(this->shelf_life > 0)
     this->shelf_life--;
 }
 
+/*
+ *
+ */
 int transaction::get_type()
 {
   return type_of_transaction;
