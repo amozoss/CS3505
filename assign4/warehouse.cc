@@ -53,31 +53,15 @@ warehouse::~warehouse()
 void warehouse::add_transaction(string trans)
 {
   // int s_l = 2;
- 
-  //transaction r(trans,this->effective_date.to_str());
-  //food_item a_food = foods.at(r.get_upc_code());
-  //r.set_shelf_life(a_food.get_shelf_life());
-
-
-
-  // insert food item in inventory or remove from inventory
-  map<string,int>::iterator it = food_inventory.find(r.get_upc_code());
-  if(it != food_inventory.end())
+  transaction r(trans,this->effective_date.to_str());
+  map<string,food_item>::iterator it = foods.find(r.get_upc_code());
+  if(it != foods.end())
   {
-       //element found update quantity
-       if (r.get_type() == transaction::receive) 
-         it->second += r.get_quantity();
-       else {
-         it->second -= r.get_quantity();
-
-         if (it->second <= 0) // if the quantity falls to zero remove food from inventory
-          food_inventory.erase(it); 
-       }
+    food_item food = it->second;
+    r.set_shelf_life(food.get_shelf_life());
   }
-  else {// insert it
-    if (r.get_type() == transaction::receive)
-      food_inventory.insert( pair<string,int>(r.get_upc_code(),r.get_quantity()));
-  } 
+
+
   trans_list.push_back(r);
 }
 

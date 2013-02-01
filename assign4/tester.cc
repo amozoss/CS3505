@@ -96,7 +96,6 @@ void test_transaction()
 {
   transaction h("Request: 0984523912 7 Tacoma", "hello");
   h.set_shelf_life(7);
-  if (
 }
 
 void test_food_item()
