@@ -198,6 +198,7 @@ void headquarters::generate_report(){
     {
       warehouse w = it->second;
       set<string> out_of = w.report_food_deficit();
+      //set_intersection(deficit_set.begin(), deficit_set.end(), out_of.begin(), out_of.end(), 
       difference.insert(out_of.begin(), out_of.end());
     }
 
