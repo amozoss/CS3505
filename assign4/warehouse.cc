@@ -52,8 +52,7 @@ warehouse::~warehouse()
  */
 void warehouse::add_transaction(string trans)
 {
-  int s_l = 2;
- 
+  // int s_l = 2;
   transaction r(trans,this->effective_date.to_str());
   map<string,food_item>::iterator it = foods.find(r.get_upc_code());
   if(it != foods.end())
@@ -64,13 +63,6 @@ void warehouse::add_transaction(string trans)
 
 
   trans_list.push_back(r);
-
-  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
-    {
-      transaction t = *iter;
-      // cout << t.get_date() << " " << t.get_quantity() << " " << t.get_upc_code() << " " << t.get_type() << " " <<t.get_shelf_life();
-    }
-  // cout << endl;
 }
 
 /*
@@ -122,7 +114,9 @@ set<string>  warehouse::report_foods_in_stock(){
  * This function is called when it is the next day.
  */
 void warehouse::forward_date(){
-
+  // Decrement shelf life
+  // Forward food date.
+  // 
 }
 
 /* 
