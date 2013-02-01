@@ -21,17 +21,18 @@ headquarters::headquarters(string file_path)
 
     // If the read failed, we're probably at end of file
     //   (or else the disk went bad).  Exit the loop.
-    if (in.fail())
+    if (in.fail()) {
       break;
+    }
 
     // line  successfully read.  Add it to data
 
     cout << line << endl;
-    file_data.insert(line);
+    file_data.push_back(line);
   }
-
-
   in.close();
+
+  read_data_lines();
   
 }
 
@@ -40,30 +41,34 @@ headquarters::headquarters(string file_path)
  */
 void headquarters::read_data_lines () 
 {
-  for (int j = 0; j < file_data.size(); j++) { // iterate vector
+  
+  for (list<string>::iterator it = file_data.begin(); it != file_data.end();it++)
+  { // iterate vector
 
-    string line = file_data[j]; // the current line being parsed
-    string parameter; // the string to be passed to the specific class constructor
+    string line = *it; // the current line being parsed
     string which_class;
 
     // Reads to the first white space.
-    for(int i = 0; i < s.length(); i++)
+    for(int i = 0; i < line.length(); i++)
     {
       cout << line[i];
       if(line[i] == ' ')
       {
         which_class = line.substr(0,i); 
-        parameter = line.substr(i + 1, s.npos);
         break;
       }
     }
     if (which_class == "FoodItem") {
-      food_list.insert(food_item(parameter);
+      food_item food(line); // use the class to parse the string, and then store them in the map,
+      cout << "Added food item: " <<food.get_name() << endl;
+      food_items.insert ( pair<string,food_item>(food.get_UPC(),food) );
     }
-      
+    if (which_class == "Request:" || which_class == "Receive:") {
+
+    }
   }
 }
-
+    
 
 
 
