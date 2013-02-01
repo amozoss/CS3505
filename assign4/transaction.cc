@@ -2,17 +2,19 @@
  * transaction.cc
  * 
  * Authors: Michael Banks and Dan Willoughby
- *
+ * A transaction has a UPC code, a date, a quantity, a shelf life
+ * and a type of transaction.  A transaction is a record for a type
+ * of product at a particular warehouse on a particular date.
  *
  */
-
 #include "transaction.h"
 #include <iostream>
 #include <cstdlib>
 #include <string>
 
-transaction::transaction(string s, string date)
+transaction::transaction(string s, string date, int the_shelf_life)
 {
+
   // Determine if receive or request.
   if(s[2] == 'c')
     this->type_of_transaction = receive;
@@ -42,13 +44,6 @@ transaction::transaction(string s, string date)
     }
   }
 
-
-
-
-
-
-
-
   // Assign quantity to quantity.
   for(int i = 0; i < s.length(); i++)
     if(s[i] == ' ')
@@ -62,7 +57,8 @@ transaction::transaction(string s, string date)
      cout << "Transaction type " << this->type_of_transaction << endl;
      */
 
-  the_date = date;
+  this->shelf_life = the_shelf_life;
+  this->the_date = date;
 }
 
 transaction::~transaction()
@@ -70,24 +66,36 @@ transaction::~transaction()
 
 }
 
+/*
+ * Returns the shelf life of the transaction.
+ */
+int transaction::get_shelf_life()
+{
+  return shelf_life;
+}
 
+void transaction::dec_shelf_life()
+{
+  if(this->shelf_life > 0)
+    this->shelf_life--;
+}
 
 int transaction::get_type()
 {
-  return this->type_of_transaction;
+  return type_of_transaction;
 }
 
 string transaction::get_upc_code()
 {
-  return this->upc_code;
+  return upc_code;
 }
 
 string transaction::get_date()
 {
-  return this->the_date;
+  return the_date;
 }
 
 int transaction::get_quantity()
 {
-  return this->quantity;
+  return quantity;
 }

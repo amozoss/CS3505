@@ -5,12 +5,15 @@
  * Dan Willoughby and Michael Banks
  */
 #include "warehouse.h"
+#include "transaction.h"
 #include <string>
+#include <iostream>
+#include <map>
 
 
 using namespace std;
-warehouse::warehouse(string name, set<food_item> *foodSet){
-  foods = foodSet;
+warehouse::warehouse(string name, map<string, food_item> *food_set){
+  foods = food_set;
   this->name = name;
 
 }
@@ -21,25 +24,23 @@ warehouse::~warehouse()
 }
 
 /*
- * Is sent items that have been received by the warehouse, 
- * adds them to the list of transactions.
+ * Is sent items that have been recieved/requested
+ * by this warehouse.
  */
-void warehouse::receive(string theReceive)
+void warehouse::add_transaction(string trans)
 {
-  // string tempReceive = theReceive.substr(
+  int s_l = 2;
+ 
+  transaction r(trans,"this->effective_date.to_str()", s_l);
+ 
+  trans_list.push_back(r);
 
-
- // trans_list.insert(theReceive);
-
-}
-
-/*
- * Is sent items that have been requested by the warehouse, 
- * adds them to the data structure of transactions.
- */
-void warehouse::request(string theRequest)
-{
-  //transaction::transaction_type::request;
+  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
+    {
+      transaction t = *iter;
+      cout << t.get_date() << " " << t.get_quantity() << " " << t.get_upc_code() << " " << t.get_type() << " " <<t.get_shelf_life();
+    }
+  cout << endl;
 }
 
 /*
@@ -50,7 +51,9 @@ void warehouse::request(string theRequest)
  * If two or more days have the same amount of transactions it returns 
  * the first one.
  */
-string warehouse::reportBusiestDay(){
+string warehouse::report_busiest_day()
+{
+
 
 }
 
@@ -60,7 +63,8 @@ string warehouse::reportBusiestDay(){
  * has a deficit.  If a certain item is not in stock it will be added to
  * the list that is being returned.
  */
-string warehouse::reportFoodDeficit(){
+string warehouse::report_food_deficit()
+{
 
 }
 
@@ -70,7 +74,7 @@ string warehouse::reportFoodDeficit(){
  * has a surplus.  If a certain item is in stock it will be added to
  * the list that is being returned.
  */
-list<food_item>  warehouse::reportFoodsInStock(){
+list<food_item>  warehouse::report_foods_in_stock(){
 
 
 
@@ -80,6 +84,6 @@ list<food_item>  warehouse::reportFoodsInStock(){
 /*
  * This function is called when it is the next day.
  */
-void warehouse::forwardDate(){
+void warehouse::forward_date(){
 
 }

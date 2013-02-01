@@ -12,11 +12,14 @@
 #include <iostream>
 #include <fstream>
 #include <set>
+#include <map>
 #include <iterator>
 #include <string>
 #include "easy_date.h"
 #include "food_item.h"
 #include "transaction.h"
+#include "warehouse.h"
+
 
 using namespace std;
 // forward declarations
@@ -55,13 +58,16 @@ void test_easy_date (int pass_count, int test_count)
 
 void test_warehouse()
 {
+  map<string, food_item> *da_set;
+  warehouse w("Tacoma", da_set);
 
+  w.add_transaction("Request: 0984523912 7");
 
 }
 
 void test_transaction()
 {
-  transaction h("Request: 0984523912 7 Tacoma", "hello");
+  transaction h("Request: 0984523912 7 Tacoma", "hello", 6);
 }
 
 void test_food_item()
