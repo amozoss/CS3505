@@ -221,7 +221,7 @@ void headquarters::generate_report(){
     Nome 12/24/2007 1827364
     Barstow 10/01/2006 12
 
-
+*/
 
 
 }
