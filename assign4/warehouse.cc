@@ -27,8 +27,9 @@ warehouse::~warehouse()
  */
 void warehouse::add_transaction(string trans)
 {
+  int s_l = 2;
   iter = trans_list.end();
-  trans_list.insert(iter, transaction(trans, this->effective_date.to_str()));
+  trans_list.insert(iter, transaction(trans, this->effective_date.to_str(), s_l));
 }
 
 /*
@@ -42,6 +43,7 @@ void warehouse::add_transaction(string trans)
 string warehouse::report_busiest_day()
 {
 
+
 }
 
 /*
@@ -50,7 +52,8 @@ string warehouse::report_busiest_day()
  * has a deficit.  If a certain item is not in stock it will be added to
  * the list that is being returned.
  */
-string warehouse::report_food_deficit(){
+string warehouse::report_food_deficit()
+{
 
 }
 
