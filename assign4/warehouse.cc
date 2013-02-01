@@ -9,6 +9,11 @@
 #include <string>
 #include <iostream>
 #include <map>
+#include <cstdlib>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
+#include <vector>
 
 
 using namespace std;
@@ -19,31 +24,18 @@ using namespace std;
  */
 warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
   
-  // Remove "Warehouse - " from the string.
-  // That is 2 spaces.
-  string warehouse_name("");
-  for(int i = 0, ws_counter = 0; i < warehouse_data.length(); i++)
-  {
-    if(warehouse_data[i] == ' ')
-    {
-      // ws_counter++;   This was in the wrong place.
-      if(ws_counter == 2)
-      {
-        warehouse_name = warehouse_data.substr(i + 1, warehouse_data.npos);
-        //cout << "warehouse: " << warehouse_data << "--" << endl;
-        cout << warehouse_name << " 00" << endl;
-        break;
-      }
-      ws_counter++;
-    }
-  }
-
+ istringstream iss(warehouse_data); 
+  vector<string> tokens;
+  copy(istream_iterator<string>(iss),
+      istream_iterator<string>(),
+      back_inserter<vector<string> >(tokens));
   foods = food_map;
-  this->name = warehouse_name;
+  this->name = tokens[2];
 
 }
 
 warehouse::warehouse() 
+  :name(""), effective_date("01/01/2011") 
 {
 
 }
@@ -134,11 +126,11 @@ string warehouse::get_name()
 set<string>  warehouse::report_foods_in_stock()
 {
   set<string> s;
- // for(map<string, int>::iterator iterator = food_inventory.begin(); iterator != food_inventory.end(); iterator++) {
-    //cout << iterator->first << " : " << iterator->second << endl;
-   // if (iterator->second > 0)
-     // s.insert(iterator->first);
- // }
+  for(map<string, int>::iterator iterator = food_inventory.begin(); iterator != food_inventory.end(); iterator++) {
+    cout << iterator->first << " : " << iterator->second << endl;
+    if (iterator->second > 0)
+      s.insert(iterator->first);
+  }
 
   return s;
 
