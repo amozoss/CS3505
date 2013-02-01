@@ -105,7 +105,7 @@ string warehouse::get_name()
  * has a surplus.  If a certain item is in stock it will be added to
  * the list that is being returned.
  */
-list<food_item>  warehouse::report_foods_in_stock(){
+set<string>  warehouse::report_foods_in_stock(){
 
 
 
@@ -118,3 +118,17 @@ list<food_item>  warehouse::report_foods_in_stock(){
 void warehouse::forward_date(){
 
 }
+
+/* 
+ * Sets the effective date
+ */
+void warehouse::set_start_date(string date) 
+{
+  cout << "setL " << date << endl;
+  this->effective_date = easy_date(date);
+}
+
+
+
+
+

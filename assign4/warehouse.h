@@ -24,9 +24,10 @@ class warehouse{
   void add_transaction(string trans); 
   string report_busiest_day();        // Returns name, date and transaction quantity of busiest day.
   string report_food_deficit();
-  list<food_item> report_foods_in_stock();
+  set<string> report_foods_in_stock(); // UPC numbers of the foods in stock
   void forward_date();        // Forward date will also update shelf life of food items.
   string get_name();
+  void set_start_date(string);
 
   private:
   string name;

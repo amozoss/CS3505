@@ -34,6 +34,27 @@ headquarters::headquarters(string file_path)
   read_data_lines();
   
 }
+string parse_start_date(string line)
+{
+
+  // Get the start date
+  // That is 2 spaces.
+  string date;
+  for(int i = 0, ws_counter = 0; i < line.length(); i++)
+  {
+    if(line[i] == ' ')
+    {
+      ws_counter++;
+      if(ws_counter == 2)
+      {
+        date = line.substr(i + 1, line.npos);
+        cout << "start: " << date << endl;
+        break;
+      }
+    }
+  }
+  return date;
+}
 
 string parse_warehouse_name(string line)
 {
@@ -92,10 +113,16 @@ void headquarters::read_data_lines ()
     }
     else if (which_class == "Request:" || which_class == "Receive:") {
       warehouse w = warehouses.find(parse_warehouse_name(line))->second; // get the warehouse from the map
-      cout << w.get_name() << endl;
+      //cout << w.get_name() << endl;
       w.add_transaction(line);
-
     }
+    else if (which_class == "Start") {
+      string start_date = parse_start_date(line);
+      for(map<string, warehouse>::iterator iterator = warehouses.begin(); iterator != warehouses.end(); iterator++) {
+        iterator->second.set_start_date(start_date);
+      }
+    }
+
   }
 }
     
