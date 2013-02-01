@@ -91,23 +91,33 @@ void transaction::dec_shelf_life()
 }
 
 /*
- *
+ * Returns the type of transaction: a receive or request.
  */
 int transaction::get_type()
 {
   return type_of_transaction;
 }
 
+/*
+ * Returns the UPC code of the transaction's food item.
+ */
 string transaction::get_upc_code()
 {
   return upc_code;
 }
 
+/*
+ * Returns the date that the transaction was executed.
+ */
 string transaction::get_date()
 {
   return the_date;
 }
 
+/*
+ * Returns how many products were received or requested
+ * in this transaction.
+ */
 int transaction::get_quantity()
 {
   return quantity;
