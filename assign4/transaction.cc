@@ -72,7 +72,9 @@ int transaction::get_shelf_life()
   return shelf_life;
 }
 
-
+/*
+ * Sets the shelf-life to the specified length.
+ */
 void transaction::set_shelf_life(int the_shelf_life)
 {
   this->shelf_life = the_shelf_life;

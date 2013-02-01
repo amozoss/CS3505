@@ -54,9 +54,34 @@ void warehouse::add_transaction(string trans)
 {
   // int s_l = 2;
  
+<<<<<<< HEAD
   transaction r(trans,"this->effective_date.to_str()");
   food_item a_food = foods.at(r.get_upc_code());
   r.set_shelf_life(a_food.get_shelf_life());
+=======
+  transaction r(trans,this->effective_date.to_str());
+  r.set_shelf_life(5);
+
+
+  // insert food item in inventory or remove from inventory
+  map<string,int>::iterator it = food_inventory.find(r.get_upc_code());
+  if(it != food_inventory.end())
+  {
+       //element found update quantity
+       if (r.get_type() == transaction::receive) 
+         it->second += r.get_quantity();
+       else {
+         it->second -= r.get_quantity();
+
+         if (it->second <= 0) // if the quantity falls to zero remove food from inventory
+          food_inventory.erase(it); 
+       }
+  }
+  else {// insert it
+    if (r.get_type() == transaction::receive)
+      food_inventory.insert( pair<string,int>(r.get_upc_code(),r.get_quantity()));
+  }
+>>>>>>> 45825a54bce902eaff206021be8d2fe6d29d564d
  
   trans_list.push_back(r);
 }
@@ -81,7 +106,7 @@ string warehouse::report_busiest_day()
  * has a deficit.  If a certain item is not in stock it will be added to
  * the list that is being returned.
  */
-string warehouse::report_food_deficit()
+set<string> warehouse::report_food_deficit()
 {
 
 }
