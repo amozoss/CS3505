@@ -38,9 +38,17 @@ headquarters::headquarters(string file_path)
 /*
  * returns warehouse
  */
-warehouse headquarters::get_warehouse(string warehouse) 
+warehouse headquarters::get_warehouse(string wh) 
 {
-  return warehouses.find(warehouse)->second;
+  map<string,warehouse>::iterator iter = warehouses.find(wh);
+  warehouse w;
+  if(iter != warehouses.end())
+  {
+    w =  iter->second;
+    cout << "found warehouse" << endl;
+  }
+  cout << "finished searching" << endl;
+  return w;
 }
 
 string parse_start_date(string line)
@@ -119,7 +127,8 @@ void headquarters::read_data_lines ()
     }
     else if (which_class == "Warehouse") {
       warehouse wh(line,food_items); // create warehouse and then map it
-      cout << "Added warehouse : " << wh.get_name()<< endl;
+      string name = wh.get_name();
+      cout << "Added warehouse : " << name <<  "00" << endl;
       warehouses.insert ( pair<string,warehouse>(wh.get_name(),wh) );
       
     }
@@ -157,6 +166,7 @@ headquarters::~headquarters()
 
 void headquarters::generate_report(){
 
+<<<<<<< HEAD
   /*On a single line, print out the title: "Report by " followed by your names.
    *Print a single blank line following the title.
    */
@@ -232,5 +242,7 @@ void headquarters::generate_report(){
 
 
    */
+=======
+>>>>>>> c6b57aaa57c5e59657b052e81adaa7a4f8531867
 
 }

@@ -28,6 +28,7 @@ void test_easy_date (int pass_count, int test_count);
 void test_warehouse();
 void test_transaction();
 void test_food_item();
+void data1_test ();
 headquarters headquarters_test("data1.txt");
 
 
@@ -41,11 +42,18 @@ int main ()
   test_transaction();
   test_food_item();
   test_easy_date(pass_count,test_count);
+  data1_test();
   
 }
 
 void data1_test ()
 {
+  cout << "entering test" << endl;
+  warehouse w = headquarters_test.get_warehouse("Columbus ");
+  cout << "test_warehouse: " << w.get_name();
+  w.report_foods_in_stock();
+ // for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+   // cout << *it << endl;
   
 
 
