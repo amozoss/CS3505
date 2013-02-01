@@ -25,11 +25,14 @@
 
 class easy_date {
 public:
-  easy_date(std::string &startDate); 
+  easy_date(std::string &start_date); 
   easy_date();
-  std::string nextDate();
+  std::string next_date();
   std::string to_str();
 private:
+int day;
+int month;
+int year;
   //date theDate;
 };
 #endif
