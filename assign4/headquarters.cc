@@ -27,7 +27,7 @@ headquarters::headquarters(string file_path)
 
     // line  successfully read.  Add it to data
 
-    cout << line << endl;
+    //cout << line << endl;
     file_data.push_back(line);
   }
   in.close();
@@ -51,7 +51,7 @@ void headquarters::read_data_lines ()
     // Reads to the first white space.
     for(int i = 0; i < line.length(); i++)
     {
-      cout << line[i];
+     // cout << line[i];
       if(line[i] == ' ')
       {
         which_class = line.substr(0,i); 

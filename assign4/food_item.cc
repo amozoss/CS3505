@@ -85,10 +85,10 @@ food_item::food_item(string item) {
 	 break;
        }
     }
-  cout << this->shelf_life << " is the shelf life.\n";
+  /*cout << this->shelf_life << " is the shelf life.\n";
   cout << this->name << " is the name.\n";
   cout << this->upc_code << " is the UPC code.\n";
-
+*/
 }
 
 /*
