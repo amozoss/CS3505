@@ -204,7 +204,6 @@ set<string> headquarters::get_unstocked_products(set<string> default_set)
   return difference;
 }
 
-
 void headquarters::generate_report(){
   // Create a set of all the UPC codes.
   set<string> default_set;
