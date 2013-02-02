@@ -162,7 +162,31 @@ string warehouse::report_busiest_day()
  */
 set<string> warehouse::report_food_deficit()
 {
+  set<string> s1 = report_foods_in_stock();
+  set<string> default_set;
+  //and you want to get the set of elements that are in one but not the other, you can use std::set_difference:
+  for(map<string, food_item>::iterator food_it = foods.begin(); food_it != foods.end(); food_it++)
+  {
+    //deficit_array[i] = (food_it->first);
+    default_set.insert(food_it->first);
+    //i++;
+  }
 
+ // for (set<string>::iterator it = s1.begin(); it != s1.end(); it++)
+   // cout << "Inv of" << name << *it << endl;
+  //for (set<string>::iterator it = default_set.begin(); it != default_set.end(); it++)
+  //  cout << *it << endl;
+  set<string> difference;
+  //set_difference(s1.begin(), s1.end(),
+    //  default_set.begin(), default_set.end(),
+    //  inserter(difference, difference.begin()));
+  set_difference(default_set.begin(), default_set.end(),
+      s1.begin(), s1.end(),
+      inserter(difference, difference.begin()));
+
+ // for (set<string>::iterator it = difference.begin(); it != difference.end(); it++)
+   // cout << "diff of" << name << *it << endl;
+  return difference;
 }
 
 /* 
@@ -181,9 +205,9 @@ string warehouse::get_name()
 set<string>  warehouse::report_foods_in_stock()
 {
   set<string> s;
-  cout << "the warehouse: " << this->name << endl;
+  //cout << "the warehouse: " << this->name << endl;
   for(map<string, int>::iterator iterator = food_inventory.begin(); iterator != food_inventory.end(); ++iterator) {
-    cout << iterator->first << " :reports_foods_in_stock: " << iterator->second << endl;
+    //cout << iterator->first << " :reports_foods_in_stock: " << iterator->second << endl;
     //if (iterator->second == "4")
     s.insert(iterator->first);
   }
@@ -202,12 +226,12 @@ void warehouse::forward_date(){
 //  for(list<transaction>::iterator it = trans_list.begin(); it != trans_list.end(); it++)
  // {
     
-    cout << (*iterator).get_upc_code() << " is the food in " << name << " with shelflife " << (*iterator).get_shelf_life() << " with quantity " << (*iterator).get_quantity() << endl;
+    //cout << (*iterator).get_upc_code() << " is the food in " << name << " with shelflife " << (*iterator).get_shelf_life() << " with quantity " << (*iterator).get_quantity() << endl;
     // if the shelf life goes to zero or below remove the food_item for inventory
     if ((*iterator).get_shelf_life() <= 0) { 
       map<string,int>::iterator lookup = food_inventory.find((*iterator).get_upc_code());
       if(lookup != food_inventory.end()) {
-        cout << "erase: " << lookup->first << " in " << name << endl;
+     //   cout << "erase: " << lookup->first << " in " << name << endl;
         food_inventory.erase(lookup);
         
       }

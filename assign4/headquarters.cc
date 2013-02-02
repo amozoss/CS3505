@@ -126,7 +126,7 @@ void headquarters::read_data_lines ()
       }
     }
     else if (which_class == "Next") {
-      cout << "----------next-----------" << endl;
+      //cout << "----------next-----------" << endl;
       for(map<string, warehouse>::iterator iterator = warehouses.begin(); iterator != warehouses.end(); iterator++) {
         iterator->second.forward_date();
       }
