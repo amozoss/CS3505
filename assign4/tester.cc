@@ -29,7 +29,8 @@ void test_warehouse();
 void test_transaction();
 void test_food_item();
 void data1_test ();
-headquarters headquarters_test("data1.txt");
+void inventory_test ();
+headquarters headquarters_test("test1.txt");
 
 
 int main ()
@@ -42,17 +43,65 @@ int main ()
  // test_transaction();
  // test_food_item();
  // test_easy_date(pass_count,test_count);
-  data1_test();
-  
+ data1_test();
+// inventory_test(); 
+}
+void inventory_test ()
+{
+  cout << "entering inventory test" << endl;
+  map<string,food_item> food;
+  warehouse w("Ware - Columbus",food);
+
+  cout << endl;
+
+  w.add_transaction("Receive: Hams 7 Columbus");
+  set<string> columbus = w.report_foods_in_stock();
+  cout << "set size: " << columbus.size() << endl;
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl << endl;
+
+  cout << endl;
+
+  w.add_transaction("Receive: Hams 7 Columbus");
+  columbus = w.report_foods_in_stock();
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl << endl;
+
+  cout << endl;
+
+
+  w.add_transaction("Receive: Helper 7 Columbus");
+  columbus = w.report_foods_in_stock();
+  cout << "set size: " << columbus.size() << endl;
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl;
+
+  cout << endl;
+
+  w.add_transaction("Request: Hams 13 Columbus");
+  columbus = w.report_foods_in_stock();
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl;
+
+  cout << endl;
+
+  w.add_transaction("Request: Hams 1 Columbus");
+  columbus = w.report_foods_in_stock();
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl ;
+
+  cout << endl;
+  cout << "end test" << endl;
 }
 
 void data1_test ()
 {
   {
   cout << "entering test" << endl;
-  cout << headquarters_test.get_warehouse("Columbus").get_name() << endl;;
-  set<string> columbus =headquarters_test.get_warehouse("Columbus").report_foods_in_stock();
+  warehouse &w = headquarters_test.get_warehouse("Tacoma");
+  set<string> columbus =w.report_foods_in_stock();
   //w.report_foods_in_stock();
+  cout << "set size: " << columbus.size() << endl;
   for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
     cout << *it << endl;
   cout << "end test" << endl;

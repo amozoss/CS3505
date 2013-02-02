@@ -11,46 +11,27 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
+#include <vector>
 
 transaction::transaction(string s, string date)
 {
+  istringstream iss(s); 
+  vector<string> tokens;
+  copy(istream_iterator<string>(iss),
+      istream_iterator<string>(),
+      back_inserter<vector<string> >(tokens));
 
   // Determine if receive or request.
-  if(s[2] == 'c')
+  if(tokens[0][2] == 'c')
     this->type_of_transaction = receive;
   else
     this->type_of_transaction = request;
 
-  // Remove transaction type from string.
-  for(int i = 0; i < s.length(); i++)
-  {
-
-    if(s[i] == ' ')
-    {
-      s = s.substr(i + 1, s.npos);
-      break;
-    }
-  }
-
-
-  // Assign upc code to upc_code
-  for(int i = 0; i < s.length(); i++)
-  {
-    if(s[i] == ' ')
-    {
-      this->upc_code = s.substr(0, i);
-      s = s.substr(i + 1, s.npos);
-      break;
-    }
-  }
-  // Assign quantity to quantity.
-  for(int i = 0; i < s.length(); i++)
-    if(s[i] == ' ')
-    {
-      this->quantity = atoi(s.substr(0, i).c_str());
-      break;
-    }
-  
+  this->upc_code = tokens[1];
+  this->quantity = atoi(tokens[2].c_str());
 /*
   cout << this->upc_code << " is the UPC code." << endl;
   cout << this->quantity << " is the quantity." << endl;

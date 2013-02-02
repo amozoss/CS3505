@@ -23,18 +23,15 @@ food_item::food_item(string item) {
   int loc = item.find( "Name:", 0 );
 
   if( loc != string::npos ) {
-    cout << "Found Omega at " << loc << endl;
     this->name = item.substr(loc+6, string::npos);
-  } else {
-    cout << "Didn't find Omega" << endl;
   }
 
   this->shelf_life = atoi(tokens[7].c_str());
   this->upc_code = tokens[4];
-  cout << this->shelf_life << " is the shelf life.\n";
+/*  cout << this->shelf_life << " is the shelf life.\n";
   cout << this->name << " is the name.\n";
   cout << this->upc_code << " is the UPC code.\n";
-
+*/
 }
 
 /*

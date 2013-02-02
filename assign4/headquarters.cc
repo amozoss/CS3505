@@ -43,10 +43,9 @@ headquarters::headquarters(string file_path)
 /*
  * returns warehouse
  */
-warehouse headquarters::get_warehouse(string wh) 
+warehouse& headquarters::get_warehouse(string wh) 
 {
   map<string,warehouse>::iterator iter = warehouses.find(wh);
-  cout << "searching for " << wh << endl;
  // if(iter != warehouses.end())
  // {
     return  iter->second;
@@ -112,12 +111,12 @@ void headquarters::read_data_lines ()
       //cout << line << endl;
       warehouse wh(line,food_items); // create warehouse and then map it
       string name = wh.get_name();
-      cout << "Added warehouse : " << name <<  "00" << endl;
+      cout << "Added warehouse : " << name << endl;
       warehouses.insert ( pair<string,warehouse>(wh.get_name(),wh) );
       
     }
     else if (which_class == "Request:" || which_class == "Receive:") {
-      warehouse w = get_warehouse(parse_warehouse_name(line));
+      warehouse &w = get_warehouse(parse_warehouse_name(line));
       w.add_transaction(line);
     }
     else if (which_class == "Start") {
