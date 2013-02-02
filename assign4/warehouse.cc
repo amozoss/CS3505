@@ -121,7 +121,7 @@ void warehouse::add_transaction(string trans)
  * Goes through all transactions by date and determines which date
  * had the most transactions. It returns the transaction quantity.
  * If two or more days have the same amount of transactions it returns 
- * the first one.
+ * a later date.
  */
 string warehouse::report_busiest_day()
 {
@@ -140,9 +140,9 @@ string warehouse::report_busiest_day()
     }
     else
     {
-      // If it isn't, check to see if c_quantity is greater than b_quantity.
+      // If it isn't, check to see if c_quantity is greater than or equal to b_quantity.
       //    If it is, assign it to b_quantity and assign current date to busiest date.
-      if(c_quantity > b_quantity)
+      if(c_quantity >= b_quantity)
       {
         busiest_date = current_date;
         b_quantity = c_quantity;
@@ -151,7 +151,7 @@ string warehouse::report_busiest_day()
       c_quantity = 0;
     }
   }
-
+  return this->name + " " + busiest_date + " " + convert_int_to_str(c_quantity);
 }
 
 /*
