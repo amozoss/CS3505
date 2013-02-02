@@ -20,7 +20,20 @@ warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
   copy(istream_iterator<string>(iss),
       istream_iterator<string>(),
       back_inserter<vector<string> >(tokens));
-  foods = food_map;
+  //foods = food_map;
+  this->name = tokens[2];
+  list<transaction> w;
+  this->trans_list = w; 
+}
+
+warehouse::warehouse(string warehouse_data, map<string, food_item> * food_map){
+  
+ istringstream iss(warehouse_data); 
+  vector<string> tokens;
+  copy(istream_iterator<string>(iss),
+      istream_iterator<string>(),
+      back_inserter<vector<string> >(tokens));
+  food_ptr = food_map;
   this->name = tokens[2];
   list<transaction> w;
   this->trans_list = w; 
@@ -44,7 +57,8 @@ warehouse::warehouse(const warehouse & other)
     this->food_inventory = other.food_inventory;
     this->name = other.name;
     this->effective_date = other.effective_date;
-    this->foods = other.foods;
+    //    this->foods = other.foods;
+    this->food_ptr = other.food_ptr;
     this->trans_list = other.trans_list;
 
     // Use the overloaded assignment operator to do the work
@@ -68,36 +82,38 @@ void warehouse::add_transaction(string trans)
 {
   // make transaction
   transaction r(trans,this->effective_date.to_str());
-  map<string,food_item>::iterator iter = foods.find(r.get_upc_code());
-  if(iter != foods.end()) {
-    food_item food = iter->second;
-    r.set_shelf_life(food.get_shelf_life());
-  }
-
+  map<string,food_item>::iterator iter = (*food_ptr).find(r.get_upc_code());
+  //foods.find(r.get_upc_code());
+  if(iter != (*food_ptr).end())
+    {                   //foods.end()) {
+      food_item food = iter->second;
+      r.set_shelf_life(food.get_shelf_life());
+    }
+  
   string k = r.get_upc_code();   // key
-   int v = r.get_quantity();   // value
-
+  int v = r.get_quantity();   // value
+  
   map<string,int>::iterator lookup = food_inventory.find(r.get_upc_code());
   if(lookup != food_inventory.end())
-  {
-    // key already exists
-    //  receive adds to quantity, request subtracts
-    //  if the receive transaction shelf life is zero it is expired and should not be added to the 
-    //  total quantity
-   // cout << "found " << k << " in inv " << name << endl;
-    if (r.get_type() == transaction::receive) {
-    //  cout << "adding "  << v << endl;
-      lookup->second += v;
+    {
+      // key already exists
+      //  receive adds to quantity, request subtracts
+      //  if the receive transaction shelf life is zero it is expired and should not be added to the 
+      //  total quantity
+      // cout << "found " << k << " in inv " << name << endl;
+      if (r.get_type() == transaction::receive) {
+	//  cout << "adding "  << v << endl;
+	lookup->second += v;
+      }
+      else {
+	lookup->second -= v;
+	//cout << "subtracting " << v << endl;
+	if (lookup->second <= 0) // if the quantity falls to zero remove food from inventory
+	  food_inventory.erase(lookup); 
+      }
     }
-    else {
-      lookup->second -= v;
-      //cout << "subtracting " << v << endl;
-      if (lookup->second <= 0) // if the quantity falls to zero remove food from inventory
-        food_inventory.erase(lookup); 
-    }
-  }
   else
-  {
+    {
     // the key does not exist in the map
     // add it to the map
    // cout << "didn't find "<< k << " in " << name << " " << transaction::receive << endl;
@@ -120,6 +136,34 @@ void warehouse::add_transaction(string trans)
  */
 string warehouse::report_busiest_day()
 {
+  string current_date = "";//trans_list.front().get_date();
+  string busiest_date = "";//trans_list.front().get_date();
+
+  int c_quantity = 0;          // Current day's quantity.
+  int b_quantity = 0;          // Busiest day's quantity.
+  // while(!trans_q.empty())
+  for(list<string>::iterator date_it = dates.begin(); date_it != dates.end(); date_it++)
+  {
+    //transaction t = trans_q.front();
+    //trans_q.pop();
+    current_date = *date_it;
+    for(list<transaction>::iterator find_dates = trans_list.begin(); find_dates != trans_list.end(); find_dates++)
+      {
+	transaction t = *find_dates;
+	if(current_date == t.get_date())
+	  {
+	    c_quantity += t.get_quantity();
+	    //cout << " _________________" << t.get_quantity() << endl;
+	  }
+
+      }
+    if(c_quantity >= b_quantity)
+      {
+	busiest_date = current_date;
+	b_quantity = c_quantity;
+      }  
+    c_quantity = 0;
+  /*
   string current_date = "";//trans_list.front().get_date();
   string busiest_date = "";//trans_list.front().get_date();
 
@@ -154,6 +198,9 @@ string warehouse::report_busiest_day()
     cout << "___________" << endl;
   }
   return this->name + " " + busiest_date + " " + convert_int_to_str(c_quantity);
+*/
+  }
+  return this->name + " " + busiest_date + " " + convert_int_to_str(b_quantity);
 }
 
 /*
@@ -167,7 +214,8 @@ set<string> warehouse::report_food_deficit()
   set<string> s1 = report_foods_in_stock();
   set<string> default_set;
   //and you want to get the set of elements that are in one but not the other, you can use std::set_difference:
-  for(map<string, food_item>::iterator food_it = foods.begin(); food_it != foods.end(); food_it++)
+  for(map<string, food_item>::iterator food_it = (*food_ptr).begin();food_it != (*food_ptr).end(); food_it++)
+	// foods.begin(); food_it != foods.end(); food_it++)
   {
     //deficit_array[i] = (food_it->first);
     default_set.insert(food_it->first);
@@ -233,7 +281,7 @@ void warehouse::forward_date(){
     }
     (*iterator).dec_shelf_life();
   }
-  this->effective_date.next_date();
+  dates.push_back(this->effective_date.next_date());
 }
 
 /* 
@@ -242,6 +290,7 @@ void warehouse::forward_date(){
 void warehouse::set_start_date(string date) 
 {
   this->effective_date = easy_date(date);
+  dates.push_back(effective_date.to_str());
 }
 
 

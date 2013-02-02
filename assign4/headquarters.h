@@ -32,6 +32,7 @@ class headquarters
   ~headquarters();
   void generate_report ();
   warehouse& get_warehouse(string);
+  map<string, food_item> get_foods();
 
  private:
 

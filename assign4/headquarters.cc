@@ -61,6 +61,11 @@ warehouse& headquarters::get_warehouse(string wh)
  // return ww;
 }
 
+map<string, food_item> headquarters::get_foods()
+{
+  return food_items;
+}
+
 string parse_start_date(string line)
 {
  istringstream iss(line); 
@@ -111,7 +116,8 @@ void headquarters::read_data_lines ()
     }
     else if (which_class == "Warehouse") {
       //cout << line << endl;
-      warehouse wh(line,food_items); // create warehouse and then map it
+      //warehouse wh(line,food_items); // create warehouse and then map it
+      warehouse wh(line, &food_items);
       string name = wh.get_name();
       //cout << "Added warehouse : " << name << endl;
       warehouses.insert ( pair<string,warehouse>(wh.get_name(),wh) );

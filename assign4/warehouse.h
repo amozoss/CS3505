@@ -24,17 +24,20 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
+#include <queue>
 
 using namespace std;
-
+//
 class warehouse{
  public:
   warehouse(string warehouse_data, map<string, food_item> );
+  warehouse(string warehouse_data, map<string, food_item> * ptr);
   warehouse();
   warehouse(const warehouse & other); // Copy constructor
   ~warehouse();
 
   void add_transaction(string trans); 
+  //void add_transaction(string, map<string, food_item>);
   string report_busiest_day();        // Returns name, date and transaction quantity of busiest day.
   set<string> report_food_deficit(); // UPC numbers of foods out of stock
   set<string> report_foods_in_stock(); // UPC numbers of the foods in stock
@@ -46,10 +49,12 @@ class warehouse{
  private:
   string name;
   easy_date effective_date;   // If a request/receive is given, this is the date is happened on.
-  map<string, food_item> foods; // copies in the whole food map, simply avoid the hassle of pointers
+  map<string, food_item>* food_ptr;
+  //map<string, food_item> foods; // copies in the whole food map, simply avoid the hassle of pointers
   string convert_int_to_str(int);
   string convert_char_to_str(char);
-  list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
-
+    list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
+    //  queue<transaction> trans_q;    // trans_q is a queue of all transactions of the warehouse. Used to keep the order of transactions.
+    list<string> dates; // A list of all the dates this warehouse operated. 
 };
 #endif
