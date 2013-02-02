@@ -13,14 +13,15 @@
  */
 warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
   
- istringstream iss(warehouse_data); 
+  istringstream iss(warehouse_data); 
   vector<string> tokens;
   copy(istream_iterator<string>(iss),
-      istream_iterator<string>(),
-      back_inserter<vector<string> >(tokens));
+       istream_iterator<string>(),
+       back_inserter<vector<string> >(tokens));
+  
   foods = food_map;
   this->name = tokens[2];
-
+  
 }
 
 warehouse::warehouse() 
