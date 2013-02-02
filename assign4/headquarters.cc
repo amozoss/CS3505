@@ -144,6 +144,24 @@ headquarters::~headquarters()
 
 }
 
+/* 
+ * Returns a set of each ware houses busiest day
+ *
+ */
+set<string> headquarters::get_busiest_days()
+{
+  set<string> busy_days;
+  for(map<string, warehouse>::iterator it = warehouses.begin();
+      it != warehouses.end(); it++)
+  {
+    warehouse w = it->second;
+    busy_days.insert(w.report_busiest_day());
+  }
+  return busy_days;
+}
+
+
+
 /*
  * Gets the food_items that are in every warehouse
  */
@@ -230,6 +248,14 @@ void headquarters::generate_report(){
     cout << (*set_it) <<" " <<  food_items[(*set_it)].get_name() << endl;
   }
 
+  cout << endl;
+  cout << "Busiest Days" << endl;
+
+  set<string> busiest = get_busiest_days();
+  for( set<string>::iterator set_it = busiest.begin(); set_it != busiest.end(); set_it++)
+  {
+    cout << (*set_it) << endl;
+  }
   /*
     Don't print out any other information, such as expiration dates, warehouse names, or quantities. 
     Just list the products (no duplicates) that are absent from every warehouse.

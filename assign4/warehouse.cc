@@ -46,7 +46,6 @@ warehouse::warehouse(const warehouse & other)
     this->effective_date = other.effective_date;
     this->foods = other.foods;
     this->trans_list = other.trans_list;
-    this->iter = other.iter;
 
     // Use the overloaded assignment operator to do the work
     //   of copying the parameter's elements into this object.
@@ -121,17 +120,21 @@ void warehouse::add_transaction(string trans)
  */
 string warehouse::report_busiest_day()
 {
-  string current_date = "";
-  string busiest_date = "";
+  string current_date = trans_list.front().get_date();
+  string busiest_date = trans_list.front().get_date();
+
   int c_quantity = 0;          // Current day's quantity.
   int b_quantity = 0;          // Busiest day's quantity.
-  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
+  for(list<transaction>::iterator iter = trans_list.begin(); iter != trans_list.end(); iter++)
   {
     transaction t = *iter;
+
+    cout << current_date.to_str() << " " << busiest_date << endl;
     // Check to see if date is the same as yesterday.
     // If it is, add the transactions quantity to the current day's quantity.
     if(current_date == t.get_date())
     {
+    //  cout << "equals " << name << endl;
       c_quantity += t.get_quantity();
     }
     else
@@ -140,14 +143,17 @@ string warehouse::report_busiest_day()
       //    If it is, assign it to b_quantity and assign current date to busiest date.
       if(c_quantity >= b_quantity)
       {
-        busiest_date = current_date;
+   //     cout << "new busiest day " << busiest_date << endl;
+        busiest_date = current_date.to_str();
         b_quantity = c_quantity;
       }
       current_date = t.get_date();
       c_quantity = 0;
     }
+    
+    cout << "___________" << endl;
   }
-  return this->name + " " + busiest_date + " " + convert_int_to_str(c_quantity);
+  return this->name + " " + busiest_date + " " + convert_int_to_str(b_quantity);
 }
 
 /*
