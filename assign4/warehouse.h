@@ -24,9 +24,10 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
+#include <queue>
 
 using namespace std;
-
+//
 class warehouse{
  public:
   warehouse(string warehouse_data, map<string, food_item> );
@@ -49,7 +50,8 @@ class warehouse{
   map<string, food_item> foods; // copies in the whole food map, simply avoid the hassle of pointers
   string convert_int_to_str(int);
   string convert_char_to_str(char);
-  list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
-
+    list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
+    //  queue<transaction> trans_q;    // trans_q is a queue of all transactions of the warehouse. Used to keep the order of transactions.
+    list<string> dates; // A list of all the dates this warehouse operated.
 };
 #endif
