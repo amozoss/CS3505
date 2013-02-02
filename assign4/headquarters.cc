@@ -6,10 +6,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <algorithm>
-<<<<<<< HEAD
-=======
 #include <iterator>
->>>>>>> d9b2f5e50fe9dc7ea2f3f860ac551b861de526bb
 #include <vector>
 
 headquarters::headquarters(string file_path)
@@ -180,7 +177,7 @@ void headquarters::generate_report(){
   set<string> difference;
   map<string, warehouse>::iterator it = warehouses.begin();
 
-  // Put all warehouse deficit items into one set.
+  // Find the intersection between the default set and the set of elements that are missing.
   for(; it != warehouses.end(); it++)
     {
       warehouse w = it->second;
@@ -188,34 +185,26 @@ void headquarters::generate_report(){
       std::set_intersection(deficit_set.begin(), deficit_set.end(), out_of.begin(), out_of.end(), inserter(deficit_set, deficit_set.begin()));
     }
 
+  //Print the upc code and the name of the food.
+  for( set<string>::iterator set_it = deficit_set.begin(); set_it != deficit_set.end(); set_it++)
+    {
+      cout << (*set_it) << food_items[(*set_it)].get_name() << endl;
+    }
 
 
+  cout << endl;
+  cout << "Fully-Stocked Products:" << endl;
+  set<string> surplus = default_set;
 
-  int first[] = {5,10,15,20,25};
-  int second[] = {50,40,30,20,10};
-  std::vector<int> v(10);                      // 0  0  0  0  0  0  0  0  0  0
-  std::vector<int>::iterator ite;
-
-  std::sort (first,first+5);     //  5 10 15 20 25
-  std::sort (second,second+5);   // 10 20 30 40 50
-
-  ite=std::set_intersection (first, first+5, second, second+5, v.begin());
-                                               // 10 20 0  0  0  0  0  0  0  0
-  v.resize(ite-v.begin());                      // 10 20
-  for (ite=v.begin(); ite!=v.end(); ++ite)
-    std::cout << ' ' << *ite;
-  std::cout << '\n';
+  for(it = warehouses.begin(); it != warehouses.end(); it++)
+    {
+      warehouse w = it->second;
+      set<string> in_stock = w.report_foods_in_stock();
+      std::set_intersection(surplus.begin(), surplus.end(), in_stock.begin(), in_stock.end(), inserter(surplus, surplus.begin()));
+    }
 
 
   /*
-    Determine which products do not exist in any warehouse..  On a single line, print out "Unstocked Products:". 
-    On the following lines, print out a list of the products that do not exist in any warehouse (in any order,
-    no duplicates).  For each food item, only print out its UPC and name, as follows:
-
-    Unstocked Products:
-    0984713912 pizza
-    0278374752 bagels
-
     Don't print out any other information, such as expiration dates, warehouse names, or quantities. 
     Just list the products (no duplicates) that are absent from every warehouse.
 
