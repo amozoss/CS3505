@@ -35,8 +35,21 @@ headquarters headquarters_test("data1.txt");
 headquarters headquarters_data2("data2.txt");
 
 
-int main ()
+int main (int argc, char* argv[])
 {
+  // Check console parameter count
+  if (argc != 2) {
+    cout << "Invalid number of parameters.\n";
+    return 0;
+  } 
+  string filepath;
+  filepath =  argv[1];
+  headquarters head(filepath);
+
+
+  // generate the report
+  head.generate_report();
+  return 0;
 
   int pass_count = 0; // keeps track of how many tests passed
   int test_count = 0; // total number of tests   
@@ -45,8 +58,10 @@ int main ()
  // test_transaction();
  // test_food_item();
  // test_easy_date(pass_count,test_count);
+
  //data1_test();
  //data2_test();
+
 // inventory_test(); 
 }
 void inventory_test ()
