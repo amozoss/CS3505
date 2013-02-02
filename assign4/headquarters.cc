@@ -155,23 +155,23 @@ headquarters::~headquarters()
  */
 set<string> headquarters::get_stocked_products(set<string> default_set)
 {
-  // get all the stocked products in all warehouse, the difference is the unstocked
-  set<string> all_of_stocked;
+  // get all the unstocked products in all warehouse, the difference is the stocked
+  set<string> all_of_unstocked;
   for(map<string, warehouse>::iterator it = warehouses.begin();
       it != warehouses.end(); it++)
   {
     warehouse w = it->second;
-    set<string> w_deficit = w.report_food_deficit();
-    for( set<string>::iterator set_it = w_deficit.begin(); set_it != w_deficit.end(); set_it++)
+    set<string> surplus = w.report_food_deficit();
+    for( set<string>::iterator set_it = surplus.begin(); set_it != surplus.end(); set_it++)
     {
-      all_of_stocked.insert((*set_it));
+      all_of_unstocked.insert((*set_it));
     }
   }
   //for (set<string>::iterator it = all_of_stocked.begin(); it != all_of_stocked.end(); it++)
     //cout << "Inv of"  << *it << endl;
   set<string> difference;
   set_difference(default_set.begin(), default_set.end(),
-      all_of_stocked.begin(), all_of_stocked.end(),
+      all_of_unstocked.begin(), all_of_unstocked.end(),
       inserter(difference, difference.begin()));
  // for (set<string>::iterator it = difference.begin(); it != difference.end(); it++)
    // cout << "diff of" << *it << endl;
