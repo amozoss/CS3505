@@ -104,14 +104,14 @@ void headquarters::read_data_lines ()
     }
     if (which_class == "FoodItem") {
       food_item food(line); // use the class to parse the string, and then store them in the map,
-      cout << "Added food item: " <<food.get_name() << endl;
+      //cout << "Added food item: " <<food.get_name() << endl;
       food_items.insert ( pair<string,food_item>(food.get_UPC(),food) );
     }
     else if (which_class == "Warehouse") {
       //cout << line << endl;
       warehouse wh(line,food_items); // create warehouse and then map it
       string name = wh.get_name();
-      cout << "Added warehouse : " << name << endl;
+      //cout << "Added warehouse : " << name << endl;
       warehouses.insert ( pair<string,warehouse>(wh.get_name(),wh) );
       
     }
@@ -150,9 +150,69 @@ headquarters::~headquarters()
 
 }
 
+/*
+ * Gets the food_items that are in every warehouse
+ */
+set<string> headquarters::get_stocked_products(set<string> default_set)
+{
+  // get all the stocked products in all warehouse, the difference is the unstocked
+  set<string> all_of_stocked;
+  for(map<string, warehouse>::iterator it = warehouses.begin();
+      it != warehouses.end(); it++)
+  {
+    warehouse w = it->second;
+    set<string> w_deficit = w.report_food_deficit();
+    for( set<string>::iterator set_it = w_deficit.begin(); set_it != w_deficit.end(); set_it++)
+    {
+      all_of_stocked.insert((*set_it));
+    }
+  }
+  //for (set<string>::iterator it = all_of_stocked.begin(); it != all_of_stocked.end(); it++)
+    //cout << "Inv of"  << *it << endl;
+  set<string> difference;
+  set_difference(default_set.begin(), default_set.end(),
+      all_of_stocked.begin(), all_of_stocked.end(),
+      inserter(difference, difference.begin()));
+ // for (set<string>::iterator it = difference.begin(); it != difference.end(); it++)
+   // cout << "diff of" << *it << endl;
+  return difference;
+}
+
+/*
+ * Gets the food items absent in every warehouse
+ */
+set<string> headquarters::get_unstocked_products(set<string> default_set)
+{
+  // get all the stocked products in all warehouse, the difference is the unstocked
+  set<string> all_of_stocked;
+  for(map<string, warehouse>::iterator it = warehouses.begin();
+      it != warehouses.end(); it++)
+  {
+    warehouse w = it->second;
+    set<string> w_deficit = w.report_foods_in_stock();
+    for( set<string>::iterator set_it = w_deficit.begin(); set_it != w_deficit.end(); set_it++)
+    {
+      all_of_stocked.insert((*set_it));
+    }
+  }
+  //for (set<string>::iterator it = all_of_stocked.begin(); it != all_of_stocked.end(); it++)
+   // cout << "Inv of"  << *it << endl;
+  set<string> difference;
+  set_difference(default_set.begin(), default_set.end(),
+      all_of_stocked.begin(), all_of_stocked.end(),
+      inserter(difference, difference.begin()));
+  return difference;
+}
 
 
 void headquarters::generate_report(){
+  // Create a set of all the UPC codes.
+  set<string> default_set;
+
+  for(map<string, food_item>::iterator food_it = food_items.begin(); food_it != food_items.end(); food_it++) {
+    default_set.insert(food_it->first);
+  }
+
   /*On a single line, print out the title: "Report by " followed by your names.
    *Print a single blank line following the title.
    */
@@ -160,55 +220,22 @@ void headquarters::generate_report(){
 
   // On a single line, print out "Unstocked Products:".
   cout << "Unstocked Products:" << endl;
-
-  // Create a set of all the UPC codes.
-  set<string> default_set;
-  
-  // for(int i = 0; i < food_items.size(); i++)
-  //{
-  //  default_set.insert(food_items[i].get_upc_code());
-  //}
-
-  //string * deficit_array = new string[food_items.size()];
-  int i = 0;
-  for(map<string, food_item>::iterator food_it = food_items.begin(); food_it != food_items.end(); food_it++)
-    {
-      //deficit_array[i] = (food_it->first);
-      default_set.insert(food_it->first);
-      //i++;
-    }
-
-  
-  set<string> deficit_set = default_set;    // Will hold all upc codes that are out in a particular warehouse
-  set<string> difference;
-  map<string, warehouse>::iterator it = warehouses.begin();
-
-  // Find the intersection between the default set and the set of elements that are missing.
-  for(; it != warehouses.end(); it++)
-    {
-      warehouse w = it->second;
-      set<string> out_of = w.report_food_deficit();
-      std::set_intersection(deficit_set.begin(), deficit_set.end(), out_of.begin(), out_of.end(), inserter(deficit_set, deficit_set.begin()));
-    }
+  set<string> unstocked = get_unstocked_products(default_set);
 
   //Print the upc code and the name of the food.
-  for( set<string>::iterator set_it = deficit_set.begin(); set_it != deficit_set.end(); set_it++)
-    {
-      cout << (*set_it) << food_items[(*set_it)].get_name() << endl;
-    }
-
-
+  for( set<string>::iterator set_it = unstocked.begin(); set_it != unstocked.end(); set_it++)
+  {
+    cout << (*set_it) << " " << food_items[(*set_it)].get_name() << endl;
+  }
   cout << endl;
   cout << "Fully-Stocked Products:" << endl;
-  set<string> surplus = default_set;
+  set<string> stocked = get_stocked_products(default_set);
 
-  for(it = warehouses.begin(); it != warehouses.end(); it++)
-    {
-      warehouse w = it->second;
-      set<string> in_stock = w.report_foods_in_stock();
-      std::set_intersection(surplus.begin(), surplus.end(), in_stock.begin(), in_stock.end(), inserter(surplus, surplus.begin()));
-    }
-
+  //Print the upc code and the name of the food.
+  for( set<string>::iterator set_it = stocked.begin(); set_it != stocked.end(); set_it++)
+  {
+    cout << (*set_it) <<" " <<  food_items[(*set_it)].get_name() << endl;
+  }
 
   /*
     Don't print out any other information, such as expiration dates, warehouse names, or quantities. 
