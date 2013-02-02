@@ -125,6 +125,12 @@ void headquarters::read_data_lines ()
         iterator->second.set_start_date(start_date);
       }
     }
+    else if (which_class == "Next") {
+      cout << "----------next-----------" << endl;
+      for(map<string, warehouse>::iterator iterator = warehouses.begin(); iterator != warehouses.end(); iterator++) {
+        iterator->second.forward_date();
+      }
+    }
 
   }
 }
