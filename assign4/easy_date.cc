@@ -14,6 +14,9 @@
 
 using namespace std;
 
+/*
+ * Constructs an easy date from string
+ */
 easy_date::easy_date(string start_date)
 {
   day = atof(start_date.substr(3, 2).c_str());
@@ -31,6 +34,8 @@ easy_date::~easy_date()
 
 }
 
+/* Increments the date by one day
+ */
 string easy_date::next_date()
 {
   int temp_date = day;

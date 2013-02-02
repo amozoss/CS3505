@@ -1,6 +1,8 @@
 /* 
  * warehouse.h
- * Warehouse file comment
+ * 
+ * A warehouse keeps manages transactions, shelf lives of food, and reports foods in stock
+ * or foods in deficit
  *
  * Dan Willoughby and Michael Banks
  */

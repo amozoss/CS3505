@@ -1,6 +1,7 @@
 /* headquarters.h
  *
- * Headquarters class generates reports
+ *
+ * Headquarters class generates reports and manages warehouses
  * Authors: Michael Banks and Dan Willoughby
  *
  */

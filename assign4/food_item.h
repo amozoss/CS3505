@@ -1,5 +1,7 @@
 /*
  *food_item.h
+ *
+ * Food items have a UPC, name, and shelf life
  */
 #ifndef FOOD_ITEM
 #define FOOD_ITEM
@@ -15,7 +17,6 @@ public:
   ~food_item();
   string get_UPC();
   string get_name();
- void dec_shelf_life();
   int get_shelf_life();
 private:
   string upc_code;

@@ -1,5 +1,6 @@
 /*
  * headquarters.cc
+ *
  * Authors: Michael Banks and Dan Willoughby
  */
 #include "headquarters.h"
@@ -9,6 +10,9 @@
 #include <iterator>
 #include <vector>
 
+/*
+ * Constructs the headquarters, reads the data in from file 
+ */
 headquarters::headquarters(string file_path)
 {
   ifstream in(file_path.c_str());
@@ -67,9 +71,6 @@ string parse_start_date(string line)
   return tokens[2];
 }
 
-
-
-
 string parse_warehouse_name(string line)
 {
  istringstream iss(line); 
@@ -102,6 +103,7 @@ void headquarters::read_data_lines ()
         break;
       }
     }
+
     if (which_class == "FoodItem") {
       food_item food(line); // use the class to parse the string, and then store them in the map,
       //cout << "Added food item: " <<food.get_name() << endl;
@@ -113,7 +115,6 @@ void headquarters::read_data_lines ()
       string name = wh.get_name();
       //cout << "Added warehouse : " << name << endl;
       warehouses.insert ( pair<string,warehouse>(wh.get_name(),wh) );
-      
     }
     else if (which_class == "Request:" || which_class == "Receive:") {
       warehouse &w = get_warehouse(parse_warehouse_name(line));
@@ -131,22 +132,15 @@ void headquarters::read_data_lines ()
         iterator->second.forward_date();
       }
     }
-
   }
 }
     
-
-
-
 headquarters::headquarters() {
 
 }
 
-
-
 headquarters::~headquarters()
 {
-
 
 }
 
@@ -203,7 +197,6 @@ set<string> headquarters::get_unstocked_products(set<string> default_set)
       inserter(difference, difference.begin()));
   return difference;
 }
-
 
 void headquarters::generate_report(){
   // Create a set of all the UPC codes.

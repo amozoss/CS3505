@@ -14,14 +14,20 @@
 #include <iterator>
 #include <vector>
 // implementation
+/*
+ * Pares the item string and constructs a food item
+ */
 food_item::food_item(string item) {
+  // split the string
  istringstream iss(item); 
   vector<string> tokens;
   copy(istream_iterator<string>(iss),
       istream_iterator<string>(),
       back_inserter<vector<string> >(tokens));
+
   int loc = item.find( "Name:", 0 );
 
+  // Get the name
   if( loc != string::npos ) {
     this->name = item.substr(loc+6, string::npos);
   }
@@ -50,14 +56,7 @@ food_item::~food_item()
 
 
 }
-/*
- * Subtracts one from the shelf life of the food. Stops when shelf life equals 0.
- */
-void food_item::dec_shelf_life()
-{
-  if(this->shelf_life > 0)
-    this->shelf_life--;
-}
+
 /*
  * Returns the upc code of the food.
  */
