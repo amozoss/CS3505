@@ -106,6 +106,7 @@ void warehouse::add_transaction(string trans)
      // cout << "added item "<< k << " to " << this->name << " quant: " << v << endl;
     }
   }
+  trans_q.push(r);
   trans_list.push_back(r); // keep track of transaction
   //cout << "add: " << r.get_upc_code() << endl;
 }
@@ -125,16 +126,16 @@ string warehouse::report_busiest_day()
 
   int c_quantity = 0;          // Current day's quantity.
   int b_quantity = 0;          // Busiest day's quantity.
-  for(list<transaction>::iterator iter = trans_list.begin(); iter != trans_list.end(); iter++)
+  for(int i = 0; i < trans_q.size(); i++)
   {
-    transaction t = *iter;
+    transaction t = trans_q.front();
+    trans_q.pop();
 
     cout << current_date << " " << busiest_date << endl;
     // Check to see if date is the same as yesterday.
     // If it is, add the transactions quantity to the current day's quantity.
     if(current_date == t.get_date())
     {
-    //  cout << "equals " << name << endl;
       c_quantity += t.get_quantity();
     }
     else
@@ -143,7 +144,6 @@ string warehouse::report_busiest_day()
       //    If it is, assign it to b_quantity and assign current date to busiest date.
       if(c_quantity >= b_quantity)
       {
-   //     cout << "new busiest day " << busiest_date << endl;
         busiest_date = current_date;
         b_quantity = c_quantity;
       }

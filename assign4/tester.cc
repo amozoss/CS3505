@@ -41,12 +41,12 @@ int main ()
   int pass_count = 0; // keeps track of how many tests passed
   int test_count = 0; // total number of tests   
 
- // test_warehouse();
+  test_warehouse();
  // test_transaction();
  // test_food_item();
  // test_easy_date(pass_count,test_count);
- data1_test();
- data2_test();
+ //data1_test();
+ //data2_test();
 // inventory_test(); 
 }
 void inventory_test ()
@@ -272,7 +272,6 @@ void test_easy_date(int pass_count, int test_count)
       break;
     }
 
-
     //test easy dates
     easy_date date(line);
     //cout << line << endl;
@@ -297,10 +296,25 @@ void test_easy_date(int pass_count, int test_count)
 
 void test_warehouse()
 {
+  /*
   map<string, food_item> da_set;
+ // food_item food("FoodItem - UPC Code: 0353264991  Shelf life: 2  Name: chestnut puree with vanilla");
+ // food_item o_food("FoodItem - UPC Code: 0984523912  Shelf life: 1  Name: the orange box");
+  //da_set.insert(pair<string, food_item>(food.get_UPC(), food));
+  // da_set.insert(pair<string, food_item>(o_food.get_UPC(), o_food));
+  
   warehouse w("Tacoma", da_set);
-
-  w.add_transaction("Request: 0984523912  7 Tacoma");
+  //w.set_start_date("05/01/2010");
+  w.add_transaction("Receive: 0353264991 6 ");
+  w.add_transaction("Request: 0984523912 5 ");
+  w.forward_date();
+  w.forward_date();
+  w.forward_date();
+  w.add_transaction("Request: 0984523912 3 ");
+  w.add_transaction("Request: 0353264991 10 ");
+  w.add_transaction("Request: 0984523912 4 ");
+  
+  cout << w.report_busiest_day() << endl;*/
 
 }
 
