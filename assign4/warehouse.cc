@@ -129,7 +129,7 @@ string warehouse::report_busiest_day()
   {
     transaction t = *iter;
 
-    cout << current_date << " " << busiest_date << endl;
+    cout << t.get_date() << " " << busiest_date << endl;
     // Check to see if date is the same as yesterday.
     // If it is, add the transactions quantity to the current day's quantity.
     if(current_date == t.get_date())
