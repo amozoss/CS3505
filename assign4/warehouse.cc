@@ -153,7 +153,7 @@ string warehouse::report_busiest_day()
     
     cout << "___________" << endl;
   }
-  return this->name + " " + busiest_date + " " + convert_int_to_str(b_quantity);
+  return this->name + " " + busiest_date + " " + convert_int_to_str(c_quantity);
 }
 
 /*
