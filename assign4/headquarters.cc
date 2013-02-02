@@ -3,7 +3,13 @@
  * Authors: Michael Banks and Dan Willoughby
  */
 #include "headquarters.h"
+#include <cstdlib>
+#include <sstream>
 #include <algorithm>
+<<<<<<< HEAD
+=======
+#include <iterator>
+>>>>>>> d9b2f5e50fe9dc7ea2f3f860ac551b861de526bb
 #include <vector>
 
 headquarters::headquarters(string file_path)
@@ -43,36 +49,26 @@ headquarters::headquarters(string file_path)
 warehouse headquarters::get_warehouse(string wh) 
 {
   map<string,warehouse>::iterator iter = warehouses.find(wh);
-  warehouse w;
-  if(iter != warehouses.end())
-  {
-    w =  iter->second;
-    cout << "found warehouse" << endl;
-  }
-  cout << "finished searching" << endl;
-  return w;
+  cout << "searching for " << wh << endl;
+ // if(iter != warehouses.end())
+ // {
+    return  iter->second;
+   // cout << "found warehouse" << endl;
+ // }
+ // cout << "finished searching" << endl;
+ // string s = "ji";
+ // warehouse ww;
+ // return ww;
 }
 
 string parse_start_date(string line)
 {
-
-  // Get the start date
-  // That is 2 spaces.
-  string date;
-  for(int i = 0, ws_counter = 0; i < line.length(); i++)
-  {
-    if(line[i] == ' ')
-    {
-      ws_counter++;
-      if(ws_counter == 2)
-      {
-        date = line.substr(i + 1, line.npos);
-        cout << "start: " << date << endl;
-        break;
-      }
-    }
-  }
-  return date;
+ istringstream iss(line); 
+  vector<string> tokens;
+  copy(istream_iterator<string>(iss),
+      istream_iterator<string>(),
+      back_inserter<vector<string> >(tokens));
+  return tokens[2];
 }
 
 
@@ -80,24 +76,12 @@ string parse_start_date(string line)
 
 string parse_warehouse_name(string line)
 {
-
-  // Get the name of the warehouse from transaction.
-  // That is 3 spaces.
-  string warehouse_name;
-  for(int i = 0, ws_counter = 0; i < line.length(); i++)
-  {
-    if(line[i] == ' ')
-    {
-      ws_counter++;
-      if(ws_counter == 3)
-      {
-        warehouse_name = line.substr(i + 1, line.npos);
-        //        cout << "warehouse: " << warehouse_name << endl;
-        break;
-      }
-    }
-  }
-  return warehouse_name;
+ istringstream iss(line); 
+  vector<string> tokens;
+  copy(istream_iterator<string>(iss),
+      istream_iterator<string>(),
+      back_inserter<vector<string> >(tokens));
+  return tokens[3];
 }
 
 /* 
@@ -137,7 +121,6 @@ void headquarters::read_data_lines ()
     }
     else if (which_class == "Request:" || which_class == "Receive:") {
       warehouse w = get_warehouse(parse_warehouse_name(line));
-      //cout << w.get_name() << endl;
       w.add_transaction(line);
     }
     else if (which_class == "Start") {
@@ -258,8 +241,7 @@ void headquarters::generate_report(){
     Nome 12/24/2007 1827364
     Barstow 10/01/2006 12
 
+*/
 
-
-   */
 
 }
