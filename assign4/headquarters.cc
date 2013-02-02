@@ -161,8 +161,8 @@ set<string> headquarters::get_stocked_products(set<string> default_set)
       it != warehouses.end(); it++)
   {
     warehouse w = it->second;
-    set<string> surplus = w.report_food_deficit();
-    for( set<string>::iterator set_it = surplus.begin(); set_it != surplus.end(); set_it++)
+    set<string> w_deficit = w.report_food_deficit();
+    for( set<string>::iterator set_it = w_deficit.begin(); set_it != w_deficit.end(); set_it++)
     {
       all_of_unstocked.insert((*set_it));
     }
