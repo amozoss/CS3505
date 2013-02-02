@@ -13,15 +13,15 @@
  */
 warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
   
-  istringstream iss(warehouse_data); 
+ istringstream iss(warehouse_data); 
   vector<string> tokens;
   copy(istream_iterator<string>(iss),
-       istream_iterator<string>(),
-       back_inserter<vector<string> >(tokens));
-  
+      istream_iterator<string>(),
+      back_inserter<vector<string> >(tokens));
   foods = food_map;
   this->name = tokens[2];
-  
+  list<transaction> w;
+  this->trans_list = w; 
 }
 
 warehouse::warehouse() 
@@ -69,26 +69,24 @@ void warehouse::add_transaction(string trans)
   
     food_item food = iter->second;
     r.set_shelf_life(food.get_shelf_life());
-  //  cout << "found food with shelf life: " << food.get_shelf_life() << endl;
+    //cout << "found food with shelf life: " << food.get_shelf_life() << endl;
   }
 
   string k = r.get_upc_code();   // key
    int v = r.get_quantity();   // value
 
-  //food_inventory[k]=v;
-  //typedef map<string, food_item> MapType;    // Your map type may vary, just change the typedef
-  //MapType::iterator lookup = this->food_inventory.lower_bound(k);
+   //map<string, int>::iterator lookup = food_inventory.lower_bound(k);
 
+   //if(lookup != food_inventory.end() && !(food_inventory.key_comp()(k, lookup->first))) 
   map<string,int>::iterator lookup = food_inventory.find(r.get_upc_code());
   if(lookup != food_inventory.end())
-  //if(lookup != food_inventory.end() && !(food_inventory.key_comp()(k, lookup->first)))
   {
     // key already exists
     // update lb->second if you care to
     //  receive adds to quantity, request subtracts
     //  if the receive transaction shelf life is zero it is expired and should not be added to the 
     //  total quantity
-    cout << "found " << k << " in inv" << endl;
+   // cout << "found " << k << " in inv " << name << endl;
     if (r.get_type() == transaction::receive) {
     //  cout << "adding "  << v << endl;
       lookup->second += v;
@@ -112,7 +110,9 @@ void warehouse::add_transaction(string trans)
     }
   }
 
+  
   trans_list.push_back(r);
+  //cout << "add: " << r.get_upc_code() << endl;
 }
 
 /*
@@ -157,7 +157,7 @@ set<string>  warehouse::report_foods_in_stock()
 {
   set<string> s;
   cout << "the warehouse: " << this->name << endl;
-  for(map<string, int>::iterator iterator = food_inventory.begin(); iterator != food_inventory.end(); iterator++) {
+  for(map<string, int>::iterator iterator = food_inventory.begin(); iterator != food_inventory.end(); ++iterator) {
     cout << iterator->first << " :reports_foods_in_stock: " << iterator->second << endl;
     //if (iterator->second == "4")
     s.insert(iterator->first);
@@ -171,14 +171,27 @@ set<string>  warehouse::report_foods_in_stock()
  * This function is called when it is the next day.
  */
 void warehouse::forward_date(){
-  for(iter = trans_list.begin(); iter != trans_list.end(); iter++)
-    {
-      (*iter).dec_shelf_life();
+
+  for (list<transaction>::iterator iterator = trans_list.begin(), end = trans_list.end(); iterator != end; ++iterator) {
+
+//  for(list<transaction>::iterator it = trans_list.begin(); it != trans_list.end(); it++)
+ // {
+    
+    cout << (*iterator).get_upc_code() << " is the food in " << name << " with shelflife " << (*iterator).get_shelf_life() << " with quantity " << (*iterator).get_quantity() << endl;
+    // if the shelf life goes to zero or below remove the food_item for inventory
+    if ((*iterator).get_shelf_life() <= 0) { 
+      map<string,int>::iterator lookup = food_inventory.find((*iterator).get_upc_code());
+      if(lookup != food_inventory.end()) {
+        cout << "erase: " << lookup->first << " in " << name << endl;
+        food_inventory.erase(lookup);
+        
+      }
     }
+    (*iterator).dec_shelf_life();
+  }
+  
 
   this->effective_date.next_date();
-
- 
 }
 
 /* 

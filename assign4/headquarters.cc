@@ -6,10 +6,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <algorithm>
-<<<<<<< HEAD
-=======
 #include <iterator>
->>>>>>> d9b2f5e50fe9dc7ea2f3f860ac551b861de526bb
 #include <vector>
 
 headquarters::headquarters(string file_path)
@@ -126,6 +123,12 @@ void headquarters::read_data_lines ()
       string start_date = parse_start_date(line);
       for(map<string, warehouse>::iterator iterator = warehouses.begin(); iterator != warehouses.end(); iterator++) {
         iterator->second.set_start_date(start_date);
+      }
+    }
+    else if (which_class == "Next") {
+      cout << "----------next-----------" << endl;
+      for(map<string, warehouse>::iterator iterator = warehouses.begin(); iterator != warehouses.end(); iterator++) {
+        iterator->second.forward_date();
       }
     }
 
