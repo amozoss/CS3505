@@ -1,6 +1,8 @@
 /* 
  * warehouse.h
- * Warehouse file comment
+ * 
+ * A warehouse keeps manages transactions, shelf lives of food, and reports foods in stock
+ * or foods in deficit
  *
  * Dan Willoughby and Michael Banks
  */
@@ -48,7 +50,6 @@ class warehouse{
   string convert_int_to_str(int);
   string convert_char_to_str(char);
   list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
-  list<transaction>::iterator iter;
 
 };
 #endif

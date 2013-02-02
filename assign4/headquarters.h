@@ -1,6 +1,7 @@
 /* headquarters.h
  *
- * Headquarters class generates reports
+ *
+ * Headquarters class generates reports and manages warehouses
  * Authors: Michael Banks and Dan Willoughby
  *
  */
@@ -39,6 +40,7 @@ class headquarters
   list<string> file_data; // stores all the lines in the data file
   void read_file(string file_path);
   void read_data_lines (); 
+  set<string> get_busiest_days(); // helper method
   set<string> get_stocked_products(set<string>); //helper method
   set<string> get_unstocked_products(set<string>); //helper method
 };

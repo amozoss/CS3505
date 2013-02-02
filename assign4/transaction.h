@@ -32,10 +32,10 @@ public:
   void dec_shelf_life();
 private:
   int type_of_transaction;
-  string upc_code;
-  string the_date;
-  int quantity;
-  int shelf_life;
+  string upc_code; // upc code of food item
+  string the_date; // the date the transaction was made
+  int quantity; // how much of the food item was in the transaction
+  int shelf_life; // the shelf life of the food item in the transaction
 
 };
 #endif

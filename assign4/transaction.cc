@@ -1,11 +1,11 @@
 /*
  * transaction.cc
  * 
- * Authors: Michael Banks and Dan Willoughby
  * A transaction has a UPC code, a date, a quantity, a shelf life
  * and a type of transaction.  A transaction is a record for a type
  * of product at a particular warehouse on a particular date.
  *
+ * Authors: Michael Banks and Dan Willoughby
  */
 #include "transaction.h"
 #include <iostream>
@@ -16,8 +16,12 @@
 #include <iterator>
 #include <vector>
 
+/*
+ * Constructs a transaction from the string with date
+ */
 transaction::transaction(string s, string date)
 {
+  // parse string
   istringstream iss(s); 
   vector<string> tokens;
   copy(istream_iterator<string>(iss),
