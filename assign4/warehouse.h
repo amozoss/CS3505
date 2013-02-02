@@ -56,5 +56,6 @@ class warehouse{
     list<transaction> trans_list;  // trans_list is a list of all transactions of this warehouse.
     //  queue<transaction> trans_q;    // trans_q is a queue of all transactions of the warehouse. Used to keep the order of transactions.
     list<string> dates; // A list of all the dates this warehouse operated. 
+
 };
 #endif

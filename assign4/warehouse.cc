@@ -36,7 +36,10 @@ warehouse::warehouse(string warehouse_data, map<string, food_item> * food_map){
   food_ptr = food_map;
   this->name = tokens[2];
   list<transaction> w;
-  this->trans_list = w; 
+  this->trans_list = w;
+  //  queue<transaction> wow;
+  //this->trans_q = wow;
+ 
 }
 
 warehouse::warehouse() 
@@ -60,6 +63,7 @@ warehouse::warehouse(const warehouse & other)
     //    this->foods = other.foods;
     this->food_ptr = other.food_ptr;
     this->trans_list = other.trans_list;
+    // this->trans_q = other.trans_q;
 
     // Use the overloaded assignment operator to do the work
     //   of copying the parameter's elements into this object.
@@ -75,7 +79,6 @@ warehouse::~warehouse()
 /*
  * Is sent items that have been recieved/requested
  * The food inventory is managed as it goes
- *
  * by this warehouse.
  */
 void warehouse::add_transaction(string trans)
@@ -122,7 +125,8 @@ void warehouse::add_transaction(string trans)
      // cout << "added item "<< k << " to " << this->name << " quant: " << v << endl;
     }
   }
-  trans_list.push_back(r); // keep track of transaction
+  //trans_q.push(r);
+   trans_list.push_back(r); // keep track of transaction
   //cout << "add: " << r.get_upc_code() << endl;
 }
 
@@ -267,21 +271,34 @@ set<string>  warehouse::report_foods_in_stock()
  * This function is called when it is the next day.
  */
 void warehouse::forward_date(){
+  // for(int i = 0; i < trans_q.size(); i++)
+  for(list<transaction>::iterator dis = trans_list.begin();dis != trans_list.end(); dis++)
+    {
+      
+      // Pop the transaction off the queue, decrement the shelf life, and push it back on the queue.
+      //transaction t = trans_q.front();
+      // trans_q.pop();
 
-  for (list<transaction>::iterator iterator = trans_list.begin(), end = trans_list.end(); iterator != end; ++iterator) {
-    //cout << (*iterator).get_upc_code() << " is the food in " << name << " with shelflife " << (*iterator).get_shelf_life() << " with quantity " << (*iterator).get_quantity() << endl;
-    
-    // if the shelf life goes to zero or below remove the food_item for inventory
-    if ((*iterator).get_shelf_life() <= 0) { 
-      map<string,int>::iterator lookup = food_inventory.find((*iterator).get_upc_code());
-      if(lookup != food_inventory.end()) {
-     //   cout << "erase: " << lookup->first << " in " << name << endl;
-        food_inventory.erase(lookup);
+      // if the shelf life goes to zero or below remove the food_item for inventory
+	if ((*dis).get_shelf_life() <= 0) { 
+	  map<string,int>::iterator lookup = food_inventory.find((*dis).get_upc_code());
+	if(lookup != food_inventory.end()) {
+	  //   cout << "erase: " << lookup->first << " in " << name << endl;
+	  food_inventory.erase(lookup);
+
+
+	}
       }
+      (*dis).dec_shelf_life();
+      //trans_q.push(t);
     }
-    (*iterator).dec_shelf_life();
-  }
-  dates.push_back(this->effective_date.next_date());
+
+  //(*iterator).dec_shelf_life();
+
+// dates.push_back(this->effective_date.next_date());
+
+	this->dates.push_back(this->effective_date.next_date());
+
 }
 
 /* 
@@ -289,8 +306,7 @@ void warehouse::forward_date(){
  */
 void warehouse::set_start_date(string date) 
 {
-  this->effective_date = easy_date(date);
-  dates.push_back(effective_date.to_str());
+  this->dates.push_back(this->effective_date.to_str());
 }
 
 
