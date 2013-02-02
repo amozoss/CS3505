@@ -4,6 +4,7 @@
  */
 #include "headquarters.h"
 #include <algorithm>
+#include <vector>
 
 headquarters::headquarters(string file_path)
 {
@@ -177,19 +178,22 @@ void headquarters::generate_report(){
 
   // Create a set of all the UPC codes.
   set<string> default_set;
-  map<string, food_item>::iterator food_it = food_items.begin();
+  
   // for(int i = 0; i < food_items.size(); i++)
   //{
   //  default_set.insert(food_items[i].get_upc_code());
   //}
 
-
-  for(int i = 0 /* i isn't used */; food_it != food_items.end(); food_it++)
+  //string * deficit_array = new string[food_items.size()];
+  int i = 0;
+  for(map<string, food_item>::iterator food_it = food_items.begin(); food_it != food_items.end(); food_it++)
     {
+      //deficit_array[i] = (food_it->first);
       default_set.insert(food_it->first);
+      //i++;
     }
 
-
+  
   set<string> deficit_set = default_set;    // Will hold all upc codes that are out in a particular warehouse
   set<string> difference;
   map<string, warehouse>::iterator it = warehouses.begin();
@@ -199,12 +203,26 @@ void headquarters::generate_report(){
     {
       warehouse w = it->second;
       set<string> out_of = w.report_food_deficit();
-      //set_intersection(deficit_set.begin(), deficit_set.end(), out_of.begin(), out_of.end(), 
-      difference.insert(out_of.begin(), out_of.end());
+      std::set_intersection(deficit_set.begin(), deficit_set.end(), out_of.begin(), out_of.end(), inserter(deficit_set, deficit_set.begin()));
     }
 
 
 
+
+  int first[] = {5,10,15,20,25};
+  int second[] = {50,40,30,20,10};
+  std::vector<int> v(10);                      // 0  0  0  0  0  0  0  0  0  0
+  std::vector<int>::iterator ite;
+
+  std::sort (first,first+5);     //  5 10 15 20 25
+  std::sort (second,second+5);   // 10 20 30 40 50
+
+  ite=std::set_intersection (first, first+5, second, second+5, v.begin());
+                                               // 10 20 0  0  0  0  0  0  0  0
+  v.resize(ite-v.begin());                      // 10 20
+  for (ite=v.begin(); ite!=v.end(); ++ite)
+    std::cout << ' ' << *ite;
+  std::cout << '\n';
 
 
   /*

@@ -34,7 +34,7 @@ warehouse::warehouse(string warehouse_data, map<string, food_item> food_map){
       {
         warehouse_name = warehouse_data.substr(i + 1, warehouse_data.npos);
         //cout << "warehouse: " << warehouse_data << "--" << endl;
-        cout << warehouse_name << endl;//" 00" << endl;
+        cout << warehouse_name << " 00" << endl;
         break;
       }
       // ws_counter++;
