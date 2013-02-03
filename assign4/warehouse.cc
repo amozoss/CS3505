@@ -156,6 +156,7 @@ string warehouse::report_busiest_day()
 	transaction t = *find_dates;
 	if(current_date == t.get_date())
 	  {
+	    //cout << "----Busy day-----" << current_date << endl;
 	    c_quantity += t.get_quantity();
 	    //cout << " _________________" << t.get_quantity() << endl;
 	  }
@@ -204,7 +205,9 @@ string warehouse::report_busiest_day()
   return this->name + " " + busiest_date + " " + convert_int_to_str(c_quantity);
 */
   }
-  return this->name + " " + busiest_date + " " + convert_int_to_str(b_quantity);
+string duh = this->name + " " + busiest_date + " " + convert_int_to_str(b_quantity);
+//cout << "___________________" << duh << endl;
+ return duh;
 }
 
 /*
@@ -297,6 +300,7 @@ void warehouse::forward_date(){
 
 // dates.push_back(this->effective_date.next_date());
 
+
 	this->dates.push_back(this->effective_date.next_date());
 
 }
@@ -306,7 +310,10 @@ void warehouse::forward_date(){
  */
 void warehouse::set_start_date(string date) 
 {
-  this->dates.push_back(this->effective_date.to_str());
+  this->effective_date = easy_date(date);
+  string dat = this->effective_date.to_str();
+  //cout << "A Date-" << dat << endl;
+  this->dates.push_back(dat);
 }
 
 
