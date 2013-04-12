@@ -1,0 +1,424 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Text.RegularExpressions;
+using System.IO;
+
+namespace SS
+{
+    public partial class SpreadsheetGUI : Form
+    {
+        private Spreadsheet spreadsheet; // The spreadsheet model for the form. Each new form has its own spreadsheet.
+        private string filename; // keeps track of the current file name, so when the document is saved it won't ask to overwrite if its the same file
+        /// <summary>
+        /// Creates a new spreadsheetGUI and spreadsheet model
+        /// </summary>
+        public SpreadsheetGUI()
+        {
+
+            InitializeComponent();
+
+            // Create the spreadsheet model and the validator to check if the cell names are correct. 
+
+            spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
+
+            // registering a method so that it is notified when an event happens.
+            spreadsheetPanel1.SelectionChanged += displaySelection;
+            spreadsheetPanel1.SetSelection(2, 3);
+
+            displaySelection(spreadsheetPanel1); // update display when loaded
+        }
+
+        /// <summary>
+        /// Creates a spreadsheetGUI with the content in sheet
+        /// </summary>
+        /// <param name="s"></param>
+        public SpreadsheetGUI(Spreadsheet sheet, string nameOfFile)
+        {
+
+            InitializeComponent();
+
+            // Create the spreadsheet model and the validator to check if the cell names are correct. 
+
+            spreadsheet = sheet;
+            filename = nameOfFile;
+
+            // registering a method so that it is notified when an event happens.
+            spreadsheetPanel1.SelectionChanged += displaySelection;
+            spreadsheetPanel1.SetSelection(2, 3);
+
+            displaySelection(spreadsheetPanel1); // update display when loaded
+        }
+
+
+        /// <summary>
+        /// Updates the panel display, cellDisplayTextBox, contentsTextBox, valueTextBox, and all non-empty Cells
+        ///  Every time the selection changes, this method is called with the Spreadsheet as its parameter. 
+        /// </summary>
+        /// <param name="ss"></param>
+        private void displaySelection(SpreadsheetPanel ss)
+        {
+            // Get col and row of cell.
+            int row, col;
+            ss.GetSelection(out col, out row);
+            string nameOfCell = "" + GetExcelColumnName(col) + (row + 1); // get cell name
+
+            try
+            {
+
+
+
+                // Cell Display
+                cellDisplayBox.Text = nameOfCell;
+
+
+                // Set the valueTextBox if there is a formula error make the error message be "###########"
+                var valueOfCell = spreadsheet.GetCellValue(nameOfCell); // get value of cell
+                string valueOfCellString;
+
+                if (valueOfCell is SpreadsheetUtilities.FormulaError)
+                {
+                    valueOfCellString = "##########";
+                }
+                else
+                {
+                    valueOfCellString = valueOfCell.ToString();
+                }
+                valueTextBox.Text = valueOfCellString;
+                ss.SetValue(col, row, valueOfCellString); // update panel
+
+                // Set the contentsTextBox, append the '=' for convience 
+                var contentsOfCell = spreadsheet.GetCellContents(nameOfCell);
+                if (contentsOfCell is SpreadsheetUtilities.Formula)
+                {
+                    contentsTextBox.Text = "=" + contentsOfCell.ToString();
+                }
+                else
+                {
+                    contentsTextBox.Text = contentsOfCell.ToString();
+                }
+
+
+                // update all non empty cells
+                IEnumerable<string> nonEmptyCells = spreadsheet.GetNamesOfAllNonemptyCells();
+                foreach (var name33 in nonEmptyCells)
+                {
+                    Match m = Regex.Match(name33, @"^([A-Z]+) *(\d)$");// separate cell name
+                    if (m.Success)
+                    {
+                        // get the column letter and convert it to a number
+                        string translated = m.Groups[1].Value;
+                        int column = TranslateColumnNameToIndex(translated);
+                        int rowNumber = Int32.Parse(m.Groups[2].Value) - 1;
+
+                        string valueOfDependentCellString;
+                        var valueOfDependentCell = spreadsheet.GetCellValue(name33);
+
+                        // Set the value if there is a formula error
+                        if (valueOfDependentCell is SpreadsheetUtilities.FormulaError)
+                        {
+                            valueOfDependentCellString = "##########";
+                        }
+                        else
+                        {
+                            valueOfDependentCellString = valueOfDependentCell.ToString();
+                        }
+                        ss.SetValue(column, rowNumber, valueOfDependentCellString); // update panel
+                    }
+                }
+
+                // put cursor in contents text box
+                contentsTextBox.Focus();
+                contentsTextBox.Select(contentsTextBox.Text.Length, 0);
+            }
+            catch (InvalidNameException e)
+            {
+                MessageBox.Show("Invalid variable name", "Error");
+            }
+
+        }
+
+        /// <summary>
+        /// Returns the column letter from the column number
+        /// </summary>
+        /// <param name="columnNumber"></param>
+        /// <returns></returns>
+        private String GetExcelColumnName(int columnNumber)
+        {
+            return String.Format("{0}", (char)(65 + columnNumber));
+        }
+
+        /// <summary>
+        /// Returns the column number from the column name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private int TranslateColumnNameToIndex(string name)
+        {
+            return (int)name[0] - 65;
+
+        }
+
+        // Deals with the New menu
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Tell the application context to run the form on the same
+            // thread as the other forms.
+            SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUI());
+        }
+
+        // Deals with the Close menu
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (spreadsheet.Changed)
+            {
+                DialogResult dialogResult = MessageBox.Show("The document has been modified. Would you like to save before you continue?", "Warning", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    saveFile();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    Close();
+                }
+            }
+            else
+            {
+                Close();
+            }
+
+        }
+
+        /// <summary>
+        /// Displays a save file dialog and prompts user to save the file
+        /// </summary>
+        private void saveFile()
+        {
+            using (var saveFile = new System.Windows.Forms.SaveFileDialog())
+            {
+                saveFile.DefaultExt = "*.ss"; // set the extensions
+                saveFile.Filter = "Spreadsheet files (*.ss)|*.ss|All files (*.*)|*.*"; // filter results choices
+                saveFile.DefaultExt = ".ss"; // Default file extension
+                saveFile.FileName = filename;
+
+              
+                DialogResult result = saveFile.ShowDialog();
+               
+
+                if (result == DialogResult.OK)
+                {
+
+                    try
+                    {
+                        spreadsheet.Save(saveFile.FileName);
+                        filename = saveFile.FileName;
+                    }
+                    catch (Exception except)
+                    {
+                        MessageBox.Show(except.Message, "Error");
+                    }
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Updates and saves the spreadsheet contents, all dependent cells, then calls displaySelection
+        /// </summary>
+        private void updateCells()
+        {
+            try
+            {
+                //get name of cell
+                SpreadsheetPanel ss = spreadsheetPanel1;
+                int row, col;
+                ss.GetSelection(out col, out row);
+
+                // get cell name
+                string nameOfCell = "" + GetExcelColumnName(col) + (row + 1);
+
+                // set cell contents
+                ISet<string> dependentCells = spreadsheet.SetContentsOfCell(nameOfCell, contentsTextBox.Text);
+                // update all dependent cells
+                foreach (var name33 in dependentCells)
+                {
+                    Match m = Regex.Match(name33, @"^([A-Z]+) *(\d)$");// separate cell name
+                    if (m.Success)
+                    {
+                        // get the column letter and convert it to a number
+                        string translated = m.Groups[1].Value;
+                        int column = TranslateColumnNameToIndex(translated);
+                        int rowNumber = Int32.Parse(m.Groups[2].Value) - 1;
+
+                        string valueOfDependentCellString;
+                        var valueOfDependentCell = spreadsheet.GetCellValue(name33);
+
+                        // Set the value if there is a formula error
+                        if (valueOfDependentCell is SpreadsheetUtilities.FormulaError)
+                        {
+                            valueOfDependentCellString = "##########";
+                        }
+                        else
+                        {
+                            valueOfDependentCellString = valueOfDependentCell.ToString();
+                        }
+                        ss.SetValue(column, rowNumber, valueOfDependentCellString); // update panel
+                    }
+                }
+
+            }
+            catch (InvalidNameException)
+            {
+                MessageBox.Show("Invalid variable name", "Error");
+            }
+            catch (SpreadsheetUtilities.FormulaFormatException e)
+            {
+                MessageBox.Show(e.Message, "Formula Error");
+            }
+            catch (SS.CircularException)
+            {
+                MessageBox.Show("A cicular dependency was detected. Make sure the cell's formula doesn't depend on itself.", "Circular Error");
+            }
+
+
+            displaySelection(spreadsheetPanel1);
+        }
+
+
+
+        private void contentsTextBox_Leave(object sender, EventArgs e)
+        {
+            // checkForFormulaError();
+
+            updateCells();
+        }
+
+        private void cellDisplayBox_TextUpdate(object sender, EventArgs e)
+        {
+
+            // contentsTextBox.Text = "";
+        }
+
+        private void contentsTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+
+                //  checkForFormulaError();
+                updateCells();
+            }
+        }
+
+        /// <summary>
+        /// Checks if there is a formula error, if so displays an error message
+        /// </summary>
+        private void checkForFormulaError()
+        {
+            // row and col info from panel
+            int row, col;
+            String value;
+            spreadsheetPanel1.GetSelection(out col, out row);
+            spreadsheetPanel1.GetValue(col, row, out value);
+
+            string nameOfCell = "" + GetExcelColumnName(col + 1) + (row + 1); // get cell name
+            var valueOfCell = spreadsheet.GetCellContents(nameOfCell); // get value of cell
+            // Display error if formula error
+            if (valueOfCell is SpreadsheetUtilities.FormulaError)
+            {
+
+                MessageBox.Show(((SpreadsheetUtilities.FormulaError)valueOfCell).Reason, "Error");
+
+
+            }
+        }
+
+        private void spreadsheetPanel1_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        // deals with meanu item open
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFile = new OpenFileDialog())
+            {
+                try
+                {
+                    openFile.Filter = "Spreadsheet files (*.ss)|*.ss|All files (*.*)|*.*"; // filter results choices
+                    if (openFile.ShowDialog() == DialogResult.OK)
+                    {
+                        if (Path.GetExtension(openFile.FileName) == ".ss")
+                        {
+                            SpreadsheetApplicationContext appContext = SpreadsheetApplicationContext.getAppContext();
+
+                            // create new GUI and pass a new spreadsheet with the filename to constructor
+                            appContext.RunForm(new SpreadsheetGUI(new Spreadsheet(openFile.FileName, s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6"), openFile.FileName));
+
+
+                            // displaySelection(spreadsheetPanel1); // update all the cells
+                        }
+                        else
+                        {
+                            throw new FileLoadException("The file must have a .ss extension");
+                        }
+
+                    }
+                }
+                catch (Exception except)
+                {
+                    MessageBox.Show(except.Message, "Error");
+                }
+
+
+
+            }
+        }
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveFile();
+        }
+
+        private void SpreadsheetGUI_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (spreadsheet.Changed)
+            {
+                DialogResult dialogResult = MessageBox.Show("The document has been modified. Would you like to save before you continue?", "Warning", MessageBoxButtons.YesNo);
+
+                if (dialogResult == DialogResult.Yes)
+                {
+                    saveFile();
+                }
+            }
+        }
+
+        private void changeSelectionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Click on the cell with the mouse to select", "Change Selection");
+        }
+
+        private void editCellContentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Select the cell to edit, click on the content's textbox, and press enter to update contents", "Edit Cell Contents");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+}
