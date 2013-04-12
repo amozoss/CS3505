@@ -32,6 +32,7 @@ namespace SS
 {
     /// <summary>
     /// Thrown to indicate that a change to a cell will cause a circular dependency.
+    /// A change.
     /// </summary>
     public class CircularException : Exception
     {
