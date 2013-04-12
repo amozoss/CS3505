@@ -14,11 +14,15 @@
 
 using namespace std;
 
+/*
+ * Constructs an easy date from string
+ */
 easy_date::easy_date(string start_date)
 {
   day = atof(start_date.substr(3, 2).c_str());
   month = atof(start_date.substr(0, 2).c_str());
   year = atof(start_date.substr(6, 4).c_str());
+  //cout << this->to_str() << " __________________" << endl;
 }
 
 easy_date::easy_date()
@@ -31,6 +35,8 @@ easy_date::~easy_date()
 
 }
 
+/* Increments the date by one day
+ */
 string easy_date::next_date()
 {
   int temp_date = day;

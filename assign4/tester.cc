@@ -15,6 +15,7 @@
 #include <map>
 #include <iterator>
 #include <string>
+#include "headquarters.h"
 #include "easy_date.h"
 #include "food_item.h"
 #include "transaction.h"
@@ -27,19 +28,245 @@ void test_easy_date (int pass_count, int test_count);
 void test_warehouse();
 void test_transaction();
 void test_food_item();
+void data1_test ();
+void data2_test ();
+void inventory_test ();
+headquarters headquarters_test("data1.txt");
+headquarters headquarters_data2("data2.txt");
 
 
-int main ()
+int main (int argc, char* argv[])
 {
+  // Check console parameter count
+  if (argc != 2) {
+    cout << "Invalid number of parameters.\n";
+    return 0;
+  } 
+  string filepath;
+  filepath =  argv[1];
+  headquarters head(filepath);
+
+
+  // generate the report
+  head.generate_report();
+  return 0;
 
   int pass_count = 0; // keeps track of how many tests passed
   int test_count = 0; // total number of tests   
 
   test_warehouse();
-  test_transaction();
-  test_food_item();
-  test_easy_date(pass_count,test_count);
-  
+ // test_transaction();
+ // test_food_item();
+ // test_easy_date(pass_count,test_count);
+
+ //data1_test();
+ //data2_test();
+
+// inventory_test(); 
+}
+void inventory_test ()
+{
+  cout << "entering inventory test" << endl;
+  map<string,food_item> food;
+  warehouse w("Ware - Columbus",food);
+
+  cout << endl;
+
+  w.add_transaction("Receive: Hams 7 Columbus");
+  set<string> columbus = w.report_foods_in_stock();
+  cout << "set size: " << columbus.size() << endl;
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl << endl;
+
+  cout << endl;
+
+  w.add_transaction("Receive: Hams 7 Columbus");
+  columbus = w.report_foods_in_stock();
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl << endl;
+
+  cout << endl;
+
+
+  w.add_transaction("Receive: Helper 7 Columbus");
+  columbus = w.report_foods_in_stock();
+  cout << "set size: " << columbus.size() << endl;
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl;
+
+  cout << endl;
+
+  w.add_transaction("Request: Hams 13 Columbus");
+  columbus = w.report_foods_in_stock();
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl;
+
+  cout << endl;
+
+  w.add_transaction("Request: Hams 1 Columbus");
+  columbus = w.report_foods_in_stock();
+  for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    cout << *it << " this never works" << endl ;
+
+  cout << endl;
+  cout << "end test" << endl;
+}
+
+void data2_test ()
+{
+  {
+  // test 1
+  warehouse &w = headquarters_data2.get_warehouse("Chandler");
+  set<string> columbus =w.report_foods_in_stock();
+  //cout << "set size: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 0)
+    cout << "data2_test failed - chandler report foods in stock "<< columbus.size() << endl;
+
+  // test 2
+  columbus =w.report_food_deficit();
+  //cout << "set size:deficit: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 5)
+    cout << "data2_test failed - chandler report foods in deficit "<< columbus.size() << endl;
+  }
+  {//test Modesto
+  // test 1
+  warehouse &w = headquarters_data2.get_warehouse("Modesto");
+  set<string> columbus =w.report_foods_in_stock();
+  //cout << "set size: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 1)
+    cout << "data2_test failed - Modesto report foods in stock "<< columbus.size()  << endl;
+
+  // test 2
+  columbus =w.report_food_deficit();
+  //cout << "set size:deficit: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++){
+//    cout << *it << endl;
+  if (columbus.size() != 4)
+    cout << "data2_test failed -Modesto  report foods in deficit " << columbus.size()<< endl;
+  //cout << "end test" << endl;
+  }
+  {//test Mobile
+  // test 1
+  warehouse &w = headquarters_data2.get_warehouse("Mobile");
+  set<string> columbus =w.report_foods_in_stock();
+  //cout << "set size: " << columbus.size() << endl;
+ // for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++){
+    //cout << *it << endl;
+  if (columbus.size() != 3)
+    cout << "data2_test failed - Mobile report foods in stock " << columbus.size()<< endl;
+
+  // test 2
+  columbus =w.report_food_deficit();
+  //cout << "set size:deficit: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 2)
+    cout << "data2_test failed -Mobile  report foods in deficit " << columbus.size()<< endl;
+  //cout << "end test" << endl;
+  }
+  {//test Springfield
+  // test 1
+  warehouse &w = headquarters_data2.get_warehouse("Springfield");
+  set<string> columbus =w.report_foods_in_stock();
+  //cout << "set size: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 2)
+    cout << "data2_test failed - Springfield report foods in stock " << columbus.size()<< endl;
+
+  // test 2
+  columbus =w.report_food_deficit();
+  //cout << "set size:deficit: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 3)
+    cout << "data2_test failed -Springfield  report foods in deficit " << columbus.size()<< endl;
+  //cout << "end test" << endl;
+  }
+  {//test Fullerton
+  // test 1
+  warehouse &w = headquarters_data2.get_warehouse("Fullerton");
+  set<string> columbus =w.report_foods_in_stock();
+  //cout << "set size: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 0)
+    cout << "data2_test failed - Fullerton report foods in stock " << columbus.size()<< endl;
+
+  // test 2
+  columbus =w.report_food_deficit();
+  //cout << "set size:deficit: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 5)
+    cout << "data2_test failed -Fullerton  report foods in deficit " << columbus.size()<< endl;
+  //cout << "end test" << endl;
+  }
+}
+void data1_test ()
+{
+  {
+  // test 1
+  warehouse &w = headquarters_test.get_warehouse("Columbus");
+  set<string> columbus =w.report_foods_in_stock();
+  //cout << "set size: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 2)
+    cout << "data1_test failed - columbus report foods in stock "<< columbus.size() << endl;
+
+  // test 2
+  columbus =w.report_food_deficit();
+  //cout << "set size:deficit: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 0)
+    cout << "data1_test failed - columbus report foods in deficit "<< columbus.size() << endl;
+  }
+  {//test scottsdale
+  // test 1
+  warehouse &w = headquarters_test.get_warehouse("Scottsdale");
+  set<string> columbus =w.report_foods_in_stock();
+  //cout << "set size: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 0)
+    cout << "data1_test failed - scottsdale report foods in stock "<< columbus.size()  << endl;
+
+  // test 2
+  columbus =w.report_food_deficit();
+  //cout << "set size:deficit: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+   // cout << *it << endl;
+  if (columbus.size() != 2)
+    cout << "data1_test failed -scottsdale  report foods in deficit " << columbus.size()<< endl;
+  //cout << "end test" << endl;
+  }
+  {//test tacoma
+  // test 1
+  warehouse &w = headquarters_test.get_warehouse("Tacoma");
+  set<string> columbus =w.report_foods_in_stock();
+  //cout << "set size: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 0)
+    cout << "data1_test failed - tacoma report foods in stock " << columbus.size()<< endl;
+
+  // test 2
+  columbus =w.report_food_deficit();
+  //cout << "set size:deficit: " << columbus.size() << endl;
+  //for (set<string>::iterator it = columbus.begin(); it != columbus.end(); it++)
+    //cout << *it << endl;
+  if (columbus.size() != 2)
+    cout << "data1_test failed -tacoma  report foods in deficit " << columbus.size()<< endl;
+  //cout << "end test" << endl;
+  }
 }
 
 void test_easy_date(int pass_count, int test_count)
@@ -59,7 +286,6 @@ void test_easy_date(int pass_count, int test_count)
     if (in.fail()) {
       break;
     }
-
 
     //test easy dates
     easy_date date(line);
@@ -85,10 +311,25 @@ void test_easy_date(int pass_count, int test_count)
 
 void test_warehouse()
 {
+  /*
   map<string, food_item> da_set;
+ // food_item food("FoodItem - UPC Code: 0353264991  Shelf life: 2  Name: chestnut puree with vanilla");
+ // food_item o_food("FoodItem - UPC Code: 0984523912  Shelf life: 1  Name: the orange box");
+  //da_set.insert(pair<string, food_item>(food.get_UPC(), food));
+  // da_set.insert(pair<string, food_item>(o_food.get_UPC(), o_food));
+  
   warehouse w("Tacoma", da_set);
-
-  w.add_transaction("Request: 0984523912  7 Tacoma");
+  //w.set_start_date("05/01/2010");
+  w.add_transaction("Receive: 0353264991 6 ");
+  w.add_transaction("Request: 0984523912 5 ");
+  w.forward_date();
+  w.forward_date();
+  w.forward_date();
+  w.add_transaction("Request: 0984523912 3 ");
+  w.add_transaction("Request: 0353264991 10 ");
+  w.add_transaction("Request: 0984523912 4 ");
+  
+  cout << w.report_busiest_day() << endl;*/
 
 }
 
