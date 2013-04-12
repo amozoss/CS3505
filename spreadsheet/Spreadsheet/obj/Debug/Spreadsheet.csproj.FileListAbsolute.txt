@@ -18,3 +18,13 @@ X:\Documents\CS3505\spreadsheet\Spreadsheet\bin\Debug\SpreadsheetUtilities.xml
 X:\Documents\CS3505\spreadsheet\Spreadsheet\obj\Debug\ResolveAssemblyReference.cache
 X:\Documents\CS3505\spreadsheet\Spreadsheet\obj\Debug\Spreadsheet.dll
 X:\Documents\CS3505\spreadsheet\Spreadsheet\obj\Debug\Spreadsheet.pdb
+C:\CS3505\spreadsheet\Spreadsheet\bin\Debug\Spreadsheet.XML
+C:\CS3505\spreadsheet\Spreadsheet\bin\Debug\Spreadsheet.dll
+C:\CS3505\spreadsheet\Spreadsheet\bin\Debug\Spreadsheet.pdb
+C:\CS3505\spreadsheet\Spreadsheet\bin\Debug\Formula.dll
+C:\CS3505\spreadsheet\Spreadsheet\bin\Debug\SpreadsheetUtilities.dll
+C:\CS3505\spreadsheet\Spreadsheet\bin\Debug\Formula.xml
+C:\CS3505\spreadsheet\Spreadsheet\bin\Debug\SpreadsheetUtilities.xml
+C:\CS3505\spreadsheet\Spreadsheet\obj\Debug\ResolveAssemblyReference.cache
+C:\CS3505\spreadsheet\Spreadsheet\obj\Debug\Spreadsheet.dll
+C:\CS3505\spreadsheet\Spreadsheet\obj\Debug\Spreadsheet.pdb

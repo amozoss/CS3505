@@ -4,12 +4,60 @@
         <name>Spreadsheet</name>
     </assembly>
     <members>
-        <member name="T:SS.Spreadsheet">
+        <member name="T:SS.Cell">
             <summary>
-            Spreadsheet is a subclass of AbstractSpreadsheet. 
-            Cell contents can be set as a string, double, or formula. Cell names must not
-            create a circular dependency
-            
+            A Cell has contents, which can be a double, string, or formula
+            </summary>
+        </member>
+        <member name="M:SS.Cell.#ctor(System.Object,System.Object)">
+            <summary>
+            Consturcts a cell with contents and value
+            </summary>
+            <param name="contents"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:SS.Cell.getContents">
+            <summary>
+            Get the contents of the cell
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SS.Cell.setContents(System.Object)">
+            <summary>
+            Sets the contents of the cell to contents
+            </summary>
+            <param name="contents"></param>
+        </member>
+        <member name="M:SS.Cell.getValue">
+            <summary>
+            Get the value of the cell
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SS.Cell.setValue(System.Object)">
+            <summary>
+            Sets the value of the cell to value
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="T:SS.CircularException">
+            <summary>
+            Thrown to indicate that a change to a cell will cause a circular dependency.
+            </summary>
+        </member>
+        <member name="T:SS.InvalidNameException">
+            <summary>
+            Thrown to indicate that a name parameter was either null or invalid.
+            </summary>
+        </member>
+        <member name="T:SS.SpreadsheetReadWriteException">
+            <summary>
+            Thrown to indicate that a read or write attempt has failed.
+            </summary>
+        </member>
+        <member name="M:SS.SpreadsheetReadWriteException.#ctor(System.String)">
+            <summary>
+            Creates the exception with a message
             </summary>
         </member>
         <member name="T:SS.AbstractSpreadsheet">
@@ -278,6 +326,14 @@
             Version information
             </summary>
         </member>
+        <member name="T:SS.Spreadsheet">
+            <summary>
+            Spreadsheet is a subcl ass of AbstractSpreadsheet. 
+            Cell contents can be set as a string, double, or formula. Cell names must not
+            create a circular dependency
+            
+            </summary>
+        </member>
         <member name="M:SS.Spreadsheet.#ctor">
             <summary>
             Constructs an empty spreadsheet. A spreadsheet consists of cells and tracts the dependencies of 
@@ -339,62 +395,6 @@
             </summary>
             <param name="name"></param>
             <returns></returns>
-        </member>
-        <member name="T:SS.CircularException">
-            <summary>
-            Thrown to indicate that a change to a cell will cause a circular dependency.
-            </summary>
-        </member>
-        <member name="T:SS.InvalidNameException">
-            <summary>
-            Thrown to indicate that a name parameter was either null or invalid.
-            </summary>
-        </member>
-        <member name="T:SS.SpreadsheetReadWriteException">
-            <summary>
-            Thrown to indicate that a read or write attempt has failed.
-            </summary>
-        </member>
-        <member name="M:SS.SpreadsheetReadWriteException.#ctor(System.String)">
-            <summary>
-            Creates the exception with a message
-            </summary>
-        </member>
-        <member name="T:SS.Cell">
-            <summary>
-            A Cell has contents, which can be a double, string, or formula
-            </summary>
-        </member>
-        <member name="M:SS.Cell.#ctor(System.Object,System.Object)">
-            <summary>
-            Consturcts a cell with contents and value
-            </summary>
-            <param name="contents"></param>
-            <param name="value"></param>
-        </member>
-        <member name="M:SS.Cell.getContents">
-            <summary>
-            Get the contents of the cell
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SS.Cell.setContents(System.Object)">
-            <summary>
-            Sets the contents of the cell to contents
-            </summary>
-            <param name="contents"></param>
-        </member>
-        <member name="M:SS.Cell.getValue">
-            <summary>
-            Get the value of the cell
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:SS.Cell.setValue(System.Object)">
-            <summary>
-            Sets the value of the cell to value
-            </summary>
-            <param name="value"></param>
         </member>
     </members>
 </doc>
