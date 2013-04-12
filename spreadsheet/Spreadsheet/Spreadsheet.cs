@@ -14,7 +14,7 @@ namespace SS
 {
 
     /// <summary>
-    /// Spreadsheet is a subclass of AbstractSpreadsheet. 
+    /// Spreadsheet is a subcl ass of AbstractSpreadsheet. 
     /// Cell contents can be set as a string, double, or formula. Cell names must not
     /// create a circular dependency
     /// 
