@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="99119c57-ea8c-470d-b70d-307368479b8f" name="dwilloug@FERB 2012-10-15 18:42:43" runUser="USERS\dwilloug" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="eacf9772-a1f5-4278-8375-4279c8e51ae9">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment runDeploymentRoot="dwilloug_FERB 2012-10-15 18_42_43">
+      <DeploymentItem filename="D:\Users\dwilloug\PS6\Spreadsheet\Formula.dll" />
+      <DeploymentItem filename="D:\Users\dwilloug\PS6\Spreadsheet\bin\Debug\Spreadsheet.dll" />
+      <DeploymentItem filename="D:\Users\dwilloug\PS6\Spreadsheet\SpreadsheetUtilities.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific>
+        <UnitTestRunConfig testTypeId="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b">
+          <AssemblyResolution>
+            <TestDirectory useLoadContext="true" />
+          </AssemblyResolution>
+        </UnitTestRunConfig>
+        <WebTestRunConfiguration testTypeId="4e7599fa-5ecb-43e9-a887-cd63cf72d207">
+          <Browser name="Internet Explorer 7.0">
+            <Headers>
+              <Header name="User-Agent" value="Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)" />
+              <Header name="Accept" value="*/*" />
+              <Header name="Accept-Language" value="{{$IEAcceptLanguage}}" />
+              <Header name="Accept-Encoding" value="GZIP" />
+            </Headers>
+          </Browser>
+        </WebTestRunConfiguration>
+      </TestTypeSpecific>
+      <AgentRule name="LocalMachineDefaultRole">
+        <DataCollectors>
+          <DataCollector uri="datacollector://microsoft/CodeCoverage/1.0" assemblyQualifiedName="Microsoft.VisualStudio.TestTools.CodeCoverage.CoveragePlugIn, Microsoft.VisualStudio.QualityTools.Plugins.CodeCoverage, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" friendlyName="Code Coverage">
+            <Configuration>
+              <CodeCoverage xmlns="">
+                <Regular>
+                  <CodeCoverageItem binaryFile="D:\Users\dwilloug\PS6\Spreadsheet\bin\Debug\Spreadsheet.dll" pdbFile="D:\Users\dwilloug\PS6\Spreadsheet\bin\Debug\Spreadsheet.instr.pdb" instrumentInPlace="true" />
+                </Regular>
+              </CodeCoverage>
+            </Configuration>
+          </DataCollector>
+        </DataCollectors>
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2012-10-15T18:42:43.4106669-06:00" queuing="2012-10-15T18:42:44.1796669-06:00" start="2012-10-15T18:42:44.2436669-06:00" finish="2012-10-15T18:45:39.2386669-06:00" />
+  <ResultSummary outcome="Aborted">
+    <Counters total="1" executed="1" error="0" failed="0" timeout="0" aborted="1" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+    <ResultFiles>
+      <ResultFile path="FERB\data.coverage" />
+    </ResultFiles>
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="CodedUITestMethod1" storage="d:\users\dwilloug\ps6\spreadsheettests\bin\debug\spreadsheettests.dll" id="6d2b361e-7f88-586c-4ac1-4f041b2831a5">
+      <Execution id="c5eac1e5-2bce-40fd-8d4e-c1e8ab6343e3" />
+      <TestMethod codeBase="D:\Users\dwilloug\PS6\SpreadsheetTests\bin\Debug\SpreadsheetTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="SpreadsheetTests.CodedUITest1, SpreadsheetTests" name="CodedUITestMethod1" />
+      <Extension>Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute, Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</Extension>
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="6d2b361e-7f88-586c-4ac1-4f041b2831a5" executionId="c5eac1e5-2bce-40fd-8d4e-c1e8ab6343e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="c5eac1e5-2bce-40fd-8d4e-c1e8ab6343e3" testId="6d2b361e-7f88-586c-4ac1-4f041b2831a5" testName="CodedUITestMethod1" computerName="FERB" duration="00:02:51.9080000" startTime="2012-10-15T18:42:45.1066669-06:00" endTime="2012-10-15T18:45:37.0146669-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Aborted" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c5eac1e5-2bce-40fd-8d4e-c1e8ab6343e3">
+      <Output>
+        <DebugTrace>W, 182608, 15, 2012/10/15, 18:42:46.997, 36931081473779, QTAgent32.exe, PERF WARNING: FindAllDescendents: took 1021 ms. Expected it to take maximum 500 ms.
+W, 182608, 15, 2012/10/15, 18:42:47.861, 36931103074603, QTAgent32.exe, &lt;a class=success&gt;Playback - {1} [SUCCESS] DoubleClick - "[MSAA]ControlType='ListItem' &amp;&amp; Name='SpreadsheetGUI - Shortcut'"  &lt; Mouse cursor location (29, 545) &gt;
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:42:48.894, 36931128906508, QTAgent32.exe, PERF WARNING: FindAllDescendents: took 925 ms. Expected it to take maximum 500 ms.
+W, 182608, 15, 2012/10/15, 18:42:49.456, 36931142947340, QTAgent32.exe, &lt;a class=success&gt;Playback - {2} [SUCCESS] MouseButtonClick - "[MSAA, VisibleOnly]ControlType='Button' &amp;&amp; Name='Open'"
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:42:50.921, 36931179578850, QTAgent32.exe, PERF WARNING: FindAllDescendents: took 962 ms. Expected it to take maximum 500 ms.
+W, 182608, 15, 2012/10/15, 18:42:51.554, 36931195399626, QTAgent32.exe, &lt;a class=success&gt;Playback - {3} [SUCCESS] MouseButtonClick - "[MSAA, VisibleOnly]ControlType='Client'"
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:42:52.627, 36931222239069, QTAgent32.exe, PERF WARNING: FindAllDescendents: took 946 ms. Expected it to take maximum 500 ms.
+W, 182608, 15, 2012/10/15, 18:43:06.857, 36931577976326, QTAgent32.exe, &lt;a class=success&gt;Playback - {4} [SUCCESS] SendKeys "=" - "[MSAA, VisibleOnly]ControlType='Client'"
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:43:07.935, 36931604919218, QTAgent32.exe, PERF WARNING: FindAllDescendents: took 954 ms. Expected it to take maximum 500 ms.
+E, 182608, 15, 2012/10/15, 18:43:08.438, 36931617502636, QTAgent32.exe, LoadLibrary() : Unable to find the resource 37382 from assembly C:\Windows\system32\en-US\ieframe.dll.mui: Error1814
+E, 182608, 15, 2012/10/15, 18:43:08.438, 36931617515480, QTAgent32.exe, LoadLibrary() : Unable to find the resource 41728 from assembly C:\Windows\system32\en-US\ieframe.dll.mui: Error1814
+E, 182608, 15, 2012/10/15, 18:43:08.439, 36931617519232, QTAgent32.exe, LoadLibrary() : Unable to find the resource 8131 from assembly C:\Windows\system32\en-US\ieframe.dll.mui: Error1814
+E, 182608, 15, 2012/10/15, 18:43:08.439, 36931617522492, QTAgent32.exe, LoadLibrary() : Unable to find the resource 8131 from assembly C:\Windows\system32\en-US\ieframe.dll.mui: Error1814
+E, 182608, 15, 2012/10/15, 18:43:08.439, 36931617528772, QTAgent32.exe, LoadLibrary() : Unable to find the resource 8131 from assembly C:\Windows\system32\en-US\ieframe.dll.mui: Error1814
+E, 182608, 15, 2012/10/15, 18:43:08.439, 36931617537458, QTAgent32.exe, LoadLibrary() : Unable to find the resource 803 from assembly C:\Windows\system32\en-US\user32.dll.mui: Error1814
+W, 182608, 15, 2012/10/15, 18:43:37.940, 36932355065227, QTAgent32.exe, &lt;a class=success&gt;Playback - {5} [SUCCESS] SetValueAsEditBox "=a1+a2" - "[MSAA, VisibleOnly]ControlType='Edit'"  &lt; Set via SendKeys &gt;
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:43:51.984, 36932706157427, QTAgent32.exe, &lt;a class=success&gt;Playback - {6} [SUCCESS] SendKeys "{Enter}" - "[MSAA, VisibleOnly]ControlType='Edit'"
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:43:52.702, 36932724100119, QTAgent32.exe, &lt;a class=success&gt;Playback - {7} [SUCCESS] MouseButtonClick - "[MSAA, VisibleOnly]ControlType='Client'"
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:44:12.979, 36933231025586, QTAgent32.exe, &lt;a class=success&gt;Playback - {8} [SUCCESS] SendKeys "^{HOME}" - "[MSAA, VisibleOnly]ControlType='Edit'"
+\0&lt;/a&gt;
+E, 182608, 15, 2012/10/15, 18:44:12.982, 36933231095459, QTAgent32.exe, Msaa.GetFocusedElement: could not find accessible object of foreground window
+W, 182608, 15, 2012/10/15, 18:44:13.529, 36933244775856, QTAgent32.exe, &lt;a class=success&gt;Playback - {9} [SUCCESS] SendKeys "^+{END}" - "[MSAA, VisibleOnly]ControlType='Edit'"
+\0&lt;/a&gt;
+E, 182608, 15, 2012/10/15, 18:44:13.529, 36933244785380, QTAgent32.exe, Msaa.GetFocusedElement: could not find accessible object of foreground window
+W, 182608, 15, 2012/10/15, 18:44:14.019, 36933257030171, QTAgent32.exe, &lt;a class=success&gt;Playback - {10} [SUCCESS] SendKeys "{DELETE}" - "[MSAA, VisibleOnly]ControlType='Edit'"
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:45:15.932, 36934804862611, QTAgent32.exe, Playback - [WARNING] Internal warning: Timeout for thread state based WFR expired. Consider calling SetRobustnessLevel(0) or SetRobustnessLevelEx with proper parameters
+\0
+W, 182608, 15, 2012/10/15, 18:45:17.286, 36934838715782, QTAgent32.exe, &lt;a class=success&gt;Playback - {11} [SUCCESS] SetValueAsEditBox "3" - "[MSAA, VisibleOnly]ControlType='Edit'"  &lt; Set via SendKeys &gt;
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:45:32.822, 36935227108581, QTAgent32.exe, Playback - [WARNING] Internal warning: Thread state based WFR - Requested element has invalid HWND
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.822, 36935227114238, QTAgent32.exe, Playback - [WARNING] Internal warning: process performance counters based WFR - Requested element has invalid HWND
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.824, 36935227163629, QTAgent32.exe, Playback - [WARNING] Internal failure: WindowFromAccessibleObject failed for real IAccessible (The RPC server is unavailable.)
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.825, 36935227174136, QTAgent32.exe, Playback - [WARNING] Internal failure: GetParent failed while walking up the tree. Cannot get a valid window handle
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.825, 36935227178677, QTAgent32.exe, Playback - [WARNING] Internal failure: ScreenUIElement::EnsureValidHwnd failed
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.825, 36935227191638, QTAgent32.exe, Playback - [WARNING] Internal warning: Thread state based WFR - Requested element has invalid HWND
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.826, 36935227196027, QTAgent32.exe, Playback - [WARNING] Internal warning: process performance counters based WFR - Requested element has invalid HWND
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.827, 36935227230647, QTAgent32.exe, Playback - [WARNING] Internal failure: WindowFromAccessibleObject failed for real IAccessible (The RPC server is unavailable.)
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.827, 36935227239125, QTAgent32.exe, Playback - [WARNING] Internal failure: GetParent failed while walking up the tree. Cannot get a valid window handle
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.827, 36935227240961, QTAgent32.exe, Playback - [WARNING] Internal failure: ScreenUIElement::EnsureValidHwnd failed
+\0
+W, 182608, 15, 2012/10/15, 18:45:32.860, 36935228045027, QTAgent32.exe, &lt;a class=success&gt;Playback - {12} [SUCCESS] SendKeys "{Enter}" - "[MSAA, VisibleOnly]ControlType='Edit'"
+\0&lt;/a&gt;
+W, 182608, 15, 2012/10/15, 18:45:33.718, 36935249505757, QTAgent32.exe, Playback - [WARNING] Internal warning: Window Not Found: [VisibleOnly]ControlType='Window' &amp;&amp; Name='Form1' &amp;&amp; ClassName=&gt;'WindowsForms10.Window'
+\0
+E, 182608, 15, 2012/10/15, 18:45:33.718, 36935249513546, QTAgent32.exe, &lt;a class=failure&gt;Playback - {13} [FAILED] Function ElementFetcher::FindScreenElement failed to locate UI element (Searching: ;[VisibleOnly]ControlType='Window' &amp;&amp; Name='Form1' &amp;&amp; ClassName=&gt;'WindowsForms10.Window') (The object specified was not found.)
+\0&lt;/a&gt;
+E, 182608, 15, 2012/10/15, 18:45:33.827, 36935252219485, QTAgent32.exe, Playback - [IMAGE] D:\Users\dwilloug\AppData\Local\Temp\392\UITestLogs\LastRun\RPF70BB.png
+\0
+W, 182608, 15, 2012/10/15, 18:45:33.827, 36935252226215, QTAgent32.exe, Playback - [WARNING] Internal warning: Couldn't find descendants that match QueryId
+\0
+W, 182608, 15, 2012/10/15, 18:45:33.827, 36935252234766, QTAgent32.exe, PERF WARNING: FindTopLevelWindowHelper::FindAllDescendents: took 867 ms. Expected it to take maximum 500 ms.
+</DebugTrace>
+        <ErrorInfo>
+          <Message>User aborted test run.</Message>
+        </ErrorInfo>
+      </Output>
+      <ResultFiles>
+        <ResultFile path="FERB\CodedUITestMethod1.png" />
+      </ResultFiles>
+    </UnitTestResult>
+  </Results>
+</TestRun>

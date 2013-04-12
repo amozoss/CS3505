@@ -1,0 +1,3 @@
+D:\Users\dwilloug\PS7\StringSocketTester\bin\Debug\StringSocketTester.dll
+D:\Users\dwilloug\PS7\StringSocketTester\bin\Debug\StringSocketTester.pdb
+D:\Users\dwilloug\PS7\StringSocketTester\bin\Debug\PS7.dll

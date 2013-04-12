@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="690612f8-ccb6-448a-9022-0127a16b5347" name="dwilloug@PHINEAS 2012-11-03 22:28:44" runUser="USERS\dwilloug" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="33500a2c-091e-4f9b-a348-a6603a00d679">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="dwilloug_PHINEAS 2012-11-03 22_28_44">
+      <DeploymentItem filename="D:\Users\dwilloug\PS7\PS7\bin\Debug\PS7.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2012-11-03T22:28:44.8126334-06:00" queuing="2012-11-03T22:28:44.8750334-06:00" start="2012-11-03T22:28:44.9374334-06:00" finish="2012-11-03T22:29:17.6626334-06:00" />
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" error="0" failed="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="Test4" storage="d:\users\dwilloug\ps7\stringsockettester\bin\debug\stringsockettester.dll" id="b7b6e2f2-633b-58fd-3f0b-561c3dd6d4b0">
+      <Execution id="d053295e-7152-42b8-a33b-a7420894b9a6" />
+      <TestMethod codeBase="D:\Users\dwilloug\PS7\StringSocketTester\bin\Debug\StringSocketTester.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="StringSocketTester.StringSocketTest, StringSocketTester" name="Test4" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="b7b6e2f2-633b-58fd-3f0b-561c3dd6d4b0" executionId="d053295e-7152-42b8-a33b-a7420894b9a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="d053295e-7152-42b8-a33b-a7420894b9a6" testId="b7b6e2f2-633b-58fd-3f0b-561c3dd6d4b0" testName="Test4" computerName="PHINEAS" duration="00:00:32.2587288" startTime="2012-11-03T22:28:44.9530334-06:00" endTime="2012-11-03T22:29:17.6016334-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d053295e-7152-42b8-a33b-a7420894b9a6">
+    </UnitTestResult>
+  </Results>
+</TestRun>

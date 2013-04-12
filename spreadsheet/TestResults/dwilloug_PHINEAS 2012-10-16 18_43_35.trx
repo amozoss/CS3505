@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="67aedbcd-b332-4398-a1af-879580827be5" name="dwilloug@PHINEAS 2012-10-16 18:43:35" runUser="USERS\dwilloug" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="eacf9772-a1f5-4278-8375-4279c8e51ae9">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment runDeploymentRoot="dwilloug_PHINEAS 2012-10-16 18_43_35">
+      <DeploymentItem filename="D:\Users\dwilloug\PS6\Spreadsheet\Formula.dll" />
+      <DeploymentItem filename="D:\Users\dwilloug\PS6\Spreadsheet\bin\Debug\Spreadsheet.dll" />
+      <DeploymentItem filename="D:\Users\dwilloug\PS6\Spreadsheet\SpreadsheetUtilities.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific>
+        <UnitTestRunConfig testTypeId="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b">
+          <AssemblyResolution>
+            <TestDirectory useLoadContext="true" />
+          </AssemblyResolution>
+        </UnitTestRunConfig>
+        <WebTestRunConfiguration testTypeId="4e7599fa-5ecb-43e9-a887-cd63cf72d207">
+          <Browser name="Internet Explorer 7.0">
+            <Headers>
+              <Header name="User-Agent" value="Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)" />
+              <Header name="Accept" value="*/*" />
+              <Header name="Accept-Language" value="{{$IEAcceptLanguage}}" />
+              <Header name="Accept-Encoding" value="GZIP" />
+            </Headers>
+          </Browser>
+        </WebTestRunConfiguration>
+      </TestTypeSpecific>
+      <AgentRule name="LocalMachineDefaultRole">
+        <DataCollectors>
+          <DataCollector uri="datacollector://microsoft/CodeCoverage/1.0" assemblyQualifiedName="Microsoft.VisualStudio.TestTools.CodeCoverage.CoveragePlugIn, Microsoft.VisualStudio.QualityTools.Plugins.CodeCoverage, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" friendlyName="Code Coverage">
+            <Configuration>
+              <CodeCoverage xmlns="">
+                <Regular>
+                  <CodeCoverageItem binaryFile="D:\Users\dwilloug\PS6\Spreadsheet\bin\Debug\Spreadsheet.dll" pdbFile="D:\Users\dwilloug\PS6\Spreadsheet\bin\Debug\Spreadsheet.instr.pdb" instrumentInPlace="true" />
+                </Regular>
+              </CodeCoverage>
+            </Configuration>
+          </DataCollector>
+        </DataCollectors>
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2012-10-16T18:43:35.5679916-06:00" queuing="2012-10-16T18:43:40.1049916-06:00" start="2012-10-16T18:43:40.2259916-06:00" finish="2012-10-16T18:44:08.9039916-06:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+    <ResultFiles>
+      <ResultFile path="PHINEAS\data.coverage" />
+    </ResultFiles>
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="CodedUITestMethod1" storage="d:\users\dwilloug\ps6\spreadsheettests\bin\debug\spreadsheettests.dll" id="6d2b361e-7f88-586c-4ac1-4f041b2831a5">
+      <Execution id="b30ccf61-bbe4-417c-a4f1-91d409bd4e4e" />
+      <TestMethod codeBase="D:\Users\dwilloug\PS6\SpreadsheetTests\bin\Debug\SpreadsheetTests.dll" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="SpreadsheetTests.CodedUITest1, SpreadsheetTests" name="CodedUITestMethod1" />
+      <Extension>Microsoft.VisualStudio.TestTools.UITesting.CodedUITestAttribute, Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</Extension>
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="6d2b361e-7f88-586c-4ac1-4f041b2831a5" executionId="b30ccf61-bbe4-417c-a4f1-91d409bd4e4e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="b30ccf61-bbe4-417c-a4f1-91d409bd4e4e" testId="6d2b361e-7f88-586c-4ac1-4f041b2831a5" testName="CodedUITestMethod1" computerName="PHINEAS" duration="00:00:24.8147605" startTime="2012-10-16T18:43:41.4409916-06:00" endTime="2012-10-16T18:44:06.7649916-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b30ccf61-bbe4-417c-a4f1-91d409bd4e4e">
+      <Output>
+        <DebugTrace>W, 220912, 15, 2012/10/16, 18:43:44.704, 39150534647234, QTAgent32.exe, Playback - [WARNING] Internal warning: Window Not Found: [VisibleOnly]ControlType='Window' &amp;&amp; Name='PS6 - Spreadsheet' &amp;&amp; ClassName=&gt;'WindowsForms10.Window'
+\0
+E, 220912, 15, 2012/10/16, 18:43:44.713, 39150534886011, QTAgent32.exe, &lt;a class=failure&gt;Playback - {1} [FAILED] Function ElementFetcher::FindScreenElement failed to locate UI element (Searching: ;[VisibleOnly]ControlType='Window' &amp;&amp; Name='PS6 - Spreadsheet' &amp;&amp; ClassName=&gt;'WindowsForms10.Window') (The object specified was not found.)
+\0&lt;/a&gt;
+E, 220912, 15, 2012/10/16, 18:43:44.842, 39150538100245, QTAgent32.exe, Playback - [IMAGE] D:\Users\dwilloug\AppData\Local\Temp\12\UITestLogs\LastRun\RPF85CC.png
+\0
+W, 220912, 15, 2012/10/16, 18:43:44.842, 39150538107291, QTAgent32.exe, Playback - [WARNING] Internal warning: Couldn't find descendants that match QueryId
+\0
+W, 220912, 15, 2012/10/16, 18:43:44.843, 39150538124760, QTAgent32.exe, PERF WARNING: FindTopLevelWindowHelper::FindAllDescendents: took 1318 ms. Expected it to take maximum 500 ms.
+W, 220912, 15, 2012/10/16, 18:44:03.042, 39150993113661, QTAgent32.exe, Playback - [WARNING] Internal warning: Window Not Found: [VisibleOnly]ControlType='Window' &amp;&amp; Name='PS6 - Spreadsheet' &amp;&amp; ClassName=&gt;'WindowsForms10.Window'
+\0
+E, 220912, 15, 2012/10/16, 18:44:03.043, 39150993126452, QTAgent32.exe, &lt;a class=failure&gt;Playback - {2} [FAILED] Function ElementFetcher::FindScreenElement failed to locate UI element (Searching: ;[VisibleOnly]ControlType='Window' &amp;&amp; Name='PS6 - Spreadsheet' &amp;&amp; ClassName=&gt;'WindowsForms10.Window') (The object specified was not found.)
+\0&lt;/a&gt;
+E, 220912, 15, 2012/10/16, 18:44:03.168, 39150996250554, QTAgent32.exe, Playback - [IMAGE] D:\Users\dwilloug\AppData\Local\Temp\12\UITestLogs\LastRun\RPFCD67.png
+\0
+W, 220912, 15, 2012/10/16, 18:44:03.168, 39150996257650, QTAgent32.exe, Playback - [WARNING] Internal warning: Couldn't find descendants that match QueryId
+\0
+W, 220912, 15, 2012/10/16, 18:44:03.169, 39150996265845, QTAgent32.exe, PERF WARNING: FindTopLevelWindowHelper::FindAllDescendents: took 18322 ms. Expected it to take maximum 500 ms.
+W, 220912, 15, 2012/10/16, 18:44:03.840, 39151013058329, QTAgent32.exe, Playback - [WARNING] Internal warning: Smart Match failed
+\0
+W, 220912, 15, 2012/10/16, 18:44:04.519, 39151030018692, QTAgent32.exe, Playback - [WARNING] Internal warning: Smart Match failed
+\0
+W, 220912, 15, 2012/10/16, 18:44:04.991, 39151041831334, QTAgent32.exe, Playback - [WARNING] Internal warning: Smart Match failed
+\0
+W, 220912, 15, 2012/10/16, 18:44:05.468, 39151053762751, QTAgent32.exe, Playback - [WARNING] Internal warning: Smart Match failed
+\0
+W, 220912, 15, 2012/10/16, 18:44:05.938, 39151065496978, QTAgent32.exe, Playback - [WARNING] Internal warning: Smart Match failed
+\0
+W, 220912, 15, 2012/10/16, 18:44:06.300, 39151074559191, QTAgent32.exe, Playback - [WARNING] Internal warning: Window Not Found: [VisibleOnly]ControlType='Window' &amp;&amp; Name='PS6 - Spreadsheet' &amp;&amp; ClassName=&gt;'WindowsForms10.Window'
+\0
+E, 220912, 15, 2012/10/16, 18:44:06.301, 39151074568966, QTAgent32.exe, &lt;a class=failure&gt;Playback - {3} [FAILED] Function ElementFetcher::FindScreenElement failed to locate UI element (Searching: ;[VisibleOnly]ControlType='Window' &amp;&amp; Name='PS6 - Spreadsheet' &amp;&amp; ClassName=&gt;'WindowsForms10.Window') (The object specified was not found.)
+\0&lt;/a&gt;
+E, 220912, 15, 2012/10/16, 18:44:06.422, 39151077610153, QTAgent32.exe, Playback - [IMAGE] D:\Users\dwilloug\AppData\Local\Temp\12\UITestLogs\LastRun\RPFDA25.png
+\0
+W, 220912, 15, 2012/10/16, 18:44:06.423, 39151077617301, QTAgent32.exe, Playback - [WARNING] Internal warning: Couldn't find descendants that match QueryId
+\0
+W, 220912, 15, 2012/10/16, 18:44:06.423, 39151077624886, QTAgent32.exe, PERF WARNING: FindTopLevelWindowHelper::FindAllDescendents: took 3253 ms. Expected it to take maximum 500 ms.
+E, 220912, 15, 2012/10/16, 18:44:06.424, 39151077663723, QTAgent32.exe, Exception: System.Runtime.InteropServices.COMException
+	Message: Error HRESULT E_FAIL has been returned from a call to a COM component.
+	Stack Trace:    at Microsoft.VisualStudio.TestTools.UITest.Playback.Engine.IRPFPlayback.FindAllScreenElements(IScreenElement pScreenElementStart, String bstrQueryId, Object&amp; pvarResKeys, Int32 cResKeys, Int32 nMaxDepth, Object[]&amp; foundDescendants)
+   at Microsoft.VisualStudio.TestTools.UITest.Playback.ScreenElement.FindTopLevelWindowHelper(String queryId)
+	BaseExceptionMessage: Error HRESULT E_FAIL has been returned from a call to a COM component.
+
+E, 220912, 15, 2012/10/16, 18:44:06.564, 39151081151174, QTAgent32.exe, AL: Playback Error: Microsoft.VisualStudio.TestTools.UITest.Extension.UITestControlNotFoundException: The playback failed to find the control with the given search properties. Additional Details: 
+TechnologyName:  'MSAA'
+ControlType:  'Window'
+Name:  'PS6 - Spreadsheet'
+ClassName:  'WindowsForms10.Window'
+ ---&gt; System.Runtime.InteropServices.COMException: Error HRESULT E_FAIL has been returned from a call to a COM component.
+   at Microsoft.VisualStudio.TestTools.UITest.Playback.Engine.IRPFPlayback.FindAllScreenElements(IScreenElement pScreenElementStart, String bstrQueryId, Object&amp; pvarResKeys, Int32 cResKeys, Int32 nMaxDepth, Object[]&amp; foundDescendants)
+   at Microsoft.VisualStudio.TestTools.UITest.Playback.ScreenElement.FindTopLevelWindowHelper(String queryId)
+   at Microsoft.VisualStudio.TestTools.UITest.Playback.ScreenElement.FindFromPartialQueryId(String queryId)
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl..ctor(String queryId)
+   --- End of inner exception stack trace ---
+   at Microsoft.VisualStudio.TestTools.UITesting.Playback.MapControlNotFoundException(COMException ex, IPlaybackContext context)
+   at Microsoft.VisualStudio.TestTools.UITesting.Playback.MapAndThrowComException(COMException innerException, IPlaybackContext context)
+   at Microsoft.VisualStudio.TestTools.UITesting.Playback.MapAndThrowException(SystemException exception, IPlaybackContext context)
+   at Microsoft.VisualStudio.TestTools.UITesting.Playback.MapAndThrowException(SystemException exception, String queryId)
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl..ctor(String queryId)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.SearchTopLevelWindow(ISearchArgument topLevelSearchArg, String topLevelElementQueryId)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.GetTitleUpdatedTopLevelWindow(ISearchArgument topLevelSearchArg, String queryId, IList`1 windowTitles)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.GetTopLevelElement(Boolean useCache, Boolean useCacheOnly, ISearchArgument searchArg, IList`1 windowTitles, Int32&amp; timeLeft)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.GetElement(Boolean useCache, ISearchArgument searchArg)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.Search(ISearchArgument searchArg)
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl.FindInternal()
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl.FindControlIfNecessary()
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl.SetProperty(String propertyName, Object value)
+W, 220912, 15, 2012/10/16, 18:44:06.742, 39151085604672, QTAgent32.exe, IEDOM : StopSession of the plugin called before StartSession
+W, 220912, 15, 2012/10/16, 18:44:06.742, 39151085613181, QTAgent32.exe, UIA : StopSession of the plugin called before StartSession
+</DebugTrace>
+        <ErrorInfo>
+          <Message>Test method SpreadsheetTests.CodedUITest1.CodedUITestMethod1 threw exception: 
+Microsoft.VisualStudio.TestTools.UITest.Extension.UITestControlNotFoundException: The playback failed to find the control with the given search properties. Additional Details: 
+TechnologyName:  'MSAA'
+ControlType:  'Window'
+Name:  'PS6 - Spreadsheet'
+ClassName:  'WindowsForms10.Window'
+ ---&gt; System.Runtime.InteropServices.COMException: Error HRESULT E_FAIL has been returned from a call to a COM component.</Message>
+          <StackTrace>    at Microsoft.VisualStudio.TestTools.UITest.Playback.Engine.IRPFPlayback.FindAllScreenElements(IScreenElement pScreenElementStart, String bstrQueryId, Object&amp; pvarResKeys, Int32 cResKeys, Int32 nMaxDepth, Object[]&amp; foundDescendants)
+   at Microsoft.VisualStudio.TestTools.UITest.Playback.ScreenElement.FindTopLevelWindowHelper(String queryId)
+   at Microsoft.VisualStudio.TestTools.UITest.Playback.ScreenElement.FindFromPartialQueryId(String queryId)
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl..ctor(String queryId)
+ --- End of inner exception stack trace ---
+    at Microsoft.VisualStudio.TestTools.UITesting.Playback.MapControlNotFoundException(COMException ex, IPlaybackContext context)
+   at Microsoft.VisualStudio.TestTools.UITesting.Playback.MapAndThrowComException(COMException innerException, IPlaybackContext context)
+   at Microsoft.VisualStudio.TestTools.UITesting.Playback.MapAndThrowException(SystemException exception, IPlaybackContext context)
+   at Microsoft.VisualStudio.TestTools.UITesting.Playback.MapAndThrowException(SystemException exception, String queryId)
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl..ctor(String queryId)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.SearchTopLevelWindow(ISearchArgument topLevelSearchArg, String topLevelElementQueryId)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.GetTitleUpdatedTopLevelWindow(ISearchArgument topLevelSearchArg, String queryId, IList`1 windowTitles)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.GetTopLevelElement(Boolean useCache, Boolean useCacheOnly, ISearchArgument searchArg, IList`1 windowTitles, Int32&amp; timeLeft)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.GetElement(Boolean useCache, ISearchArgument searchArg)
+   at Microsoft.VisualStudio.TestTools.UITesting.SearchHelper.Search(ISearchArgument searchArg)
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl.FindInternal()
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl.FindControlIfNecessary()
+   at Microsoft.VisualStudio.TestTools.UITesting.UITestControl.SetProperty(String propertyName, Object value)
+   at Microsoft.VisualStudio.TestTools.UITesting.WinControls.WinEdit.set_Text(String value)
+   at SpreadsheetTests.UIMap.Test_simple_add() in D:\Users\dwilloug\PS6\SpreadsheetTests\UIMap.Designer.cs:line 167
+   at SpreadsheetTests.CodedUITest1.CodedUITestMethod1() in D:\Users\dwilloug\PS6\SpreadsheetTests\CodedUITest1.cs:line 29
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+      <ResultFiles>
+        <ResultFile path="PHINEAS\CodedUITestMethod1.png" />
+      </ResultFiles>
+      <ExtensionResult>Exception has been thrown by the target of an invocation.</ExtensionResult>
+    </UnitTestResult>
+  </Results>
+</TestRun>
