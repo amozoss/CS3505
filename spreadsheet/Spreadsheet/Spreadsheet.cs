@@ -24,7 +24,7 @@ namespace SS
 
         private Dictionary<string, Cell> spreadsheet; // The string in the dictionary is the name of the cell.
         // A cell has an object as a member variable, which can be  
-        // get/set. The object can be a double, string, or formula
+        // get/set. Th e object can be a double, string, or formula
         private DependencyGraph dependencyGraph; // refer to XML comment, keeps track of cell dependencies
 
 

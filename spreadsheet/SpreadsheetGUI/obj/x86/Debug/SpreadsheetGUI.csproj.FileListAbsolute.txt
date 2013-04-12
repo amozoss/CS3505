@@ -34,3 +34,5 @@ X:\Documents\CS3505\spreadsheet\SpreadsheetGUI\obj\x86\Debug\SS.SpreadsheetGUI.r
 X:\Documents\CS3505\spreadsheet\SpreadsheetGUI\obj\x86\Debug\SS.Properties.Resources.resources
 X:\Documents\CS3505\spreadsheet\SpreadsheetGUI\obj\x86\Debug\GenerateResource.read.1.tlog
 X:\Documents\CS3505\spreadsheet\SpreadsheetGUI\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\CS3505\spreadsheet\SpreadsheetGUI\obj\x86\Debug\SpreadsheetGUI.exe
+C:\CS3505\spreadsheet\SpreadsheetGUI\obj\x86\Debug\SpreadsheetGUI.pdb
