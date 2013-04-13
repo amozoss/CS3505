@@ -66,8 +66,13 @@ namespace SS
             {
                 string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
-                string spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
-                string colonFirstWord = colonSplitup[0].ToUpper().Trim();
+                string spaceFirstWord = "";
+                string colonFirstWord = "";
+
+                if (spaceSplitup.Length > 0) 
+                     spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
+                if (colonSplitup.Length > 0)
+                    colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
                 if (spaceFirstWord.Equals("CREATE"))
                 {
