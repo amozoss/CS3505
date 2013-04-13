@@ -105,7 +105,8 @@ namespace SS
         /// <param name="password">password is the password to use for the new spreadsheet</param>
         public void CreateSpreadsheet(string name, string password)
         {
-
+            socket.BeginSend("CREATE\n" + name + "\n" + password + "\n", SendCallback, socket);
+            socket.BeginReceive(CreateSSCallback, socket);
         }
 
 
@@ -144,7 +145,8 @@ namespace SS
         /// <param name="password">password is the password to use for the spreadsheet</param>
         public void JoinSpreadsheet(string name, string password)
         {
-
+            socket.BeginSend("JOIN\n" + name + "\n" + password + "\n", SendCallback, socket);
+            socket.BeginReceive(JoinSSCallback, socket);
         }
 
 
@@ -191,7 +193,9 @@ namespace SS
         /// <param name="cellContent">content of cell</param>
         public void ChangeCell(string cellName, string cellContent)
         {
-
+            socket.BeginSend("CHANGE\n" + version.ToString() + "\n" + password + "\n"
+                + cellName + "\n" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
+            socket.BeginReceive(ChangeCellCallback, socket);
         }
 
         /// <summary>
@@ -235,7 +239,8 @@ namespace SS
         ///
         public void Undo()
         {
-
+            socket.BeginSend("UNDO\n" + nameOfSpreadsheet + "\n" + version.ToString()+ "\n", SendCallback, socket);
+            socket.BeginReceive(UndoCallback, socket);
         }
         /// <summary>
         ///        To save the current state of the spreadsheet and merge all outstanding changes to the existing 
@@ -260,7 +265,8 @@ namespace SS
         /// </summary>
         public void Save()
         {
-
+            socket.BeginSend("SAVE\n" + nameOfSpreadsheet + "\n", SendCallback, socket);
+            socket.BeginReceive(UndoCallback, socket);
         }
    
 
