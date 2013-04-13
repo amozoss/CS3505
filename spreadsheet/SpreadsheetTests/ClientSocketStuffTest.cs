@@ -73,7 +73,8 @@ namespace SpreadsheetTests
             string ipAddress = string.Empty; // TODO: Initialize to an appropriate value
             Spreadsheet spreadsheet = null; // TODO: Initialize to an appropriate value
             ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = null; // TODO: Initialize to an appropriate value
-            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage); // TODO: Initialize to an appropriate value
+            int port = 0; // TODO: Initialize to an appropriate value
+            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port); // TODO: Initialize to an appropriate value
             string cellName = string.Empty; // TODO: Initialize to an appropriate value
             string cellContent = string.Empty; // TODO: Initialize to an appropriate value
             target.ChangeCell(cellName, cellContent);
@@ -105,7 +106,8 @@ namespace SpreadsheetTests
             string ipAddress = string.Empty; // TODO: Initialize to an appropriate value
             Spreadsheet spreadsheet = null; // TODO: Initialize to an appropriate value
             ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = null; // TODO: Initialize to an appropriate value
-            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage); // TODO: Initialize to an appropriate value
+            int port = 0; // TODO: Initialize to an appropriate value
+            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port); // TODO: Initialize to an appropriate value
             target.Close();
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
@@ -135,7 +137,8 @@ namespace SpreadsheetTests
             string ipAddress = string.Empty; // TODO: Initialize to an appropriate value
             Spreadsheet spreadsheet = null; // TODO: Initialize to an appropriate value
             ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = null; // TODO: Initialize to an appropriate value
-            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage); // TODO: Initialize to an appropriate value
+            int port = 0; // TODO: Initialize to an appropriate value
+            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port); // TODO: Initialize to an appropriate value
             string name = string.Empty; // TODO: Initialize to an appropriate value
             string password = string.Empty; // TODO: Initialize to an appropriate value
             target.CreateSpreadsheet(name, password);
@@ -167,7 +170,8 @@ namespace SpreadsheetTests
             string ipAddress = string.Empty; // TODO: Initialize to an appropriate value
             Spreadsheet spreadsheet = null; // TODO: Initialize to an appropriate value
             ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = null; // TODO: Initialize to an appropriate value
-            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage); // TODO: Initialize to an appropriate value
+            int port = 0; // TODO: Initialize to an appropriate value
+            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port); // TODO: Initialize to an appropriate value
             string name = string.Empty; // TODO: Initialize to an appropriate value
             string password = string.Empty; // TODO: Initialize to an appropriate value
             target.JoinSpreadsheet(name, password);
@@ -183,7 +187,8 @@ namespace SpreadsheetTests
             string ipAddress = string.Empty; // TODO: Initialize to an appropriate value
             Spreadsheet spreadsheet = null; // TODO: Initialize to an appropriate value
             ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = null; // TODO: Initialize to an appropriate value
-            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage); // TODO: Initialize to an appropriate value
+            int port = 0; // TODO: Initialize to an appropriate value
+            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port); // TODO: Initialize to an appropriate value
             target.Save();
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
@@ -228,7 +233,8 @@ namespace SpreadsheetTests
             string ipAddress = string.Empty; // TODO: Initialize to an appropriate value
             Spreadsheet spreadsheet = null; // TODO: Initialize to an appropriate value
             ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = null; // TODO: Initialize to an appropriate value
-            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage); // TODO: Initialize to an appropriate value
+            int port = 0; // TODO: Initialize to an appropriate value
+            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port); // TODO: Initialize to an appropriate value
             target.Undo();
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
         }
