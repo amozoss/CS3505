@@ -244,18 +244,17 @@ namespace SS
                 if (spaceFirstWord.Equals("CHANGE"))
                 {
                     string thirdWord = spaceSplitup[2].ToUpper().Trim();
-                    string okOrNot = "";
                     if (thirdWord.Equals("OK"))
                     {
                         //passed
-                        okOrNot = "PASSED";
+                        status = "PASSED";
                     }
                     else if (thirdWord.Equals("FAIL"))
                     {
                         //failed
-                        okOrNot = "FAILED";
+                        status = "FAILED";
                     }
-                    socket.BeginReceive(ChangeCellCallback, okOrNot);
+                    socket.BeginReceive(ChangeCellCallback, status);
                 }
                 else if (spaceFirstWord.Equals("message"))
                 {
