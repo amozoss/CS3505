@@ -179,6 +179,7 @@ namespace SS
                 else if (colonFirstWord.Equals("VERSION"))
                 {
                     // get Version
+                    version = Int32.Parse(colonSplitup[1].Trim());
                     socket.BeginReceive(JoinSSCallback, status);
                 }
                 else if (colonFirstWord.Equals("LENGTH"))
@@ -263,11 +264,8 @@ namespace SS
                 }
                 else if (colonFirstWord.Equals("Version"))
                 {
-                    if(status.Equals("PASSED"))
-                    {
-
-                    }
-                    else
+                    version = Int32.Parse(colonSplitup[1].Trim());
+                    if(status.Equals("FAILED"))
                     {
                         socket.BeginReceive(ChangeCellCallback, status);
                     }
@@ -363,6 +361,7 @@ namespace SS
                     else if (colonFirstWord.Equals("VERSION"))
                     {
                         // get Version
+                        version = Int32.Parse(colonSplitup[1].Trim());
                         socket.BeginReceive(UndoCallback, status);
                     }
                     else if (colonFirstWord.Equals("CELL"))
@@ -401,6 +400,7 @@ namespace SS
                     }
                     else if (colonFirstWord.Equals("VERSION"))
                     {
+                        version = Int32.Parse(colonSplitup[1].Trim());
                         // get Version
                        
                     }
@@ -414,6 +414,7 @@ namespace SS
                     }
                     else if (colonFirstWord.Equals("VERSION"))
                     {
+                        version = Int32.Parse(colonSplitup[1].Trim());
                         // get Version
 
                     }
@@ -539,6 +540,7 @@ namespace SS
                     else if (colonFirstWord.Equals("VERSION"))
                     {
                         // get Version
+                        version = Int32.Parse(colonSplitup[1].Trim());
                         socket.BeginReceive(UpdateCallback, status);
                     }
                     else if (colonFirstWord.Equals("CELL"))

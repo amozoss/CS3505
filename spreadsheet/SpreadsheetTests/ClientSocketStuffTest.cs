@@ -70,15 +70,28 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void ChangeCellTest()
         {
-            string ipAddress = string.Empty; // TODO: Initialize to an appropriate value
-            Spreadsheet spreadsheet = null; // TODO: Initialize to an appropriate value
-            ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = null; // TODO: Initialize to an appropriate value
-            int port = 0; // TODO: Initialize to an appropriate value
-            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port); // TODO: Initialize to an appropriate value
-            string cellName = string.Empty; // TODO: Initialize to an appropriate value
-            string cellContent = string.Empty; // TODO: Initialize to an appropriate value
+            string ipAddress = "localhost"; 
+            Spreadsheet spreadsheet = null; 
+            ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something; 
+            int port = 1984; 
+
+            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
+            string cellName = "jackson";
+            string cellContent = "jackson";
+
             target.ChangeCell(cellName, cellContent);
+
+
+
+
+
+
             Assert.Inconclusive("A method that does not return a value cannot be verified.");
+        }
+
+        private void something(string somethingElse)
+        {
+
         }
 
         /// <summary>
