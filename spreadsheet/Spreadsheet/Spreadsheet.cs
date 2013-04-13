@@ -1,4 +1,4 @@
-﻿//Dan Willoughby
+﻿//Dan Willoughby and Michael Banks
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
-
 
 namespace SS
 {
@@ -26,9 +25,6 @@ namespace SS
         // A cell has an object as a member variable, which can be  
         // get/set. The object can be a double, string, or formula
         private DependencyGraph dependencyGraph; // refer to XML comment, keeps track of cell dependencies
-
-
-
 
         /// <summary>
         /// Constructs an empty spreadsheet. A spreadsheet consists of cells and tracts the dependencies of 
@@ -132,10 +128,7 @@ namespace SS
                     //read the version
                     return reader.GetAttribute("version");
                 }
-
             }
-
-
         }
 
         public override void Save(String filename)
@@ -143,11 +136,7 @@ namespace SS
             //create file
             try
             {
-
                 var output = XmlWriter.Create(filename);
-
-
-
                 // setup top of document
                 output.WriteStartDocument();
                 output.WriteStartElement("spreadsheet");

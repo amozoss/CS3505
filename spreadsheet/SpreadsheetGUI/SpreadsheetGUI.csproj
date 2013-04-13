@@ -38,6 +38,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Spreadsheet\Formula.dll</HintPath>
     </Reference>
+    <Reference Include="PS7">
+      <HintPath>..\..\string_socket\PS7\bin\Debug\PS7.dll</HintPath>
+    </Reference>
     <Reference Include="SpreadsheetPanel">
       <HintPath>..\Spreadsheet\SpreadsheetPanel.dll</HintPath>
     </Reference>

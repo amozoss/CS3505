@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
+using CustomNetworking;
+using System.Net.Sockets;
 
 namespace SS
 {
@@ -18,6 +20,10 @@ namespace SS
     {
         private Spreadsheet spreadsheet; // The spreadsheet model for the form. Each new form has its own spreadsheet.
         private string filename; // keeps track of the current file name, if filename is null, the saveAs menu is used
+        private StringSocket socket;
+        private string ipAddress = "localhost";
+        private string userName;
+        private string password;
 
 
         /// <summary>
@@ -25,18 +31,28 @@ namespace SS
         /// </summary>
         public SpreadsheetGUI()
         {
-
             InitializeComponent();
+            setSocket();  // To convert the data from the server to regular data, we should just save it as xml then have 
+            // our spreadsheet open it for us.
 
+            userName = "Frederico";
+            password = "2;g94jgaj4-g";
+
+            socket.BeginSend("CREATE " + userName + " " + password + "\n", SendCallback, socket);
+            socket.BeginReceive(ReceiveMessage, socket);
+            // Create and join are figured out here.
+            
             // Create the spreadsheet model and the validator to check if the cell names are correct. 
             spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
-
+            socket.BeginReceive(ReceiveMessage, socket);
             // registering a method so that it is notified when an event happens.
             spreadsheetPanel1.SelectionChanged += displaySelection;
             spreadsheetPanel1.SetSelection(2, 3);
 
             displaySelection(spreadsheetPanel1); // update display when loaded
         }
+
+
 
         /// <summary>
         /// Creates a spreadsheetGUI with the content in sheet
@@ -58,6 +74,26 @@ namespace SS
             displaySelection(spreadsheetPanel1); // update display when loaded
         }
 
+        private void SendCallback(Exception e, object o) { }
+
+        private void ReceiveMessage(String message, Exception e, object o)
+        {
+            //Console.WriteLine(message);
+            this.Invoke((MethodInvoker)delegate
+            {
+                valueTextBox.Text = message; // runs on UI thread
+            });
+        }
+
+        /// <summary>
+        /// This method creates the TcpClient and gives it to the string socket.
+        /// </summary>
+        private void setSocket()
+        {
+            TcpClient client = new TcpClient(ipAddress, 1984);
+            Socket sock = client.Client;
+            socket = new StringSocket(sock, new UTF8Encoding());
+        }
 
         /// <summary>
         /// Updates the panel display, cellDisplayTextBox, contentsTextBox, valueTextBox, and all non-empty Cells
@@ -83,13 +119,20 @@ namespace SS
             var valueOfCell = spreadsheet.GetCellValue(nameOfCell); // get value of cell
             string valueOfCellString;
 
-            if (valueOfCell is SpreadsheetUtilities.FormulaError)
-            {
+            if (valueOfCell is SpreadsheetUtilities.FormulaError)//*******************************************************************************************************************
+            {//***********************************************************************************************************************************************************************
+                                                                                // If it is an FormulaError we don't do anytyhing here.
                 valueOfCellString = "##########";
             }
             else
-            {
-                valueOfCellString = valueOfCell.ToString();
+            {   
+                /**If is isn't a FormulaError, we send "CHANGE VERSION #\n" to the server.
+                 * The state of the client’s local spreadsheet should remain unchanged until approved by the server.
+                 Socket.BeginSend("message", SendCallback, null/whatever);
+                 Socket.BeginReceive(ReceiveCallback, null/whatever);
+                 probably a loop with thread.sleep in it while we wait for the message.
+                 */
+                valueOfCellString = valueOfCell.ToString();                     
             }
 
 
@@ -394,6 +437,11 @@ namespace SS
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveFile();
+        }
+
+        private void SpreadsheetGUI_Load(object sender, EventArgs e)
+        {
+
         }
 
 

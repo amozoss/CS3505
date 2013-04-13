@@ -35,6 +35,9 @@
     <Reference Include="Formula">
       <HintPath>.\Formula.dll</HintPath>
     </Reference>
+    <Reference Include="PS7">
+      <HintPath>..\..\string_socket\PS7\bin\Debug\PS7.dll</HintPath>
+    </Reference>
     <Reference Include="SpreadsheetUtilities">
       <HintPath>.\SpreadsheetUtilities.dll</HintPath>
     </Reference>
