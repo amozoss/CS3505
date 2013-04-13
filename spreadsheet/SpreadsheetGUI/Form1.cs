@@ -37,7 +37,9 @@ namespace SS
         public SpreadsheetGUI()
         {
             InitializeComponent();
-            setSocket();  // To convert the data from the server to regular data, we should just save it as xml then have 
+            setSocket();  
+
+            // To convert the data from the server to regular data, we should just save it as xml then have 
             // our spreadsheet open it for us.
 
 
