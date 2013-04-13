@@ -18,6 +18,7 @@ namespace SS
         private StringSocket socket;
         private static int SERVERPORT = 1984;
         private ClientUpdateGUI_SS updateGUI_SS;
+        private int version;
 
         /// <summary>
         ///  Creates the communication outlet that the client will use to "talk" to the server.
