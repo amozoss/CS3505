@@ -38,8 +38,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Spreadsheet\Formula.dll</HintPath>
     </Reference>
-    <Reference Include="PS7">
-      <HintPath>..\..\string_socket\PS7\bin\Debug\PS7.dll</HintPath>
+    <Reference Include="PS7, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\string_socket\PS7\bin\Debug\PS7.dll</HintPath>
     </Reference>
     <Reference Include="SpreadsheetPanel">
       <HintPath>..\Spreadsheet\SpreadsheetPanel.dll</HintPath>
@@ -60,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientSocketStuff.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

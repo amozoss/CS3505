@@ -29,7 +29,7 @@ namespace SS
             {
                 valueTextBox.Text = message; // runs on UI thread
             });
-         * /
+         */
 
         /// <summary>
         /// Creates a new spreadsheetGUI and spreadsheet model
