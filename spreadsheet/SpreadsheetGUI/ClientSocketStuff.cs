@@ -68,6 +68,7 @@ namespace SS
                 string[] colonSplitup = message.Split(':');
                 string spaceFirstWord = "";
                 string colonFirstWord = "";
+                string status = (string)o;
 
                 if (spaceSplitup.Length > 0) 
                      spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
@@ -80,26 +81,41 @@ namespace SS
                     if (thirdWord.Equals("OK"))
                     {
                         //passed
+                        status = "PASSED";
                     }
                     else if (thirdWord.Equals("FAIL"))
                     {
                         //failed
+                        status = "FAILED";
+                    }
+                    socket.BeginReceive(CreateSSCallback, status);
+                }
+                else if (status.Equals("PASSED"))
+                {
+                    if (colonFirstWord.Equals("NAME"))
+                    {
+                        // get name
+                         socket.BeginReceive(CreateSSCallback, status);
+                    }
+                    else if (colonFirstWord.Equals("PASSWORD"))
+                    {
+                         // get password
+                    }
+
+                }
+
+                else if (status.Equals("FAILED"))
+                {
+                    if (colonFirstWord.Equals("NAME"))
+                    {
+                        // get name
+                        socket.BeginReceive(CreateSSCallback, status);
+                    }
+                    else
+                    {
+                        // must be a message
                     }
                 }
-                else if (spaceFirstWord.Equals("message"))
-                {
-                    // message
-                }
-                else if (colonFirstWord.Equals("Name"))
-                {
-                    // get name
-                }
-                else if (colonFirstWord.Equals("Password"))
-                {
-                    // get password
-                }
-               
-              
                 updateGUI_SS(message); // the message from the server will be parsed in a separate class
             }
         }
@@ -125,12 +141,39 @@ namespace SS
         /// <param name="o"></param>
         private void JoinSSCallback(String message, Exception e, object o)
         {
-            if (message != null)
-            {
-                string[] splitup = message.Split(' ');
-                string firstWord = splitup[0].ToUpper().Trim();
+            string[] spaceSplitup = message.Split(' ');
+            string[] colonSplitup = message.Split(':');
+            string spaceFirstWord = "";
+            string colonFirstWord = "";
 
-                
+            if (spaceSplitup.Length > 0)
+                spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
+            if (colonSplitup.Length > 0)
+                colonFirstWord = colonSplitup[0].ToUpper().Trim();
+
+            if (spaceFirstWord.Equals("JOIN"))
+            {
+                string thirdWord = spaceSplitup[2].ToUpper().Trim();
+                if (thirdWord.Equals("OK"))
+                {
+                    //passed
+                }
+                else if (thirdWord.Equals("FAIL"))
+                {
+                    //failed
+                }
+            }
+            else if (colonFirstWord.Equals("NAME"))
+            {
+                // get name
+            }
+            else if (colonFirstWord.Equals("VERSION"))
+            {
+                // get password
+            }
+            else if (message.Length > 1)
+            {
+                // assume its a message
             }
         }
 
