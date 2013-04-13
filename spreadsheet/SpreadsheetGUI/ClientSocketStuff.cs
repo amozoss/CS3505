@@ -37,28 +37,160 @@ namespace SS
         }
 
         private void SendCallback(Exception e, object o) { }
+
         #region Callbacks
+
+        private string[] parseMessage(string message)
+        {
+            string[] splitup;
+           
+        }
+
+        /// <summary>
+        /// If the server successfully created the new spreadsheet file, it should respond with
+        ///
+        ///CREATE SP OK LF
+        ///Name:name LF
+        ///Password:password LF
+        ///
+        ///Otherwise, it should respond with
+        ///
+        ///CREATE SP FAIL LF
+        ///Name:name LF
+        ///message LF
+        ///
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        /// <param name="o"></param>
         private void CreateSSCallback(String message, Exception e, object o)
         {
-            updateGUI_SS(message); // the message from the server will be parsed in a separate class
+            if (message != null)
+            {
+                string[] splitup = message.Split(' ');
+                string firstWord = splitup[0].ToUpper().Trim();
+                if (firstWord.Equals("CREATE"))
+                {
+                }
+              
+                updateGUI_SS(message); // the message from the server will be parsed in a separate class
+            }
         }
 
+        /// <summary>
+        /// 
+        ///If the request succeeded, the server should respond with
+        ///
+        ///JOIN SP OK LF
+        ///Name:name LF
+        ///Version:version LF
+        ///Length:length LF
+        ///xml LF
+        ///
+        ///Otherwise, the server should respond with
+        ///JOIN SP FAIL LF
+        ///Name:name LF
+        ///message LF
+        ///
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        /// <param name="o"></param>
         private void JoinSSCallback(String message, Exception e, object o)
         {
+            if (message != null)
+            {
+                string[] splitup = message.Split(' ');
+                string firstWord = splitup[0].ToUpper().Trim();
 
+                
+            }
         }
 
+        /// <summary>
+        /// If the request succeeded, the server should respond with
+        ///
+        ///CHANGE SP OK LF
+        ///Name:name LF
+        ///Version:version LF
+        ///
+        ///Otherwise, it should respond with
+        ///
+        ///CHANGE SP FAIL LF
+        ///Name:name LF
+        ///Version:version LF
+        ///message LF
+        ///
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        /// <param name="o"></param>
         private void ChangeCellCallback(String message, Exception e, object o)
         {
+            if (message != null)
+            {
+                string[] splitup = message.Split(' ');
+                string firstWord = splitup[0].ToUpper().Trim();
 
+
+            }
         }
 
+        /// <summary>
+        /// If the request succeeded, the server should respond with
+        ///
+        ///UNDO SP OK LF
+        ///Name:name LF
+        ///Version:version LF
+        ///Cell:cell LF
+        ///Length:length LF
+        ///content LF
+        ///
+        ///Otherwise, the server should respond with
+        ///
+        ///UNDO SP FAIL LF
+        ///Name:name LF
+        ///Version:version LF
+        ///message LF
+        ///
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        /// <param name="o"></param>
         private void UndoCallback(String message, Exception e, object o)
         {
+            if (message != null)
+            {
+                string[] splitup = message.Split(' ');
+                string firstWord = splitup[0].ToUpper().Trim();
+
+
+            }
         }
 
+        /// <summary>
+        /// If the request succeeds, the server should respond with
+        ///SAVE SP OK LF
+        ///Name:name LF
+        ///
+        ///If the request fails, the server should respond with
+        ///
+        ///SAVE SP FAIL LF
+        ///Name:name LF
+        ///message LF
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        /// <param name="o"></param>
         private void SaveCallback(String message, Exception e, object o)
         {
+            if (message != null)
+            {
+                string[] splitup = message.Split(' ');
+                string firstWord = splitup[0].ToUpper().Trim();
+
+
+            }
         }
 
         #endregion
