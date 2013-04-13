@@ -20,7 +20,7 @@ namespace SS
     {
         private Spreadsheet spreadsheet; // The spreadsheet model for the form. Each new form has its own spreadsheet.
         private string filename; // keeps track of the current file name, if filename is null, the saveAs menu is used
-
+        public delegate void EnterPressed(String cell, String cellContents);
 
         /**
          * This is used for posting on the UI thread from another thread.  
@@ -267,7 +267,7 @@ namespace SS
                 // get cell name
                 string nameOfCell = "" + GetExcelColumnName(col) + (row + 1);
 
-                // set cell contents
+                // set cell contents @@@
                 ISet<string> dependentCells = spreadsheet.SetContentsOfCell(nameOfCell, contentsTextBox.Text);
 
                 // update all dependent cells
@@ -292,6 +292,8 @@ namespace SS
                         else
                         {
                             valueOfDependentCellString = valueOfDependentCell.ToString();
+                            // @todo this is where we can push the changes to the server
+                            
                         }
                         ss.SetValue(column, rowNumber, valueOfDependentCellString); // update panel
                     }
@@ -419,6 +421,7 @@ namespace SS
 
         }
 
+       
 
 
 
