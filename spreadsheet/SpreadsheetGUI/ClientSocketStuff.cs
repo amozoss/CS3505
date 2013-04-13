@@ -24,7 +24,7 @@ namespace SS
         ///  Creates the communication outlet that the client will use to "talk" to the server.
         /// </summary>
         /// <param name="ipAddress"></param>
-        public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet,  ClientUpdateGUI_SS receivedMessage)
+        public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet,  ClientUpdateGUI_SS receivedMessage, int port)
         {
 
             // set private instance variables 
