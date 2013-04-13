@@ -23,7 +23,7 @@ namespace SS
         ///  Creates the communication outlet that the client will use to "talk" to the server.
         /// </summary>
         /// <param name="ipAddress"></param>
-        public ClientSocketStuff(string ipAddress, ClientUpdateGUI_SS receivedMessage)
+        public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet,  ClientUpdateGUI_SS receivedMessage)
         {
 
             // set private instance variables 
@@ -38,10 +38,27 @@ namespace SS
 
         private void SendCallback(Exception e, object o) { }
 
-        private void ReceiveMessage(String message, Exception e, object o)
+        private void CreateSSCallback(String message, Exception e, object o)
         {
             updateGUI_SS(message); // the message from the server will be parsed in a separate class
         }
+
+        private void JoinSSCallback(String message, Exception e, object o)
+        {
+        }
+
+        private void ChangeCellCallback(String message, Exception e, object o)
+        {
+        }
+
+        private void UndoCallback(String message, Exception e, object o)
+        {
+        }
+
+        private void SaveCallback(String message, Exception e, object o)
+        {
+        }
+
 
         /// <summary>
         /// To create a new spreadsheet file on the server, the client should send
@@ -125,6 +142,8 @@ namespace SS
 
         }
 
+
+        /// <summary>
         ///        To change the contents of a cell in a spreadsheet, the client should send 
         ///CHANGE LF
         ///Name:name LF
@@ -162,11 +181,15 @@ namespace SS
         /// message is a notice of why the change was rejected. It must not contain any linefeeds. 
         ///The server should provide some reason in message why the request failed (e.g., the 
         ///client has not logged in to work on the spreadsheet, or the client’s version is out of date).
+        /// </summary>
+        ///<param name="cellName">name of cell</param>
+        /// <param name="cellContent">content of cell</param>
         public void ChangeCell(string cellName, string cellContent)
         {
 
         }
 
+        /// <summary>
         ///        To undo the last change made to a spreadsheet, the client should send
         ///UNDO LF
         ///Name:name LF
@@ -203,11 +226,37 @@ namespace SS
         /// message contains information why the undo failed. It must not contain any linefeeds. 
         ///The server should provide some reason in message why the request failed (e.g., the 
         ///client has logged in to work on the spreadsheet, or client’s version is out of date).
+        /// </summary>
+        ///
         public void Undo()
         {
 
         }
+        /// <summary>
+        ///        To save the current state of the spreadsheet and merge all outstanding changes to the existing 
+        ///file, the client should send to the server
+        ///SAVE LF
+        ///Name:name LF
+        ///
+        ///If the request succeeds, the server should respond with 
+        ///SAVE SP OK LF
+        ///Name:name LF
+        ///
+        ///If the request fails, the server should respond with
+        ///SAVE SP FAIL LF
+        ///Name:name LF
+        ///message LF
+        ///
+        ///where
+        /// name is the name of the spreadsheet for which saving failed
+        /// message contains information why the save failed. It must not contain any linefeeds. 
+        ///The server should provide some reason in message why the request failed (e.g., the 
+        ///client has not logged in to work on the spreadsheet).
+        /// </summary>
+        public void Save()
+        {
 
+        }
    
 
         /// <summary>
