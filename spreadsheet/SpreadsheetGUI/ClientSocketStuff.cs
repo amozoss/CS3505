@@ -38,7 +38,7 @@ namespace SS
         }
 
         private void SendCallback(Exception e, object o) { }
-
+        #region Callbacks
         private void CreateSSCallback(String message, Exception e, object o)
         {
             updateGUI_SS(message); // the message from the server will be parsed in a separate class
@@ -46,10 +46,12 @@ namespace SS
 
         private void JoinSSCallback(String message, Exception e, object o)
         {
+
         }
 
         private void ChangeCellCallback(String message, Exception e, object o)
         {
+
         }
 
         private void UndoCallback(String message, Exception e, object o)
@@ -60,7 +62,9 @@ namespace SS
         {
         }
 
+        #endregion
 
+        #region Send Methods
         /// <summary>
         /// To create a new spreadsheet file on the server, the client should send
         ///
@@ -268,6 +272,8 @@ namespace SS
          //   socket.CloseAndShutdown();
 
         }
+
+        #endregion
 
     }
 }
