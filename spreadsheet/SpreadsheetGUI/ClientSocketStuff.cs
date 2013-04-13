@@ -11,24 +11,24 @@ namespace SS
 
     class ClientSocketStuff
     {
-        public delegate void MessageFromServer(String message); // The message will be handled by a separate class 
+        public delegate void ClientUpdateGUI_SS(String message); // The message will be handled by a separate class 
         private string ipAddress;
         private string nameOfSpreadsheet; // name is the name for the new spreadsheet
         private string password; // password is the password to use for the new spreadsheet
         private StringSocket socket;
         private static int SERVERPORT = 1984;
-        private MessageFromServer receivedMessage;
+        private ClientUpdateGUI_SS updateGUI_SS;
 
         /// <summary>
         ///  Creates the communication outlet that the client will use to "talk" to the server.
         /// </summary>
         /// <param name="ipAddress"></param>
-        public ClientSocketStuff(string ipAddress, MessageFromServer receivedMessage)
+        public ClientSocketStuff(string ipAddress, ClientUpdateGUI_SS receivedMessage)
         {
 
             // set private instance variables 
             this.ipAddress = ipAddress;
-            this.receivedMessage = receivedMessage;
+            this.updateGUI_SS = receivedMessage;
 
             TcpClient client = new TcpClient(ipAddress, SERVERPORT);
             Socket sock = client.Client;
@@ -40,7 +40,7 @@ namespace SS
 
         private void ReceiveMessage(String message, Exception e, object o)
         {
-            receivedMessage(message); // the message from the server will be parsed in a separate class
+            updateGUI_SS(message); // the message from the server will be parsed in a separate class
         }
 
         /// <summary>

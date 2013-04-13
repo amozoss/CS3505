@@ -36,8 +36,7 @@ namespace SS
         /// </summary>
         public SpreadsheetGUI()
         {
-            InitializeComponent();
-            setSocket();  
+            InitializeComponent(); 
 
             // To convert the data from the server to regular data, we should just save it as xml then have 
             // our spreadsheet open it for us.
@@ -74,16 +73,6 @@ namespace SS
             spreadsheetPanel1.SetSelection(2, 3);
 
             displaySelection(spreadsheetPanel1); // update display when loaded
-        }
-
-
-
-        /// <summary>
-        /// This method creates the TcpClient and gives it to the string socket.
-        /// </summary>
-        private void setSocket()
-        {
-
         }
 
         /// <summary>
@@ -307,7 +296,6 @@ namespace SS
                         ss.SetValue(column, rowNumber, valueOfDependentCellString); // update panel
                     }
                 }
-
             }
             catch (InvalidNameException) // Invalid name
             {
@@ -321,8 +309,6 @@ namespace SS
             {
                 MessageBox.Show("A cicular dependency was detected. Make sure the cell's formula doesn't depend on itself.", "Circular Error");
             }
-
-
             displaySelection(spreadsheetPanel1); // Update Everything on the spreadsheet panel
         }
 
@@ -334,8 +320,6 @@ namespace SS
         {
             if (e.KeyCode == Keys.Enter)
             {
-
-
                 updateCells();
             }
         }
