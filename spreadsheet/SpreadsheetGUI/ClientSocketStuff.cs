@@ -64,11 +64,14 @@ namespace SS
         {
             if (message != null)
             {
-                string[] splitup = message.Split(' ');
-                string firstWord = splitup[0].ToUpper().Trim();
-                if (firstWord.Equals("CREATE"))
+                string[] spaceSplitup = message.Split(' ');
+                string[] colonSplitup = message.Split(':');
+                string spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
+                string colonFirstWord = colonSplitup[0].ToUpper().Trim();
+
+                if (spaceFirstWord.Equals("CREATE"))
                 {
-                    string thirdWord = splitup[2].ToUpper().Trim();
+                    string thirdWord = spaceSplitup[2].ToUpper().Trim();
                     if (thirdWord.Equals("OK"))
                     {
                         //passed
@@ -78,6 +81,19 @@ namespace SS
                         //failed
                     }
                 }
+                else if (spaceFirstWord.Equals("message"))
+                {
+                    // message
+                }
+                else if (colonFirstWord.Equals("Name"))
+                {
+                    // get name
+                }
+                else if (colonFirstWord.Equals("Password"))
+                {
+                    // get password
+                }
+               
               
                 updateGUI_SS(message); // the message from the server will be parsed in a separate class
             }
