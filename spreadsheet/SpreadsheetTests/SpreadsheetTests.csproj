@@ -52,6 +52,12 @@
     <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
+    <Reference Include="PS7">
+      <HintPath>..\string_socket\PS7\bin\Debug\PS7.dll</HintPath>
+    </Reference>
+    <Reference Include="SpreadsheetPanel">
+      <HintPath>..\Spreadsheet\SpreadsheetPanel.dll</HintPath>
+    </Reference>
     <Reference Include="SpreadsheetUtilities">
       <HintPath>..\Spreadsheet\SpreadsheetUtilities.dll</HintPath>
     </Reference>
@@ -61,6 +67,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -77,6 +84,7 @@
     <Compile Include="AbstractSpreadsheetTest.cs" />
     <Compile Include="CellTest.cs" />
     <Compile Include="CircularExceptionTest.cs" />
+    <Compile Include="ClientSocketStuffTest.cs" />
     <Compile Include="CodedUITest1.cs" />
     <Compile Include="InvalidNameExceptionTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -91,6 +99,10 @@
     <Shadow Include="Test References\Spreadsheet.accessor" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SpreadsheetGUI\SpreadsheetGUI.csproj">
+      <Project>{F06FB5B2-0B29-49A7-B4D0-DD68E8C2703D}</Project>
+      <Name>SpreadsheetGUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj">
       <Project>{6FD19AB9-F83A-4592-87C9-51A3C3B1E145}</Project>
       <Name>Spreadsheet</Name>
@@ -105,6 +117,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Shadow Include="Test References\SpreadsheetGUI.accessor" />
     <None Include="UIMap.uitest" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
