@@ -163,24 +163,24 @@ namespace SS
                     //failed
                     status = "FAILED";
                 }
-                socket.BeginReceive(CreateSSCallback, status);
+                socket.BeginReceive(JoinSSCallback, status);
             }
             else if (status.Equals("PASSED"))
             {
                 if (colonFirstWord.Equals("NAME"))
                 {
                     // get name
-                    socket.BeginReceive(CreateSSCallback, status);
+                    socket.BeginReceive(JoinSSCallback, status);
                 }
                 else if (colonFirstWord.Equals("VERSION"))
                 {
                     // get Version
-                    socket.BeginReceive(CreateSSCallback, status);
+                    socket.BeginReceive(JoinSSCallback, status);
                 }
                 else if (colonFirstWord.Equals("LENGTH"))
                 {
                     // get length
-                    socket.BeginReceive(CreateSSCallback, status);
+                    socket.BeginReceive(JoinSSCallback, status);
                 }
                 else 
                 {
@@ -192,7 +192,7 @@ namespace SS
                 if (colonFirstWord.Equals("NAME"))
                 {
                     // get name
-                    socket.BeginReceive(CreateSSCallback, status);
+                    socket.BeginReceive(JoinSSCallback, status);
                 }
                 else
                 {
