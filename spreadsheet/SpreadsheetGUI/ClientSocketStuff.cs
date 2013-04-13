@@ -101,9 +101,7 @@ namespace SS
                     {
                          // get password
                     }
-
                 }
-
                 else if (status.Equals("FAILED"))
                 {
                     if (colonFirstWord.Equals("NAME"))
@@ -145,6 +143,7 @@ namespace SS
             string[] colonSplitup = message.Split(':');
             string spaceFirstWord = "";
             string colonFirstWord = "";
+            string status = (string)o;
 
             if (spaceSplitup.Length > 0)
                 spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
@@ -157,24 +156,50 @@ namespace SS
                 if (thirdWord.Equals("OK"))
                 {
                     //passed
+                    status = "PASSED";
                 }
                 else if (thirdWord.Equals("FAIL"))
                 {
                     //failed
+                    status = "FAILED";
+                }
+                socket.BeginReceive(CreateSSCallback, status);
+            }
+            else if (status.Equals("PASSED"))
+            {
+                if (colonFirstWord.Equals("NAME"))
+                {
+                    // get name
+                    socket.BeginReceive(CreateSSCallback, status);
+                }
+                else if (colonFirstWord.Equals("VERSION"))
+                {
+                    // get Version
+                    socket.BeginReceive(CreateSSCallback, status);
+                }
+                else if (colonFirstWord.Equals("LENGTH"))
+                {
+                    // get length
+                    socket.BeginReceive(CreateSSCallback, status);
+                }
+                else 
+                {
+                    // must be the xml
                 }
             }
-            else if (colonFirstWord.Equals("NAME"))
+            else if (status.Equals("FAILED"))
             {
-                // get name
+                if (colonFirstWord.Equals("NAME"))
+                {
+                    // get name
+                    socket.BeginReceive(CreateSSCallback, status);
+                }
+                else
+                {
+                    // must be a message
+                }
             }
-            else if (colonFirstWord.Equals("VERSION"))
-            {
-                // get password
-            }
-            else if (message.Length > 1)
-            {
-                // assume its a message
-            }
+            updateGUI_SS(message); // the message from the server will be parsed in a separate class
         }
 
         /// <summary>
