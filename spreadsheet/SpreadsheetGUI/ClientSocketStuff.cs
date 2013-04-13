@@ -41,11 +41,7 @@ namespace SS
 
         #region Callbacks
 
-        private string[] parseMessage(string message)
-        {
-            string[] splitup;
-           
-        }
+      
 
         /// <summary>
         /// If the server successfully created the new spreadsheet file, it should respond with
@@ -72,6 +68,15 @@ namespace SS
                 string firstWord = splitup[0].ToUpper().Trim();
                 if (firstWord.Equals("CREATE"))
                 {
+                    string thirdWord = splitup[2].ToUpper().Trim();
+                    if (thirdWord.Equals("OK"))
+                    {
+                        //passed
+                    }
+                    else if (thirdWord.Equals("FAIL"))
+                    {
+                        //failed
+                    }
                 }
               
                 updateGUI_SS(message); // the message from the server will be parsed in a separate class
