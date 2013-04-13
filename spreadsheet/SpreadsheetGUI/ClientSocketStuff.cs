@@ -68,7 +68,9 @@ namespace SS
                 string[] colonSplitup = message.Split(':');
                 string spaceFirstWord = "";
                 string colonFirstWord = "";
-                string status = (string)o;
+                string status = "";
+                if (o is string)
+                    status = (string)o;
 
                 if (spaceSplitup.Length > 0) 
                      spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
@@ -101,9 +103,7 @@ namespace SS
                     {
                          // get password
                     }
-
                 }
-
                 else if (status.Equals("FAILED"))
                 {
                     if (colonFirstWord.Equals("NAME"))
@@ -145,6 +145,9 @@ namespace SS
             string[] colonSplitup = message.Split(':');
             string spaceFirstWord = "";
             string colonFirstWord = "";
+            string status = "";
+            if (o is string)
+               status = (string)o;
 
             if (spaceSplitup.Length > 0)
                 spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
@@ -157,24 +160,50 @@ namespace SS
                 if (thirdWord.Equals("OK"))
                 {
                     //passed
+                    status = "PASSED";
                 }
                 else if (thirdWord.Equals("FAIL"))
                 {
                     //failed
+                    status = "FAILED";
+                }
+                socket.BeginReceive(JoinSSCallback, status);
+            }
+            else if (status.Equals("PASSED"))
+            {
+                if (colonFirstWord.Equals("NAME"))
+                {
+                    // get name
+                    socket.BeginReceive(JoinSSCallback, status);
+                }
+                else if (colonFirstWord.Equals("VERSION"))
+                {
+                    // get Version
+                    socket.BeginReceive(JoinSSCallback, status);
+                }
+                else if (colonFirstWord.Equals("LENGTH"))
+                {
+                    // get length
+                    socket.BeginReceive(JoinSSCallback, status);
+                }
+                else 
+                {
+                    // must be the xml
                 }
             }
-            else if (colonFirstWord.Equals("NAME"))
+            else if (status.Equals("FAILED"))
             {
-                // get name
+                if (colonFirstWord.Equals("NAME"))
+                {
+                    // get name
+                    socket.BeginReceive(JoinSSCallback, status);
+                }
+                else
+                {
+                    // must be a message
+                }
             }
-            else if (colonFirstWord.Equals("VERSION"))
-            {
-                // get password
-            }
-            else if (message.Length > 1)
-            {
-                // assume its a message
-            }
+            updateGUI_SS(message); // the message from the server will be parsed in a separate class
         }
 
         /// <summary>
@@ -285,9 +314,110 @@ namespace SS
         {
             if (message != null)
             {
-                string[] splitup = message.Split(' ');
-                string firstWord = splitup[0].ToUpper().Trim();
+                string[] spaceSplitup = message.Split(' ');
+                string[] colonSplitup = message.Split(':');
+                string spaceFirstWord = "";
+                string colonFirstWord = "";
+                string status = "";
+                if (o is string)
+                    status = (string)o;
 
+                if (spaceSplitup.Length > 0)
+                    spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
+                if (colonSplitup.Length > 0)
+                    colonFirstWord = colonSplitup[0].ToUpper().Trim();
+
+                if (spaceFirstWord.Equals("UNDO"))
+                {
+                    string thirdWord = spaceSplitup[2].ToUpper().Trim();
+                    if (thirdWord.Equals("OK"))
+                    {
+                        //passed
+                        status = "PASSED";
+                    }
+                    else if (thirdWord.Equals("FAIL"))
+                    {
+                        //failed
+                        status = "FAILED";
+                    }
+                    else if (thirdWord.Equals("WAIT"))
+                    {
+                        //failed
+                        status = "WAIT";
+                    }
+                    else if (thirdWord.Equals("WAIT"))
+                    {
+                        //failed
+                        status = "END";
+                    }
+                    socket.BeginReceive(UndoCallback, status);
+                }
+                else if (status.Equals("PASSED"))
+                {
+                    if (colonFirstWord.Equals("NAME"))
+                    {
+                        // get name
+                        socket.BeginReceive(UndoCallback, status);
+                    }
+                    else if (colonFirstWord.Equals("VERSION"))
+                    {
+                        // get Version
+                        socket.BeginReceive(UndoCallback, status);
+                    }
+                    else if (colonFirstWord.Equals("CELL"))
+                    {
+                        // get cell
+                        socket.BeginReceive(UndoCallback, status);
+                    }
+                    else if (colonFirstWord.Equals("LENGTH"))
+                    {
+                        // get length
+                        socket.BeginReceive(UndoCallback, status);
+                    }
+                    else
+                    {
+                        // must be the content
+                    }
+                }
+                else if (status.Equals("FAILED"))
+                {
+                    if (colonFirstWord.Equals("NAME"))
+                    {
+                        // get name
+                        socket.BeginReceive(UndoCallback, status);
+                    }
+                    else
+                    {
+                        // must be a message
+                    }
+                }
+                else if (status.Equals("WAIT"))
+                {
+                    if (colonFirstWord.Equals("NAME"))
+                    {
+                        // get name
+                        socket.BeginReceive(UndoCallback, status);
+                    }
+                    else if (colonFirstWord.Equals("VERSION"))
+                    {
+                        // get Version
+                       
+                    }
+                }
+                else if (status.Equals("END"))
+                {
+                    if (colonFirstWord.Equals("NAME"))
+                    {
+                        // get name
+                        socket.BeginReceive(UndoCallback, status);
+                    }
+                    else if (colonFirstWord.Equals("VERSION"))
+                    {
+                        // get Version
+
+                    }
+                }
+                updateGUI_SS(message); // the message from the server will be parsed in a separate class
 
             }
         }
@@ -312,7 +442,54 @@ namespace SS
             {
                 string[] splitup = message.Split(' ');
                 string firstWord = splitup[0].ToUpper().Trim();
+                string[] spaceSplitup = message.Split(' ');
+                string[] colonSplitup = message.Split(':');
+                string spaceFirstWord = "";
+                string colonFirstWord = "";
+                string status = "";
+                if (o is string)
+                    status = (string)o;
 
+                if (spaceSplitup.Length > 0)
+                    spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
+                if (colonSplitup.Length > 0)
+                    colonFirstWord = colonSplitup[0].ToUpper().Trim();
+
+                if (spaceFirstWord.Equals("SAVE"))
+                {
+                    string thirdWord = spaceSplitup[2].ToUpper().Trim();
+                    if (thirdWord.Equals("OK"))
+                    {
+                        //passed
+                        status = "PASSED";
+                    }
+                    else if (thirdWord.Equals("FAIL"))
+                    {
+                        //failed
+                        status = "FAILED";
+                    }
+                    socket.BeginReceive(SaveCallback, status);
+                }
+                else if (status.Equals("PASSED"))
+                {
+                    if (colonFirstWord.Equals("NAME"))
+                    {
+                        // get name
+                    }
+                }
+                else if (status.Equals("FAILED"))
+                {
+                    if (colonFirstWord.Equals("NAME"))
+                    {
+                        // get name
+                        socket.BeginReceive(SaveCallback, status);
+                    }
+                    else
+                    {
+                        // must be a message
+                    }
+                }
+                updateGUI_SS(message); // the message from the server will be parsed in a separate class
 
             }
         }
