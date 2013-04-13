@@ -288,7 +288,7 @@ namespace SS
                     }
                     else if (thirdWord.Equals("WAIT"))
                     {
-                        //failed
+                        //wait
                         status = "WAIT";
                     }
                     else if (thirdWord.Equals("WAIT"))
@@ -435,6 +435,74 @@ namespace SS
                         // must be a message
                     }
                 }
+                updateGUI_SS(message); // the message from the server will be parsed in a separate class
+
+            }
+        }
+
+        /// <summary>
+        /// To communicate a committed change to other clients, the server should send
+        ///UPDATE LF
+        ///Name:name LF
+        ///Version:version LF
+        ///Cell:cell LF
+        ///Length:length LF
+        ///content LF
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        /// <param name="o"></param>
+        private void UpdateCallback(String message, Exception e, object o)
+        {
+            if (message != null)
+            {
+                string[] spaceSplitup = message.Split(' ');
+                string[] colonSplitup = message.Split(':');
+                string spaceFirstWord = "";
+                string colonFirstWord = "";
+                string status = "";
+                if (o is string)
+                    status = (string)o;
+
+                if (spaceSplitup.Length > 0)
+                    spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
+                if (colonSplitup.Length > 0)
+                    colonFirstWord = colonSplitup[0].ToUpper().Trim();
+
+                if (spaceFirstWord.Equals("UPDATE"))
+                {
+                    status = "PASSED";
+                    socket.BeginReceive(UpdateCallback, status);
+                }
+                else if (status.Equals("PASSED"))
+                {
+                    if (colonFirstWord.Equals("NAME"))
+                    {
+                        // get name
+                        socket.BeginReceive(UpdateCallback, status);
+                    }
+                    else if (colonFirstWord.Equals("VERSION"))
+                    {
+                        // get Version
+                        socket.BeginReceive(UpdateCallback, status);
+                    }
+                    else if (colonFirstWord.Equals("CELL"))
+                    {
+                        // get cell
+                        socket.BeginReceive(UpdateCallback, status);
+                    }
+                    else if (colonFirstWord.Equals("LENGTH"))
+                    {
+                        // get length
+                        socket.BeginReceive(UpdateCallback, status);
+                    }
+                    else
+                    {
+                        // must be the content
+                        socket.BeginReceive(UpdateCallback, "");
+                    }
+                }
+              
                 updateGUI_SS(message); // the message from the server will be parsed in a separate class
 
             }
