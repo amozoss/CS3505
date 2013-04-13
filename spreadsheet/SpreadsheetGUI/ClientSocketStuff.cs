@@ -132,7 +132,10 @@ namespace SS
             {
                 string[] splitup = message.Split(' ');
                 string firstWord = splitup[0].ToUpper().Trim();
-
+                if (firstWord.Equals("CREATE"))
+                {
+                    updateGUI_SS(message); // the message from the server will be parsed in a separate class
+                }
 
             }
         }
