@@ -20,11 +20,16 @@ namespace SS
     {
         private Spreadsheet spreadsheet; // The spreadsheet model for the form. Each new form has its own spreadsheet.
         private string filename; // keeps track of the current file name, if filename is null, the saveAs menu is used
-        private StringSocket socket;
-        private string ipAddress = "localhost";
-        private string userName;
-        private string password;
 
+
+        /**
+         * This is used for posting on the UI thread from another thread.  
+         * 
+            this.Invoke((MethodInvoker)delegate
+            {
+                valueTextBox.Text = message; // runs on UI thread
+            });
+         * /
 
         /// <summary>
         /// Creates a new spreadsheetGUI and spreadsheet model
@@ -35,16 +40,11 @@ namespace SS
             setSocket();  // To convert the data from the server to regular data, we should just save it as xml then have 
             // our spreadsheet open it for us.
 
-            userName = "Frederico";
-            password = "2;g94jgaj4-g";
 
-            socket.BeginSend("CREATE " + userName + " " + password + "\n", SendCallback, socket);
-            socket.BeginReceive(ReceiveMessage, socket);
             // Create and join are figured out here.
             
             // Create the spreadsheet model and the validator to check if the cell names are correct. 
             spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
-            socket.BeginReceive(ReceiveMessage, socket);
             // registering a method so that it is notified when an event happens.
             spreadsheetPanel1.SelectionChanged += displaySelection;
             spreadsheetPanel1.SetSelection(2, 3);
@@ -74,25 +74,14 @@ namespace SS
             displaySelection(spreadsheetPanel1); // update display when loaded
         }
 
-        private void SendCallback(Exception e, object o) { }
 
-        private void ReceiveMessage(String message, Exception e, object o)
-        {
-            //Console.WriteLine(message);
-            this.Invoke((MethodInvoker)delegate
-            {
-                valueTextBox.Text = message; // runs on UI thread
-            });
-        }
 
         /// <summary>
         /// This method creates the TcpClient and gives it to the string socket.
         /// </summary>
         private void setSocket()
         {
-            TcpClient client = new TcpClient(ipAddress, 1984);
-            Socket sock = client.Client;
-            socket = new StringSocket(sock, new UTF8Encoding());
+
         }
 
         /// <summary>
