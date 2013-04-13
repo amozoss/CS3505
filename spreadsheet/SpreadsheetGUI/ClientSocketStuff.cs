@@ -203,6 +203,7 @@ namespace SS
                 string[] colonSplitup = message.Split(':');
                 string spaceFirstWord = "";
                 string colonFirstWord = "";
+                string status = (string)o;
 
                 if (spaceSplitup.Length > 0)
                     spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
@@ -228,18 +229,32 @@ namespace SS
                 else if (spaceFirstWord.Equals("message"))
                 {
                     // message
+                    //socket.BeginReceive(mainCallback, something);
                 }
-                else if (spaceFirstWord.Equals("Version"))
+                else if (colonFirstWord.Equals("Version"))
                 {
+                    if(status.Equals("PASSED"))
+                    {
+
+                    }
+                    else
+                    {
+                        socket.BeginReceive(ChangeCellCallback, status);
+                    }
                     //version
                 }
                 else if (colonFirstWord.Equals("Name"))
                 {
+                    if (status.Equals("PASSED"))
+                    {
+
+                    }
+                    else
+                    {
+
+                    }
                     // get name
-                }
-                else if (colonFirstWord.Equals("Password"))
-                {
-                    // get password
+                    socket.BeginReceive(ChangeCellCallback, status);
                 }
                 updateGUI_SS(message); // the message from the server will be parsed in a separate class
             }
@@ -346,7 +361,7 @@ namespace SS
         public void CreateSpreadsheet(string name, string password)
         {
             socket.BeginSend("CREATE\n" + name + "\n" + password + "\n", SendCallback, socket);
-            socket.BeginReceive(CreateSSCallback, socket);
+            socket.BeginReceive(CreateSSCallback, "NOTHING");
         }
 
 
@@ -386,7 +401,7 @@ namespace SS
         public void JoinSpreadsheet(string name, string password)
         {
             socket.BeginSend("JOIN\n" + name + "\n" + password + "\n", SendCallback, socket);
-            socket.BeginReceive(JoinSSCallback, socket);
+            socket.BeginReceive(JoinSSCallback, "NOTHING");
         }
 
 
@@ -435,7 +450,7 @@ namespace SS
         {
             socket.BeginSend("CHANGE\n" + version.ToString() + "\n" + password + "\n"
                 + cellName + "\n" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
-            socket.BeginReceive(ChangeCellCallback, socket);
+            socket.BeginReceive(ChangeCellCallback, "NOTHING");
         }
 
         /// <summary>
@@ -480,7 +495,7 @@ namespace SS
         public void Undo()
         {
             socket.BeginSend("UNDO\n" + nameOfSpreadsheet + "\n" + version.ToString()+ "\n", SendCallback, socket);
-            socket.BeginReceive(UndoCallback, socket);
+            socket.BeginReceive(UndoCallback, "NOTHING");
         }
         /// <summary>
         ///        To save the current state of the spreadsheet and merge all outstanding changes to the existing 
@@ -506,7 +521,7 @@ namespace SS
         public void Save()
         {
             socket.BeginSend("SAVE\n" + nameOfSpreadsheet + "\n", SendCallback, socket);
-            socket.BeginReceive(UndoCallback, socket);
+            socket.BeginReceive(UndoCallback, "NOTHING");
         }
    
 
