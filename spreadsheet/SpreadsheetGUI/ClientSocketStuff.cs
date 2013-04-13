@@ -75,7 +75,6 @@ namespace SS
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                socket.BeginReceive(CreateSSCallback, socket);
                 if (spaceFirstWord.Equals("CREATE"))
                 {
                     string thirdWord = spaceSplitup[2].ToUpper().Trim();
