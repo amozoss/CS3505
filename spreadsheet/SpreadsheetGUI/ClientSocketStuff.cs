@@ -68,7 +68,9 @@ namespace SS
                 string[] colonSplitup = message.Split(':');
                 string spaceFirstWord = "";
                 string colonFirstWord = "";
-                string status = (string)o;
+                string status = "";
+                if (o is string)
+                    status = (string)o;
 
                 if (spaceSplitup.Length > 0) 
                      spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
@@ -143,7 +145,9 @@ namespace SS
             string[] colonSplitup = message.Split(':');
             string spaceFirstWord = "";
             string colonFirstWord = "";
-            string status = (string)o;
+            string status = "";
+            if (o is string)
+               status = (string)o;
 
             if (spaceSplitup.Length > 0)
                 spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
