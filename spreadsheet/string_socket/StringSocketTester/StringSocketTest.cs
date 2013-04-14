@@ -208,6 +208,13 @@ namespace StringSocketTester
                     Socket serverSocket = server.AcceptSocket();
                     Socket clientSocket = client.Client;
 
+
+                    
+
+
+
+
+
                     // Wrap the two ends of the connection into StringSockets
                     StringSocket sendSocket = new StringSocket(serverSocket, new UTF8Encoding());
                     StringSocket receiveSocket = new StringSocket(clientSocket, new UTF8Encoding());

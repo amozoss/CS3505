@@ -1,6 +1,12 @@
 ﻿using SS;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Net.Sockets;
+using System.Net;
+using System.Text;
+using CustomNetworking;
+using System.Threading;
+using System.Diagnostics;
 
 namespace SpreadsheetTests
 {
@@ -70,29 +76,74 @@ namespace SpreadsheetTests
         [TestMethod()]
         public void ChangeCellTest()
         {
-            string ipAddress = "localhost"; 
-            Spreadsheet spreadsheet = null; 
-            ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something; 
-            int port = 1984; 
+            string ipAddress = "localhost";
+            int port = 2000;
 
-            ClientSocketStuff target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
-            string cellName = "jackson";
-            string cellContent = "jackson";
+            ChangeCellTest1 cellTest = new ChangeCellTest1(ipAddress, port);
+            string words = cellTest.run();
+            string newWords = "";
 
-            target.ChangeCell(cellName, cellContent);
-
-
-
-
-
-
-            Assert.Inconclusive("A method that does not return a value cannot be verified.");
+            Assert.Inconclusive(newWords);
         }
 
-        private void something(string somethingElse)
+        public class ChangeCellTest1
         {
+            private ClientSocketStuff target;
+            private StringSocket sendSocket;
+            private string message;
+            private TcpListener server;
+
+            /// <summary>
+            /// This will be the default test class constructor for ClientSocketStuffTest.
+            /// </summary>
+            /// <param name="ipAddress"></param>
+            /// <param name="port"></param>
+            public ChangeCellTest1(string ipAddress, int port)
+            {
+                server = new TcpListener(IPAddress.Any, port);
+                Spreadsheet spreadsheet = null; 
+                server.Start();
+                ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something;
+                
+                server.BeginAcceptSocket(ConnectionReceived, null);
+                target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
+            }
+
+            private void ConnectionReceived(IAsyncResult ar)
+            {
+                Socket socket = server.EndAcceptSocket(ar);
+                sendSocket = new StringSocket(socket, UTF8Encoding.Default);
+                sendSocket.BeginReceive(ReceiveStuff, null);
+                server.BeginAcceptSocket(ConnectionReceived, null);
+            }
+
+            public string run()
+            { 
+                string cellName = "jackson";
+                string cellContent = "jackson";
+
+                target.ChangeCell(cellName, cellContent);
+                Thread.Sleep(3000);
+                return message;
+            }
+
+            private void ReceiveStuff(String words, Exception e, object payload)
+            {
+                message += words;
+                sendSocket.BeginReceive(ReceiveStuff, null);
+            }
+
+
+
+            private void something(string somethingElse)
+            {
+
+            }
 
         }
+        
+
+
 
         /// <summary>
         ///A test for ChangeCellCallback

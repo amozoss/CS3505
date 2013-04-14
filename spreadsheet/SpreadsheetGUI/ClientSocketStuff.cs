@@ -31,7 +31,7 @@ namespace SS
             this.ipAddress = ipAddress;
             this.updateGUI_SS = receivedMessage;
 
-            TcpClient client = new TcpClient(ipAddress, SERVERPORT);
+            TcpClient client = new TcpClient(ipAddress, port);
             Socket sock = client.Client;
             socket = new StringSocket(sock, new UTF8Encoding());
 
