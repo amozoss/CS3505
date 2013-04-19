@@ -23,6 +23,7 @@ namespace SS
             public int number;
         }
 
+        enum UndoSpecialStatus{WAIT=100, END=200}
 
         public delegate void ClientUpdateGUI_SS(String message); // The message will be handled by a separate class 
         private string ipAddress;
@@ -373,14 +374,7 @@ namespace SS
         ///
         ///UNDO SP FAIL LF
         ///Name:name LF; false 1
-        ///Version:version LF; false 2
-        ///message LF; false 3
-        ///
-        /// If there are no unsaved changes, the server should respond with
-        /// 
-        ///UNDO SP END LF
-        ///Name:name LF
-        ///Version:version LF
+        ///message LF; false 2
         /// 
         /// 
         /// If there are no unsaved changes, the server should respond with
@@ -405,7 +399,6 @@ namespace SS
             {
                 string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
-                string spaceFirstWord = "";
                 string colonFirstWord = "";
                 string status = "";
                 Payload load = new Payload(0, false);
@@ -454,49 +447,48 @@ namespace SS
                 }
 
 
+                ///Otherwise, the server should respond with
+                ///
                 ///UNDO SP FAIL LF
                 ///Name:name LF; false 1
+                ///message LF; false 2
+                /// 
+                /// 
+                /// If there are no unsaved changes, the server should respond with
+                /// 
+                ///UNDO SP END LF
+                ///Name:name LF; false 1
+                ///Version:version LF false 2
+                ///
+                ///If the client’s version is out of date, the server should respond with 
+                ///
+                ///UNDO SP WAIT LF
+                ///Name:name LF; false 1
                 ///Version:version LF; false 2
-                ///message LF; false 3
                 else if (!load.valid)
                 {
-                    if (colonFirstWord.Equals("NAME"))
+                    if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
+                        
                         // get name
-                        socket.BeginReceive(UndoCallback, status);
+                        socket.BeginReceive(UndoCallback, new Payload(2, false));
                     }
-                    else
+                    else if(load.number == (int)UndoSpecialStatus.WAIT)
                     {
+
+                    }
+                    else if(load.number == (int)UndoSpecialStatus.END)
+                    {
+
+                    }
+                    else if(colonFirstWord)
+                    {
+                        switch(
                         // must be a message
                     }
                 }
-                else if (status.Equals("WAIT"))
-                {
-                    if (colonFirstWord.Equals("NAME"))
-                    {
-                        // get name
-                        socket.BeginReceive(UndoCallback, status);
-                    }
-                    else if (colonFirstWord.Equals("VERSION"))
-                    {
-                        version = Int32.Parse(colonSplitup[1].Trim());
-                        // get Version
-                       
-                    }
-                }
-                else if (status.Equals("END"))
-                {
-                    if (colonFirstWord.Equals("NAME"))
-                    {
-                        // get name
-                        socket.BeginReceive(UndoCallback, status);
-                    }
-                    else if (colonFirstWord.Equals("VERSION"))
-                    {
-                        version = Int32.Parse(colonSplitup[1].Trim());
-                        // get Version
+                
 
-                    }
                 }
                 updateGUI_SS(message); // the message from the server will be parsed in a separate class
 
@@ -768,8 +760,8 @@ namespace SS
         /// <param name="cellContent">content of cell</param>
         public void ChangeCell(string cellName, string cellContent)
         {
-            socket.BeginSend("CHANGE\n" + version.ToString() + "\n" + password + "\n"
-                + cellName + "\n" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
+            socket.BeginSend("CHANGE\n" + "Version:" + version.ToString() + "\n" + "Password:" + password + "\n"
+                + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
             //socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
