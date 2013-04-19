@@ -11,6 +11,13 @@ namespace SS
 
     class ClientSocketStuff
     {
+        public struct Payload
+        {
+            public Boolean structure1;
+            public int number;
+        }
+
+
         public delegate void ClientUpdateGUI_SS(String message); // The message will be handled by a separate class 
         private string ipAddress;
         private string nameOfSpreadsheet; // name is the name for the new spreadsheet
@@ -125,53 +132,47 @@ namespace SS
         ///If the request succeeded, the server should respond with
         ///
         ///JOIN SP OK LF
-        ///Name:name LF
-        ///Version:version LF
-        ///Length:length LF
-        ///xml LF
+        ///Name:name LF; true 1
+        ///Version:version LF; true 2
+        ///Length:length LF;true 3
+        ///xml LF 
         ///
         ///Otherwise, the server should respond with
         ///JOIN SP FAIL LF
-        ///Name:name LF
-        ///message LF
-        ///
+        ///Name:name LF; false 1
+        ///message LF; false 2
+        /// 
+        /// 
         /// </summary>
         /// <param name="message"></param>
         /// <param name="e"></param>
-        /// <param name="o"></param>
-        private void JoinSSCallback(String message, Exception e, object o)
+        /// <param name="payload"></param>
+        private void JoinSSCallback(String message, Exception e, object payload)
         {
-            string[] spaceSplitup = message.Split(' ');
-            string[] colonSplitup = message.Split(':');
+            string[] spaceSplit = message.Split(' ');
+            string[] colonSplit = message.Split(':');
+            string[] payloadSplit = null;
             string spaceFirstWord = "";
             string colonFirstWord = "";
             string status = "";
-            if (o is string)
-               status = (string)o;
-
-            if (spaceSplitup.Length > 0)
-                spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
-            if (colonSplitup.Length > 0)
-                colonFirstWord = colonSplitup[0].ToUpper().Trim();
-
-            if (spaceFirstWord.Equals("JOIN"))
+            string number = "";
+            // This if statement parses the string we send in the payload.
+            if (payload is string)
             {
-                string thirdWord = spaceSplitup[2].ToUpper().Trim();
-                if (thirdWord.Equals("OK"))
-                {
-                    //passed
-                    status = "PASSED";
-                }
-                else if (thirdWord.Equals("FAIL"))
-                {
-                    //failed
-                    status = "FAILED";
-                }
-                socket.BeginReceive(JoinSSCallback, status);
+                payloadSplit = ((string)payload).Split(' ');
+                status = payloadSplit[0];
+                number = payloadSplit[1];
             }
-            else if (status.Equals("PASSED"))
+
+            if (spaceSplit.Length > 0)
+                spaceFirstWord = spaceSplit[0].ToUpper().Trim();
+            if (colonSplit.Length > 0)
+                colonFirstWord = colonSplit[0].ToUpper().Trim();
+
+
+            if (status.Equals("PASSED"))
             {
-                if (colonFirstWord.Equals("NAME"))
+                if (colonFirstWord.Equals("NAME") && number.Equals("1"))
                 {
                     // get name
                     socket.BeginReceive(JoinSSCallback, status);
@@ -179,7 +180,7 @@ namespace SS
                 else if (colonFirstWord.Equals("VERSION"))
                 {
                     // get Version
-                    version = Int32.Parse(colonSplitup[1].Trim());
+                    version = Int32.Parse(colonSplit[1].Trim());
                     socket.BeginReceive(JoinSSCallback, status);
                 }
                 else if (colonFirstWord.Equals("LENGTH"))

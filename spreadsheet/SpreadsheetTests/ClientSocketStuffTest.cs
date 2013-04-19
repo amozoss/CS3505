@@ -83,7 +83,7 @@ namespace SpreadsheetTests
             string words = cellTest.run();
             string newWords = "";
 
-            Assert.Inconclusive(newWords);
+            Assert.Inconclusive(words);
         }
 
         public class ChangeCellTest1
@@ -129,7 +129,7 @@ namespace SpreadsheetTests
 
             private void ReceiveStuff(String words, Exception e, object payload)
             {
-                message += words;
+                message += words.Trim();
                 sendSocket.BeginReceive(ReceiveStuff, null);
             }
 
