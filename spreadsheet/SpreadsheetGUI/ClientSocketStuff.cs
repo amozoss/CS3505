@@ -19,12 +19,7 @@ namespace SS
                 valid = passed;
             }
 
-            public Payload()
-            {
-                number = 0;
-                valid = false;
-            }
-
+           
             public Boolean valid;
             public int number;
         }
@@ -53,6 +48,7 @@ namespace SS
             TcpClient client = new TcpClient(ipAddress, port);
             Socket sock = client.Client;
             socket = new StringSocket(sock, new UTF8Encoding());
+      
 
         }
 
@@ -116,7 +112,7 @@ namespace SS
                 }
                 else if (!firstWord.Equals("UPDATE"))
                 {
-                    // there was an error
+                    // there was an error, just call the Master again
                     socket.BeginReceive(MasterCallback, payload);
                 }
 
@@ -135,6 +131,7 @@ namespace SS
                     case "UPDATE": socket.BeginReceive(UpdateCallback, payload);
                         break;
                     default: socket.BeginReceive(MasterCallback, payload);
+                        // there was an error, just call the Master again
                         break;
                 }
             }
