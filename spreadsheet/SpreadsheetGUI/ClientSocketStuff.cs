@@ -48,7 +48,42 @@ namespace SS
 
         #region Callbacks
 
-      
+        /// <summary>
+        /// Master callback deals with the first "line" of every server response
+        /// 
+        /// Passed to CreateSSCallback
+        /// CREATE SP OK LF
+        /// CREATE SP FAIL LF
+        /// 
+        /// Passed to JoinSSCallback
+        /// JOIN SP OK LF
+        /// JOIN SP FAIL LF
+        /// 
+        /// Passed to ChangeCellCallback
+        /// CHANGE SP OK LF
+        /// CHANGE SP FAIL LF
+        /// 
+        /// Passed to UndoCallback
+        /// UNDO SP OK LF
+        /// UNDO SP FAIL LF
+        /// 
+        /// Passed to SaveCallback
+        /// SAVE SP OK LF
+        /// SAVE SP FAIL LF
+        /// 
+        /// Passed to UpdateCallback
+        /// UPDATE
+        /// 
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="e"></param>
+        /// <param name="payload"></param>
+        private void MasterCallback(String message, Exception e, object payload)
+        {
+
+
+        }
 
         /// <summary>
         /// If the server successfully created the new spreadsheet file, it should respond with
