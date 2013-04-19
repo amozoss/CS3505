@@ -19,7 +19,6 @@ namespace SS
                 valid = passed;
             }
 
-           
             public Boolean valid;
             public int number;
         }
@@ -47,12 +46,16 @@ namespace SS
 
             TcpClient client = new TcpClient(ipAddress, port);
             Socket sock = client.Client;
+
             socket = new StringSocket(sock, new UTF8Encoding());
-      
+            socket.BeginReceive(MasterCallback, null);
+
 
         }
 
         private void SendCallback(Exception e, object o) { }
+
+
 
         #region Callbacks
 
@@ -112,7 +115,7 @@ namespace SS
                 }
                 else if (!firstWord.Equals("UPDATE"))
                 {
-                    // there was an error, just call the Master again
+                    // there was an error
                     socket.BeginReceive(MasterCallback, payload);
                 }
 
@@ -131,11 +134,9 @@ namespace SS
                     case "UPDATE": socket.BeginReceive(UpdateCallback, payload);
                         break;
                     default: socket.BeginReceive(MasterCallback, payload);
-                        // there was an error, just call the Master again
                         break;
                 }
             }
-
         }
 
 
@@ -156,8 +157,8 @@ namespace SS
         /// </summary>
         /// <param name="message"></param>
         /// <param name="e"></param>
-        /// <param name="o"></param>
-        private void CreateSSCallback(String message, Exception e, object o)
+        /// <param name="payload"></param>
+        private void CreateSSCallback(String message, Exception e, object payload)
         {
             if (message != null)
             {
@@ -166,8 +167,8 @@ namespace SS
                 string spaceFirstWord = "";
                 string colonFirstWord = "";
                 string status = "";
-                if (o is string)
-                    status = (string)o;
+                if (payload is string)
+                    status = (string)payload;
 
                 if (spaceSplitup.Length > 0) 
                      spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
@@ -240,11 +241,10 @@ namespace SS
         private void JoinSSCallback(String message, Exception e, object payload)
         {
             string[] colonSplit = message.Split(':');
-            string[] payloadSplit = null;
-            string spaceFirstWord = "";
             string colonFirstWord = "";
-            // This if statement parses the string we send in the payload.
-            Payload load = new Payload();
+
+
+            Payload load = new Payload(0, false);
             if (payload is Payload)
             {
                 load = (Payload)payload;
@@ -260,117 +260,100 @@ namespace SS
                     // get name
                     socket.BeginReceive(JoinSSCallback, new Payload(2, true));
                 }
-                else if (colonFirstWord.Equals("VERSION"))
+                else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                 {
                     // get Version
                     version = Int32.Parse(colonSplit[1].Trim());
                     socket.BeginReceive(JoinSSCallback, new Payload(3, true));
                 }
-                else if (colonFirstWord.Equals("LENGTH"))
+                else if (colonFirstWord.Equals("LENGTH") && load.number == 3)
                 {
                     // get length
                     socket.BeginReceive(JoinSSCallback, new Payload(4, true));
                 }
-                else 
+                else if(load.number == 4)
                 {
                     // must be the xml
-                    //socket.BeginReceive(Master
+                    socket.BeginReceive(MasterCallback, null);
                 }
             }
-            else if (load.valid) // status == false
+            else if (!load.valid) // status == false
             {
-                if (colonFirstWord.Equals("NAME"))
+                if (colonFirstWord.Equals("NAME") && load.number == 1)
                 {
                     // get name
                     socket.BeginReceive(JoinSSCallback, new Payload(2, false));
                 }
-                else
+                else if(load.number == 2)
                 {
                     // must be a message
                     socket.BeginReceive(MasterCallback, null);
                 }
             }
-            updateGUI_SS(message); // the message from the server will be parsed in a separate class
         }
 
         /// <summary>
         /// If the request succeeded, the server should respond with
         ///
         ///CHANGE SP OK LF
-        ///Name:name LF
-        ///Version:version LF
+        ///Name:name LF; true 1
+        ///Version:version LF true 2
         ///
         ///Otherwise, it should respond with
         ///
         ///CHANGE SP FAIL LF
-        ///Name:name LF
-        ///Version:version LF
-        ///message LF
+        ///Name:name LF; true 1
+        ///Version:version LF; true 2
+        ///message LF; true 3
         ///
         /// </summary>
         /// <param name="message"></param>
         /// <param name="e"></param>
-        /// <param name="o"></param>
-        private void ChangeCellCallback(String message, Exception e, object o)
+        /// <param name="Payload"></param>
+        private void ChangeCellCallback(String message, Exception e, object payload)
         {
             if (message != null)
             {
-                string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
-                string spaceFirstWord = "";
                 string colonFirstWord = "";
-                string status = "";
-                if (o is string)
-                    status = (string)o;
+                Payload load = new Payload();
+                if (payload is Payload)
+                {
+                    load = (Payload)payload;
+                }
 
-                if (spaceSplitup.Length > 0)
-                    spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                if (spaceFirstWord.Equals("CHANGE"))
+                if (load.valid) // load.valid == true
                 {
-                    string thirdWord = spaceSplitup[2].ToUpper().Trim();
-                    if (thirdWord.Equals("OK"))
+                    if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
-                        //passed
-                        status = "PASSED";
+                        socket.BeginReceive(ChangeCellCallback, new Payload(2, true));
                     }
-                    else if (thirdWord.Equals("FAIL"))
+                    else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
-                        //failed
-                        status = "FAILED";
+                        socket.BeginReceive(MasterCallback, null);
                     }
-                    socket.BeginReceive(ChangeCellCallback, status);
                 }
-                else if (spaceFirstWord.Equals("message"))
-                {
-                    // message
-                    //socket.BeginReceive(mainCallback, something);
-                }
-                else if (colonFirstWord.Equals("Version"))
-                {
-                    version = Int32.Parse(colonSplitup[1].Trim());
-                    if(status.Equals("FAILED"))
-                    {
-                        socket.BeginReceive(ChangeCellCallback, status);
-                    }
-                    //version
-                }
-                else if (colonFirstWord.Equals("Name"))
-                {
-                    if (status.Equals("PASSED"))
-                    {
 
-                    }
-                    else
-                    {
 
+
+                else if (!load.valid)
+                {
+                    if(colonFirstWord.Equals("NAME") && load.number == 1)
+                    {
+                        socket.BeginReceive(ChangeCellCallback, new Payload(2, false));
                     }
-                    // get name
-                    socket.BeginReceive(ChangeCellCallback, status);
+                    else if(colonFirstWord.Equals("VERSION") && load.number == 2)
+                    {
+                        socket.BeginReceive(ChangeCellCallback, new Payload(3, false));
+                    }
+                    else if (load.number == 3)
+                    {
+                        socket.BeginReceive(MasterCallback, null);
+                    }
                 }
-                updateGUI_SS(message); // the message from the server will be parsed in a separate class
             }
         }
 
@@ -694,8 +677,8 @@ namespace SS
         /// <param name="password">password is the password to use for the new spreadsheet</param>
         public void CreateSpreadsheet(string name, string password)
         {
-            socket.BeginSend("CREATE\n" + name + "\n" + password + "\n", SendCallback, socket);
-            socket.BeginReceive(CreateSSCallback, "NOTHING");
+            socket.BeginSend("CREATE\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
+            socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
 
@@ -734,8 +717,8 @@ namespace SS
         /// <param name="password">password is the password to use for the spreadsheet</param>
         public void JoinSpreadsheet(string name, string password)
         {
-            socket.BeginSend("JOIN\n" + name + "\n" + password + "\n", SendCallback, socket);
-            socket.BeginReceive(JoinSSCallback, "NOTHING");
+            socket.BeginSend("JOIN\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
+            socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
 
@@ -784,7 +767,7 @@ namespace SS
         {
             socket.BeginSend("CHANGE\n" + version.ToString() + "\n" + password + "\n"
                 + cellName + "\n" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
-            socket.BeginReceive(ChangeCellCallback, "NOTHING");
+            //socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
         /// <summary>
@@ -828,36 +811,46 @@ namespace SS
         ///
         public void Undo()
         {
-            socket.BeginSend("UNDO\n" + nameOfSpreadsheet + "\n" + version.ToString()+ "\n", SendCallback, socket);
-            socket.BeginReceive(UndoCallback, "NOTHING");
+            socket.BeginSend("UNDO\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString()+ "\n", SendCallback, socket);
+            //socket.BeginReceive(MasterCallback, "NOTHING");
         }
         /// <summary>
-        ///        To save the current state of the spreadsheet and merge all outstanding changes to the existing 
-        ///file, the client should send to the server
-        ///SAVE LF
-        ///Name:name LF
+        /// To save the current state of the spreadsheet and merge all outstanding changes to the existing 
+        /// file, the client should send to the server
+        /// SAVE LF
+        /// Name:name LF
         ///
-        ///If the request succeeds, the server should respond with 
-        ///SAVE SP OK LF
-        ///Name:name LF
+        /// If the request succeeds, the server should respond with 
+        /// SAVE SP OK LF
+        /// Name:name LF
         ///
-        ///If the request fails, the server should respond with
-        ///SAVE SP FAIL LF
-        ///Name:name LF
-        ///message LF
+        /// If the request fails, the server should respond with
+        /// SAVE SP FAIL LF
+        /// Name:name LF
+        /// message LF
         ///
-        ///where
-        /// name is the name of the spreadsheet for which saving failed
-        /// message contains information why the save failed. It must not contain any linefeeds. 
-        ///The server should provide some reason in message why the request failed (e.g., the 
-        ///client has not logged in to work on the spreadsheet).
+        /// where
+        ///  name is the name of the spreadsheet for which saving failed
+        ///  message contains information why the save failed. It must not contain any linefeeds. 
+        /// The server should provide some reason in message why the request failed (e.g., the 
+        /// client has not logged in to work on the spreadsheet).
         /// </summary>
         public void Save()
         {
             socket.BeginSend("SAVE\n" + nameOfSpreadsheet + "\n", SendCallback, socket);
-            socket.BeginReceive(UndoCallback, "NOTHING");
+            //socket.BeginReceive(MasterCallback, "NOTHING");
         }
-   
+
+        /// <summary>
+        /// To leave a spreadsheet, the client should send
+        /// LEAVE LF
+        /// Name:name LF
+        /// </summary>
+        public void Leave()
+        {
+            socket.BeginSend("LEAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, null);
+        }
+
 
         /// <summary>
         /// Call this method to close the connection with the current server.

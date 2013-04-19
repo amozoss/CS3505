@@ -80,8 +80,10 @@ namespace SpreadsheetTests
             int port = 2000;
 
             ChangeCellTest1 cellTest = new ChangeCellTest1(ipAddress, port);
+
             cellTest.run();
             // assertions are made in the run() method
+
         }
 
         public class ChangeCellTest1
