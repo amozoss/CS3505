@@ -74,6 +74,8 @@ namespace SS
         /// Passed to UndoCallback
         /// UNDO SP OK LF
         /// UNDO SP FAIL LF
+        /// UNDO SP WAIT LF
+        /// UNDO SP END LF
         /// 
         /// Passed to SaveCallback
         /// SAVE SP OK LF
@@ -358,24 +360,43 @@ namespace SS
         /// If the request succeeded, the server should respond with
         ///
         ///UNDO SP OK LF
-        ///Name:name LF
-        ///Version:version LF
-        ///Cell:cell LF
-        ///Length:length LF
-        ///content LF
+        ///Name:name LF; true 1;
+        ///Version:version LF; true 2
+        ///Cell:cell LF; true 3
+        ///Length:length LF; true 4
+        ///content LF; true 5
         ///
         ///Otherwise, the server should respond with
         ///
         ///UNDO SP FAIL LF
+        ///Name:name LF; false 1
+        ///Version:version LF; false 2
+        ///message LF; false 3
+        ///
+        /// If there are no unsaved changes, the server should respond with
+        /// 
+        ///UNDO SP END LF
         ///Name:name LF
         ///Version:version LF
-        ///message LF
+        /// 
+        /// 
+        /// If there are no unsaved changes, the server should respond with
+        /// 
+        ///UNDO SP END LF
+        ///Name:name LF
+        ///Version:version LF
+        ///
+        ///If the client’s version is out of date, the server should respond with 
+        ///
+        ///UNDO SP WAIT LF
+        ///Name:name LF
+        ///Version:version LF
         ///
         /// </summary>
         /// <param name="message"></param>
         /// <param name="e"></param>
-        /// <param name="o"></param>
-        private void UndoCallback(String message, Exception e, object o)
+        /// <param name="payload"></param>
+        private void UndoCallback(String message, Exception e, object payload)
         {
             if (message != null)
             {
@@ -384,68 +405,57 @@ namespace SS
                 string spaceFirstWord = "";
                 string colonFirstWord = "";
                 string status = "";
-                if (o is string)
-                    status = (string)o;
+                Payload load = new Payload(0, false);
+                if (payload is Payload)
+                {
+                    load = (Payload)payload;
+                }
 
-                if (spaceSplitup.Length > 0)
-                    spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
+
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                if (spaceFirstWord.Equals("UNDO"))
+                ///Name:name LF; true 1;
+                ///Version:version LF; true 2
+                ///Cell:cell LF; true 3
+                ///Length:length LF; true 4
+                ///content LF; true 5
+                if (load.valid) 
                 {
-                    string thirdWord = spaceSplitup[2].ToUpper().Trim();
-                    if (thirdWord.Equals("OK"))
-                    {
-                        //passed
-                        status = "PASSED";
-                    }
-                    else if (thirdWord.Equals("FAIL"))
-                    {
-                        //failed
-                        status = "FAILED";
-                    }
-                    else if (thirdWord.Equals("WAIT"))
-                    {
-                        //wait
-                        status = "WAIT";
-                    }
-                    else if (thirdWord.Equals("WAIT"))
-                    {
-                        //failed
-                        status = "END";
-                    }
-                    socket.BeginReceive(UndoCallback, status);
-                }
-                else if (status.Equals("PASSED"))
-                {
-                    if (colonFirstWord.Equals("NAME"))
+                    if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        socket.BeginReceive(UndoCallback, status);
+                        socket.BeginReceive(UndoCallback, new Payload(2, true));
                     }
-                    else if (colonFirstWord.Equals("VERSION"))
+                    else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         // get Version
                         version = Int32.Parse(colonSplitup[1].Trim());
-                        socket.BeginReceive(UndoCallback, status);
+                        socket.BeginReceive(UndoCallback, new Payload(3, true));
                     }
-                    else if (colonFirstWord.Equals("CELL"))
+                    else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
                         // get cell
-                        socket.BeginReceive(UndoCallback, status);
+                        socket.BeginReceive(UndoCallback, new Payload(4, true));
                     }
-                    else if (colonFirstWord.Equals("LENGTH"))
+                    else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
                         // get length
-                        socket.BeginReceive(UndoCallback, status);
+                        socket.BeginReceive(UndoCallback, new Payload(5, true));
                     }
-                    else
+                    else if(load.number == 5)
                     {
                         // must be the content
+                        socket.BeginReceive(MasterCallback, null);
                     }
                 }
-                else if (status.Equals("FAILED"))
+
+
+                ///UNDO SP FAIL LF
+                ///Name:name LF; false 1
+                ///Version:version LF; false 2
+                ///message LF; false 3
+                else if (!load.valid)
                 {
                     if (colonFirstWord.Equals("NAME"))
                     {
@@ -503,8 +513,8 @@ namespace SS
         /// </summary>
         /// <param name="message"></param>
         /// <param name="e"></param>
-        /// <param name="o"></param>
-        private void SaveCallback(String message, Exception e, object o)
+        /// <param name="payload"></param>
+        private void SaveCallback(String message, Exception e, object payload)
         {
             if (message != null)
             {
@@ -515,8 +525,8 @@ namespace SS
                 string spaceFirstWord = "";
                 string colonFirstWord = "";
                 string status = "";
-                if (o is string)
-                    status = (string)o;
+                if (payload is string)
+                    status = (string)payload;
 
                 if (spaceSplitup.Length > 0)
                     spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
@@ -557,8 +567,6 @@ namespace SS
                         // must be a message
                     }
                 }
-                updateGUI_SS(message); // the message from the server will be parsed in a separate class
-
             }
         }
 
@@ -625,9 +633,6 @@ namespace SS
                         socket.BeginReceive(UpdateCallback, "");
                     }
                 }
-              
-                updateGUI_SS(message); // the message from the server will be parsed in a separate class
-
             }
         }
 
@@ -675,7 +680,6 @@ namespace SS
         public void CreateSpreadsheet(string name, string password)
         {
             socket.BeginSend("CREATE\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
-            socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
 
@@ -715,7 +719,6 @@ namespace SS
         public void JoinSpreadsheet(string name, string password)
         {
             socket.BeginSend("JOIN\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
-            socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
 
@@ -834,7 +837,7 @@ namespace SS
         /// </summary>
         public void Save()
         {
-            socket.BeginSend("SAVE\n" + nameOfSpreadsheet + "\n", SendCallback, socket);
+            socket.BeginSend("SAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, socket);
             //socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
