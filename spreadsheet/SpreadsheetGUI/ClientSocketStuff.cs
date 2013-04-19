@@ -13,7 +13,12 @@ namespace SS
     {
         public struct Payload
         {
-            public Boolean structure1;
+            public Payload(int num, bool passed)
+            {
+                number = num;
+                valid = passed;
+            }
+            public Boolean valid;
             public int number;
         }
 
@@ -189,14 +194,14 @@ namespace SS
             string[] payloadSplit = null;
             string spaceFirstWord = "";
             string colonFirstWord = "";
-            string status = "";
-            string number = "";
+            Boolean status = true;
+            int number = 0;
             // This if statement parses the string we send in the payload.
-            if (payload is string)
+            if (payload is Payload)
             {
-                payloadSplit = ((string)payload).Split(' ');
-                status = payloadSplit[0];
-                number = payloadSplit[1];
+                Payload load = (Payload)payload;
+                status = load.valid;
+                number = load.number;
             }
 
             if (spaceSplit.Length > 0)
@@ -204,13 +209,12 @@ namespace SS
             if (colonSplit.Length > 0)
                 colonFirstWord = colonSplit[0].ToUpper().Trim();
 
-
-            if (status.Equals("PASSED"))
+            if (status) // status == true
             {
                 if (colonFirstWord.Equals("NAME") && number.Equals("1"))
                 {
                     // get name
-                    socket.BeginReceive(JoinSSCallback, status);
+                    socket.BeginReceive(JoinSSCallback, new Payload(2, true));
                 }
                 else if (colonFirstWord.Equals("VERSION"))
                 {
