@@ -52,6 +52,7 @@ namespace SS
 
         private void SendCallback(Exception e, object o) { }
 
+
         #region Callbacks
 
         /// <summary>
@@ -132,7 +133,6 @@ namespace SS
                         break;
                 }
             }
-
         }
 
 
