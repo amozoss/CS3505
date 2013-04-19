@@ -148,14 +148,14 @@ namespace SS
         /// If the server successfully created the new spreadsheet file, it should respond with
         ///
         ///CREATE SP OK LF
-        ///Name:name LF
-        ///Password:password LF
+        ///Name:name LF; true 1
+        ///Password:password LF; true 2
         ///
         ///Otherwise, it should respond with
         ///
         ///CREATE SP FAIL LF
-        ///Name:name LF
-        ///message LF
+        ///Name:name LF; false 1
+        ///message LF; false 2
         ///
         /// </summary>
         /// <param name="message"></param>
@@ -167,57 +167,41 @@ namespace SS
             {
                 string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
-                string spaceFirstWord = "";
                 string colonFirstWord = "";
-                string status = "";
-                if (payload is string)
-                    status = (string)payload;
+                Payload load = new Payload(0, false);
+                if (payload is Payload)
+                    load = (Payload)payload;
 
-                if (spaceSplitup.Length > 0) 
-                     spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                if (spaceFirstWord.Equals("CREATE"))
+
+                if (load.valid)
                 {
-                    string thirdWord = spaceSplitup[2].ToUpper().Trim();
-                    if (thirdWord.Equals("OK"))
-                    {
-                        //passed
-                        status = "PASSED";
-                    }
-                    else if (thirdWord.Equals("FAIL"))
-                    {
-                        //failed
-                        status = "FAILED";
-                    }
-                    socket.BeginReceive(CreateSSCallback, status);
-                }
-                else if (status.Equals("PASSED"))
-                {
-                    if (colonFirstWord.Equals("NAME"))
+                    if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                         socket.BeginReceive(CreateSSCallback, status);
+                         socket.BeginReceive(CreateSSCallback, new Payload(1, true));
                     }
-                    else if (colonFirstWord.Equals("PASSWORD"))
+                    else if (colonFirstWord.Equals("PASSWORD") && load.number == 2)
                     {
                          // get password
+                        socket.BeginReceive(MasterCallback, null);
                     }
                 }
-                else if (status.Equals("FAILED"))
+                else if (!load.valid)
                 {
-                    if (colonFirstWord.Equals("NAME"))
+                    if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        socket.BeginReceive(CreateSSCallback, status);
+                        socket.BeginReceive(CreateSSCallback, new Payload(2, false));
                     }
-                    else
+                    else if (load.number == 2)
                     {
                         // must be a message
+                        socket.BeginReceive(MasterCallback, null);
                     }
                 }
-                updateGUI_SS(message); // the message from the server will be parsed in a separate class
             }
         }
 
@@ -478,13 +462,13 @@ namespace SS
         /// <summary>
         /// If the request succeeds, the server should respond with
         ///SAVE SP OK LF
-        ///Name:name LF
+        ///Name:name LF; true 1
         ///
         ///If the request fails, the server should respond with
         ///
         ///SAVE SP FAIL LF
-        ///Name:name LF
-        ///message LF
+        ///Name:name LF; true 1
+        ///message LF; true 2
         /// </summary>
         /// <param name="message"></param>
         /// <param name="e"></param>
@@ -493,53 +477,36 @@ namespace SS
         {
             if (message != null)
             {
-                string[] splitup = message.Split(' ');
-                string firstWord = splitup[0].ToUpper().Trim();
-                string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
-                string spaceFirstWord = "";
                 string colonFirstWord = "";
-                string status = "";
-                if (payload is string)
-                    status = (string)payload;
+                Payload load = new Payload(0, false);
+                if (payload is Payload)
+                {
+                    load = (Payload)payload;
+                }
 
-                if (spaceSplitup.Length > 0)
-                    spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                if (spaceFirstWord.Equals("SAVE"))
+                if (load.valid)
                 {
-                    string thirdWord = spaceSplitup[2].ToUpper().Trim();
-                    if (thirdWord.Equals("OK"))
-                    {
-                        //passed
-                        status = "PASSED";
-                    }
-                    else if (thirdWord.Equals("FAIL"))
-                    {
-                        //failed
-                        status = "FAILED";
-                    }
-                    socket.BeginReceive(SaveCallback, status);
-                }
-                else if (status.Equals("PASSED"))
-                {
-                    if (colonFirstWord.Equals("NAME"))
+                    if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
+                        socket.BeginReceive(MasterCallback, null);
                     }
                 }
-                else if (status.Equals("FAILED"))
+                else if (!load.valid)
                 {
-                    if (colonFirstWord.Equals("NAME"))
+                    if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        socket.BeginReceive(SaveCallback, status);
+                        socket.BeginReceive(SaveCallback, new Payload(2, false));
                     }
-                    else
+                    else if(load.number == 2)
                     {
                         // must be a message
+                        socket.BeginReceive(MasterCallback, null);
                     }
                 }
             }
@@ -548,64 +515,58 @@ namespace SS
         /// <summary>
         /// To communicate a committed change to other clients, the server should send
         ///UPDATE LF
-        ///Name:name LF
-        ///Version:version LF
-        ///Cell:cell LF
-        ///Length:length LF
-        ///content LF
+        ///Name:name LF; true 1
+        ///Version:version LF; true 2
+        ///Cell:cell LF; true 3
+        ///Length:length LF; true 4
+        ///content LF; true 5
         /// </summary>
         /// <param name="message"></param>
         /// <param name="e"></param>
-        /// <param name="o"></param>
-        private void UpdateCallback(String message, Exception e, object o)
+        /// <param name="payload"></param>
+        private void UpdateCallback(String message, Exception e, object payload)
         {
             if (message != null)
             {
-                string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
-                string spaceFirstWord = "";
                 string colonFirstWord = "";
                 string status = "";
-                if (o is string)
-                    status = (string)o;
+                Payload load = new Payload();
+                if (payload is Payload)
+                {
+                    load = (Payload)payload;
+                }
 
-                if (spaceSplitup.Length > 0)
-                    spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                if (spaceFirstWord.Equals("UPDATE"))
+                if (load.valid)
                 {
-                    status = "PASSED";
-                    socket.BeginReceive(UpdateCallback, status);
-                }
-                else if (status.Equals("PASSED"))
-                {
-                    if (colonFirstWord.Equals("NAME"))
+                    if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        socket.BeginReceive(UpdateCallback, status);
+                        socket.BeginReceive(UpdateCallback, new Payload(2, true));
                     }
-                    else if (colonFirstWord.Equals("VERSION"))
+                    else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         // get Version
                         version = Int32.Parse(colonSplitup[1].Trim());
-                        socket.BeginReceive(UpdateCallback, status);
+                        socket.BeginReceive(UpdateCallback, new Payload(2, true));
                     }
-                    else if (colonFirstWord.Equals("CELL"))
+                    else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
                         // get cell
-                        socket.BeginReceive(UpdateCallback, status);
+                        socket.BeginReceive(UpdateCallback, new Payload(2, true));
                     }
-                    else if (colonFirstWord.Equals("LENGTH"))
+                    else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
                         // get length
-                        socket.BeginReceive(UpdateCallback, status);
+                        socket.BeginReceive(UpdateCallback, new Payload(2, true));
                     }
-                    else
+                    else if(load.number == 5)
                     {
                         // must be the content
-                        socket.BeginReceive(UpdateCallback, "");
+                        socket.BeginReceive(MasterCallback, null);
                     }
                 }
             }
