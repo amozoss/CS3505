@@ -18,6 +18,13 @@ namespace SS
                 number = num;
                 valid = passed;
             }
+
+            public Payload()
+            {
+                number = 0;
+                valid = false;
+            }
+
             public Boolean valid;
             public int number;
         }
@@ -197,7 +204,7 @@ namespace SS
             string spaceFirstWord = "";
             string colonFirstWord = "";
             // This if statement parses the string we send in the payload.
-            Payload load = new Payload(0, false);
+            Payload load = new Payload();
             if (payload is Payload)
             {
                 load = (Payload)payload;
@@ -240,6 +247,7 @@ namespace SS
                 else
                 {
                     // must be a message
+                    socket.BeginReceive(MasterCallback, null);
                 }
             }
             updateGUI_SS(message); // the message from the server will be parsed in a separate class
