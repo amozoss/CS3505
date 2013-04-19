@@ -485,7 +485,7 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        Debug.WriteLine("Undo name Response Recognized");
+                        Debug.WriteLine("Undo name Response Recognized"); 
 
                         socket.BeginReceive(UndoCallback, new Payload(2, true));
                     }
