@@ -51,6 +51,7 @@ namespace SS
 
             socket = new StringSocket(sock, new UTF8Encoding());
             socket.BeginReceive(MasterCallback, null);
+            version = 0;
 
 
         }
@@ -110,7 +111,7 @@ namespace SS
                 if (spaceSplit.Length > 2)
                     thirdWord = spaceSplit[2].ToUpper().Trim();
 
-                if (thirdWord.Equals("OK") && !firstWord.Equals("UPDATE"))
+                if (thirdWord.Equals("OK") || firstWord.Equals("UPDATE"))
                 {
                     //passed
                     payload = new Payload(1, true);
@@ -140,17 +141,22 @@ namespace SS
                 switch (firstWord)
                 {
                     case "CREATE": socket.BeginReceive(CreateSSCallback, payload);
+                        Debug.WriteLine("Create Response Recognized");
                         break;
                     case "JOIN": socket.BeginReceive(JoinSSCallback, payload);
                         Debug.WriteLine("Join Response Recognized");
                         break;
                     case "CHANGE": socket.BeginReceive(ChangeCellCallback, payload);
+                        Debug.WriteLine("Change Response Recognized");
                         break;
                     case "UNDO": socket.BeginReceive(UndoCallback, payload);
+                        Debug.WriteLine("Undo Response Recognized");
                         break;
                     case "SAVE": socket.BeginReceive(SaveCallback, payload);
+                        Debug.WriteLine("Save Response Recognized");
                         break;
                     case "UPDATE": socket.BeginReceive(UpdateCallback, payload);
+                        Debug.WriteLine("Update Response Recognized");
                         break;
                     default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
                         break;
@@ -196,11 +202,19 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                         socket.BeginReceive(CreateSSCallback, new Payload(1, true));
+                         socket.BeginReceive(CreateSSCallback, new Payload(2, true));
+                         Debug.WriteLine("Create Name Response Recognized");
                     }
                     else if (colonFirstWord.Equals("PASSWORD") && load.number == 2)
                     {
                          // get password
+                        Debug.WriteLine("Create password Response Recognized");
+                        socket.BeginReceive(MasterCallback, null);
+                    }
+                    else
+                    {
+                        // something went wrong 
+                        // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
@@ -209,11 +223,19 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
+                        Debug.WriteLine("Create fail Name Response Recognized");
                         socket.BeginReceive(CreateSSCallback, new Payload(2, false));
                     }
                     else if (load.number == 2)
                     {
                         // must be a message
+                        Debug.WriteLine("Create fail message Response Recognized");
+                        socket.BeginReceive(MasterCallback, null);
+                    }
+                    else
+                    {
+                        // something went wrong 
+                        // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
@@ -268,8 +290,9 @@ namespace SS
                 else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                 {
                     // get Version
-                    // @todo check array length before access or make some sort of helper method
-                    version = Int32.Parse(colonSplit[1].Trim());
+                    
+                    if (colonSplit.Length > 1)
+                        version = Int32.Parse(colonSplit[1].Trim());
                     socket.BeginReceive(JoinSSCallback, new Payload(3, true));
                     Debug.WriteLine("Join Version Response Recognized");
 
@@ -299,11 +322,13 @@ namespace SS
                 if (colonFirstWord.Equals("NAME") && load.number == 1)
                 {
                     // get name
+                    Debug.WriteLine("Join fail Name Response Recognized");
                     socket.BeginReceive(JoinSSCallback, new Payload(2, false));
                 }
                 else if(load.number == 2)
                 {
                     // must be a message
+                    Debug.WriteLine("Join fail message Response Recognized");
                     socket.BeginReceive(MasterCallback, null);
                 }
                 else
@@ -353,10 +378,12 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         socket.BeginReceive(ChangeCellCallback, new Payload(2, true));
+                        Debug.WriteLine("Change Name Response Recognized");
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         socket.BeginReceive(MasterCallback, null);
+                        Debug.WriteLine("Change Version Response Recognized");
                     }
                     else
                     {
@@ -372,14 +399,19 @@ namespace SS
                 {
                     if(colonFirstWord.Equals("NAME") && load.number == 1)
                     {
+                        Debug.WriteLine("Change fail name Response Recognized");
                         socket.BeginReceive(ChangeCellCallback, new Payload(2, false));
                     }
                     else if(colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
+                        Debug.WriteLine("Change fail version Response Recognized");
+
                         socket.BeginReceive(ChangeCellCallback, new Payload(3, false));
                     }
                     else if (load.number == 3)
                     {
+                        Debug.WriteLine("Change fail message Response Recognized");
+
                         socket.BeginReceive(MasterCallback, null);
                     }
                     else
@@ -453,27 +485,38 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
+                        Debug.WriteLine("Undo name Response Recognized");
+
                         socket.BeginReceive(UndoCallback, new Payload(2, true));
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         // get Version
+                        Debug.WriteLine("Undo version Response Recognized");
+
+                        //@todo check that array has a valid string for version
                         version = Int32.Parse(colonSplitup[1].Trim());
                         socket.BeginReceive(UndoCallback, new Payload(3, true));
                     }
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
                         // get cell
+                        Debug.WriteLine("Undo cell Response Recognized");
+
                         socket.BeginReceive(UndoCallback, new Payload(4, true));
                     }
                     else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
                         // get length
+                        Debug.WriteLine("Undo length Response Recognized");
+
                         socket.BeginReceive(UndoCallback, new Payload(5, true));
                     }
                     else if(load.number == 5)
                     {
                         // must be the content
+                        Debug.WriteLine("Undo content Response Recognized");
+
                         socket.BeginReceive(MasterCallback, null);
                     }
                     else
@@ -490,20 +533,29 @@ namespace SS
                     {
                         case 1:                                         // It is FAIL's name.
                             socket.BeginReceive(UndoCallback, new Payload(2, false));
+                            Debug.WriteLine("Undo fail name Response Recognized");
+
                             break;
                         case 200:                                       // It is END's name.
                             socket.BeginReceive(UndoCallback, new Payload((int)UndoSpecialStatus.END + 1, false));
+                            Debug.WriteLine("Undo end name Response Recognized");
+
                             break;
                         case 100:                                       // It is WAIT's name.
                             socket.BeginReceive(UndoCallback, new Payload((int)UndoSpecialStatus.WAIT + 1, false));
+                             Debug.WriteLine("Undo wait name Response Recognized");
                             break;
                         case 2:                                         // It is FAIL's message.
                             socket.BeginReceive(MasterCallback, null);
+                            Debug.WriteLine("Undo fail message Response Recognized");
                             break;
                         case 201:                                       // It is WAIT's Version.
-
+                            socket.BeginReceive(MasterCallback, null);
+                            Debug.WriteLine("End version Response Recognized");
+                            break;
                         case 101:                                       // It is END's Version.
                             socket.BeginReceive(MasterCallback, null);
+                            Debug.WriteLine("Wait version Response Recognized");
                             break;
                         default:
                             // something went wrong 
@@ -551,6 +603,13 @@ namespace SS
 
                     {
                         // get name
+                        Debug.WriteLine("Save name Response Recognized");
+                        socket.BeginReceive(MasterCallback, null);
+                    }
+                    else
+                    {
+                        // something went wrong 
+                        // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
@@ -559,11 +618,19 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
+                        Debug.WriteLine("Save fail name Response Recognized");
                         socket.BeginReceive(SaveCallback, new Payload(2, false));
                     }
                     else if(load.number == 2)
                     {
                         // must be a message
+                        Debug.WriteLine("Save fail message Response Recognized");
+                        socket.BeginReceive(MasterCallback, null);
+                    }
+                    else
+                    {
+                        // something went wrong 
+                        // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
@@ -604,26 +671,39 @@ namespace SS
                     {
                         // get name
                         socket.BeginReceive(UpdateCallback, new Payload(2, true));
+                        Debug.WriteLine("Update name Response Recognized");
+
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         // get Version
+                        Debug.WriteLine("Update version Response Recognized");
+                        //@todo check array is not empty and is of type string
                         version = Int32.Parse(colonSplitup[1].Trim());
-                        socket.BeginReceive(UpdateCallback, new Payload(2, true));
+                        socket.BeginReceive(UpdateCallback, new Payload(3, true));
                     }
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
                         // get cell
-                        socket.BeginReceive(UpdateCallback, new Payload(2, true));
+                        Debug.WriteLine("Update cell Response Recognized");
+                        socket.BeginReceive(UpdateCallback, new Payload(4, true));
                     }
                     else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
                         // get length
-                        socket.BeginReceive(UpdateCallback, new Payload(2, true));
+                        Debug.WriteLine("Update length Response Recognized");
+                        socket.BeginReceive(UpdateCallback, new Payload(5, true));
                     }
                     else if(load.number == 5)
                     {
                         // must be the content
+                        Debug.WriteLine("Update content Response Recognized");
+                        socket.BeginReceive(MasterCallback, null);
+                    }
+                    else
+                    {
+                        // something went wrong 
+                        // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
