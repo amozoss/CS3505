@@ -504,32 +504,11 @@ namespace SS
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-<<<<<<< HEAD
+
                 if (load.valid)
                 {
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
-=======
-                if (spaceFirstWord.Equals("SAVE"))
-                {
-                    // @todo check array length before access or make some sort of helper method
 
-                    string thirdWord = spaceSplitup[2].ToUpper().Trim();
-                    if (thirdWord.Equals("OK"))
-                    {
-                        //passed
-                        status = "PASSED";
-                    }
-                    else if (thirdWord.Equals("FAIL"))
-                    {
-                        //failed
-                        status = "FAILED";
-                    }
-                    socket.BeginReceive(SaveCallback, status);
-                }
-                else if (status.Equals("PASSED"))
-                {
-                    if (colonFirstWord.Equals("NAME"))
->>>>>>> 4b87589720f0f3c5db097fab097ba930732fb6b5
                     {
                         // get name
                         socket.BeginReceive(MasterCallback, null);
