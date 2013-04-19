@@ -80,31 +80,26 @@ namespace SpreadsheetTests
             int port = 2000;
 
             ChangeCellTest1 cellTest = new ChangeCellTest1(ipAddress, port);
-            string words = cellTest.run();
-            string newWords = "";
 
-            string something = "HELLO";
-            switch (something)
-            {
-                case "HELLO":
-                    Assert.Inconclusive("IT WORKED, DAN");
-                    break;
-                default:
-                    break;
-            }
+            cellTest.run();
+            // assertions are made in the run() method
 
-
-
-
-            Assert.Inconclusive(words);
         }
 
         public class ChangeCellTest1
         {
-            private ClientSocketStuff target;
-            private StringSocket sendSocket;
-            private string message;
+            private ClientSocketStuff ssClient;
+            private StringSocket serverSocket;
+            private string messagesFromClient;
             private TcpListener server;
+             private ManualResetEvent mre1;
+            private ManualResetEvent mre2;
+            private int messageReceivedCount;
+
+
+            // Timeout used in test case
+            private static int timeout = 2000;
+           
 
             /// <summary>
             /// This will be the default test class constructor for ClientSocketStuffTest.
@@ -113,44 +108,67 @@ namespace SpreadsheetTests
             /// <param name="port"></param>
             public ChangeCellTest1(string ipAddress, int port)
             {
+                // the listener
                 server = new TcpListener(IPAddress.Any, port);
                 Spreadsheet spreadsheet = null; 
                 server.Start();
+
+                // the is the GUI message sender thing
                 ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something;
                 
                 server.BeginAcceptSocket(ConnectionReceived, null);
-                target = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
+                ssClient = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
             }
 
+            // setup connection to client
             private void ConnectionReceived(IAsyncResult ar)
             {
                 Socket socket = server.EndAcceptSocket(ar);
-                sendSocket = new StringSocket(socket, UTF8Encoding.Default);
-                sendSocket.BeginReceive(ReceiveStuff, null);
+                serverSocket = new StringSocket(socket, UTF8Encoding.Default);
+                serverSocket.BeginReceive(ReceiveStuff, null);
                 server.BeginAcceptSocket(ConnectionReceived, null);
             }
 
-            public string run()
-            { 
+            // have the client send a change message to the server
+            public void run()
+            {
+                // This will coordinate communication between the threads of the test cases
+                mre1 = new ManualResetEvent(false);
+                mre2 = new ManualResetEvent(false);
+                messageReceivedCount = 0;
+
+                // client cell changes 
                 string cellName = "jackson";
                 string cellContent = "jackson";
 
-                target.ChangeCell(cellName, cellContent);
-                Thread.Sleep(3000);
-                return message;
+
+                ssClient.ChangeCell(cellName, cellContent);
+                // wait for messages 
+                serverSocket.BeginReceive(ReceiveStuff, null);
+                serverSocket.BeginReceive(ReceiveStuff, null);
+                serverSocket.BeginReceive(ReceiveStuff, null);
+                serverSocket.BeginReceive(ReceiveStuff, null);
+                serverSocket.BeginReceive(ReceiveStuff, null);
+
+                Assert.AreEqual(true, mre1.WaitOne(timeout), "Timed out waiting 1");
+                Assert.AreEqual("CHANGE", messagesFromClient);
+        
             }
 
             private void ReceiveStuff(String words, Exception e, object payload)
             {
-                message += words.Trim();
-                sendSocket.BeginReceive(ReceiveStuff, null);
+                messagesFromClient += " " + words;
+                Debug.WriteLine("Received a message");
+                messageReceivedCount++;
+                if (messageReceivedCount >= 6)
+                    mre1.Set();
             }
 
 
 
             private void something(string somethingElse)
             {
-
+                Debug.WriteLine("Hey GUI, UPDATE!");
             }
 
         }

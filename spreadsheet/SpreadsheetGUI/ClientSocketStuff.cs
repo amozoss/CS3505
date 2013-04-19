@@ -46,12 +46,15 @@ namespace SS
 
             TcpClient client = new TcpClient(ipAddress, port);
             Socket sock = client.Client;
+
             socket = new StringSocket(sock, new UTF8Encoding());
             socket.BeginReceive(MasterCallback, null);
+
 
         }
 
         private void SendCallback(Exception e, object o) { }
+
 
 
         #region Callbacks
