@@ -465,7 +465,8 @@ namespace SS
                 ///UNDO SP WAIT LF
                 ///Name:name LF; false 1
                 ///Version:version LF; false 2
-                else if (!load.valid)
+                
+                /*else if (!load.valid)
                 {
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
@@ -487,7 +488,7 @@ namespace SS
                         // must be a message
                     }
                 }
-                
+                */
 
                 }
                 updateGUI_SS(message); // the message from the server will be parsed in a separate class
