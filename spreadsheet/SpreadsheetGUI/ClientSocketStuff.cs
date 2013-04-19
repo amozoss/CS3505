@@ -47,6 +47,7 @@ namespace SS
             TcpClient client = new TcpClient(ipAddress, port);
             Socket sock = client.Client;
             socket = new StringSocket(sock, new UTF8Encoding());
+            socket.BeginReceive(MasterCallback, null);
 
         }
 
@@ -153,8 +154,8 @@ namespace SS
         /// </summary>
         /// <param name="message"></param>
         /// <param name="e"></param>
-        /// <param name="o"></param>
-        private void CreateSSCallback(String message, Exception e, object o)
+        /// <param name="payload"></param>
+        private void CreateSSCallback(String message, Exception e, object payload)
         {
             if (message != null)
             {
@@ -163,8 +164,8 @@ namespace SS
                 string spaceFirstWord = "";
                 string colonFirstWord = "";
                 string status = "";
-                if (o is string)
-                    status = (string)o;
+                if (payload is string)
+                    status = (string)payload;
 
                 if (spaceSplitup.Length > 0) 
                      spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
@@ -310,19 +311,14 @@ namespace SS
         {
             if (message != null)
             {
-                string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
-                string spaceFirstWord = "";
                 string colonFirstWord = "";
-                string status = "";
                 Payload load = new Payload();
                 if (payload is Payload)
                 {
                     load = (Payload)payload;
                 }
 
-                if (spaceSplitup.Length > 0)
-                    spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
@@ -678,8 +674,8 @@ namespace SS
         /// <param name="password">password is the password to use for the new spreadsheet</param>
         public void CreateSpreadsheet(string name, string password)
         {
-            socket.BeginSend("CREATE\n" + name + "\n" + password + "\n", SendCallback, socket);
-            socket.BeginReceive(CreateSSCallback, "NOTHING");
+            socket.BeginSend("CREATE\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
+            socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
 
@@ -718,8 +714,8 @@ namespace SS
         /// <param name="password">password is the password to use for the spreadsheet</param>
         public void JoinSpreadsheet(string name, string password)
         {
-            socket.BeginSend("JOIN\n" + name + "\n" + password + "\n", SendCallback, socket);
-            socket.BeginReceive(JoinSSCallback, "NOTHING");
+            socket.BeginSend("JOIN\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
+            socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
 
@@ -768,7 +764,7 @@ namespace SS
         {
             socket.BeginSend("CHANGE\n" + version.ToString() + "\n" + password + "\n"
                 + cellName + "\n" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
-            socket.BeginReceive(ChangeCellCallback, "NOTHING");
+            //socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
         /// <summary>
@@ -812,36 +808,46 @@ namespace SS
         ///
         public void Undo()
         {
-            socket.BeginSend("UNDO\n" + nameOfSpreadsheet + "\n" + version.ToString()+ "\n", SendCallback, socket);
-            socket.BeginReceive(UndoCallback, "NOTHING");
+            socket.BeginSend("UNDO\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString()+ "\n", SendCallback, socket);
+            //socket.BeginReceive(MasterCallback, "NOTHING");
         }
         /// <summary>
-        ///        To save the current state of the spreadsheet and merge all outstanding changes to the existing 
-        ///file, the client should send to the server
-        ///SAVE LF
-        ///Name:name LF
+        /// To save the current state of the spreadsheet and merge all outstanding changes to the existing 
+        /// file, the client should send to the server
+        /// SAVE LF
+        /// Name:name LF
         ///
-        ///If the request succeeds, the server should respond with 
-        ///SAVE SP OK LF
-        ///Name:name LF
+        /// If the request succeeds, the server should respond with 
+        /// SAVE SP OK LF
+        /// Name:name LF
         ///
-        ///If the request fails, the server should respond with
-        ///SAVE SP FAIL LF
-        ///Name:name LF
-        ///message LF
+        /// If the request fails, the server should respond with
+        /// SAVE SP FAIL LF
+        /// Name:name LF
+        /// message LF
         ///
-        ///where
-        /// name is the name of the spreadsheet for which saving failed
-        /// message contains information why the save failed. It must not contain any linefeeds. 
-        ///The server should provide some reason in message why the request failed (e.g., the 
-        ///client has not logged in to work on the spreadsheet).
+        /// where
+        ///  name is the name of the spreadsheet for which saving failed
+        ///  message contains information why the save failed. It must not contain any linefeeds. 
+        /// The server should provide some reason in message why the request failed (e.g., the 
+        /// client has not logged in to work on the spreadsheet).
         /// </summary>
         public void Save()
         {
             socket.BeginSend("SAVE\n" + nameOfSpreadsheet + "\n", SendCallback, socket);
-            socket.BeginReceive(UndoCallback, "NOTHING");
+            //socket.BeginReceive(MasterCallback, "NOTHING");
         }
-   
+
+        /// <summary>
+        /// To leave a spreadsheet, the client should send
+        /// LEAVE LF
+        /// Name:name LF
+        /// </summary>
+        public void Leave()
+        {
+            socket.BeginSend("LEAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, null);
+        }
+
 
         /// <summary>
         /// Call this method to close the connection with the current server.
