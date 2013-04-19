@@ -487,11 +487,7 @@ namespace SS
                         switch(
                         // must be a message
                     }
-                }
-                */
-
-                }
-                updateGUI_SS(message); // the message from the server will be parsed in a separate class
+                }*/
 
             }
         }
