@@ -141,14 +141,18 @@ namespace SpreadsheetTests
                 string cellName = "jackson";
                 string cellContent = "jackson";
 
+               
 
                 ssClient.ChangeCell(cellName, cellContent);
                 // wait for messages 
+
                 serverSocket.BeginReceive(ReceiveStuff, null);
                 serverSocket.BeginReceive(ReceiveStuff, null);
                 serverSocket.BeginReceive(ReceiveStuff, null);
                 serverSocket.BeginReceive(ReceiveStuff, null);
                 serverSocket.BeginReceive(ReceiveStuff, null);
+                
+              
 
                 Assert.AreEqual(true, mre1.WaitOne(timeout), "Timed out waiting 1");
                 Assert.AreEqual("CHANGE", messagesFromClient);
@@ -158,10 +162,14 @@ namespace SpreadsheetTests
             private void ReceiveStuff(String words, Exception e, object payload)
             {
                 messagesFromClient += " " + words;
-                Debug.WriteLine("Received a message");
+                Debug.WriteLine("Received a message: " + words);
                 messageReceivedCount++;
+               
                 if (messageReceivedCount >= 6)
                     mre1.Set();
+
+               
+
             }
 
 
@@ -172,5 +180,5 @@ namespace SpreadsheetTests
             }
 
         }// end ChangeCellTest1 class
-    }
-}
+    } // end clientScoketTests
+}// end namespace
