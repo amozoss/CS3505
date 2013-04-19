@@ -52,7 +52,6 @@ namespace SS
 
         private void SendCallback(Exception e, object o) { }
 
-
         #region Callbacks
 
         /// <summary>
@@ -86,9 +85,53 @@ namespace SS
         /// <param name="message"></param>
         /// <param name="e"></param>
         /// <param name="payload"></param>
-        private void MasterCallback(String message, Exception e, object payload)
+        private void MasterCallback(String message, Exception e, object o)
         {
+            if (message != null)
+            {
 
+                string[] spaceSplit = message.Split(' ');
+                string firstWord = "";
+                Payload payload = new Payload(0, false);
+                if (spaceSplit.Length > 0)
+                    firstWord = spaceSplit[0].ToUpper().Trim();
+
+                // Check the status
+                string thirdWord = spaceSplit[2].ToUpper().Trim();
+                if (thirdWord.Equals("OK") && !firstWord.Equals("UPDATE"))
+                {
+                    //passed
+                    payload = new Payload(1, true);
+                }
+                else if (thirdWord.Equals("FAIL") && !firstWord.Equals("UPDATE"))
+                {
+                    //failed
+                    payload = new Payload(1, false);
+                }
+                else if (!firstWord.Equals("UPDATE"))
+                {
+                    // there was an error
+                    socket.BeginReceive(MasterCallback, payload);
+                }
+
+                switch (firstWord)
+                {
+                    case "CREATE": socket.BeginReceive(CreateSSCallback, payload);
+                        break;
+                    case "JOIN": socket.BeginReceive(JoinSSCallback, payload);
+                        break;
+                    case "CHANGE": socket.BeginReceive(ChangeCellCallback, payload);
+                        break;
+                    case "UNDO": socket.BeginReceive(UndoCallback, payload);
+                        break;
+                    case "SAVE": socket.BeginReceive(SaveCallback, payload);
+                        break;
+                    case "UPDATE": socket.BeginReceive(UpdateCallback, payload);
+                        break;
+                    default: socket.BeginReceive(MasterCallback, payload);
+                        break;
+                }
+            }
 
         }
 
