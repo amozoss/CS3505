@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using CustomNetworking;
 using System.Net.Sockets;
+using System.Diagnostics;
 
 namespace SS
 {
@@ -105,7 +106,10 @@ namespace SS
                     firstWord = spaceSplit[0].ToUpper().Trim();
 
                 // Check the status
-                string thirdWord = spaceSplit[2].ToUpper().Trim();
+                string thirdWord = "";
+                if (spaceSplit.Length > 2)
+                    thirdWord = spaceSplit[2].ToUpper().Trim();
+
                 if (thirdWord.Equals("OK") && !firstWord.Equals("UPDATE"))
                 {
                     //passed
@@ -127,6 +131,7 @@ namespace SS
                     case "CREATE": socket.BeginReceive(CreateSSCallback, payload);
                         break;
                     case "JOIN": socket.BeginReceive(JoinSSCallback, payload);
+                        Debug.WriteLine("Join Response Recognized");
                         break;
                     case "CHANGE": socket.BeginReceive(ChangeCellCallback, payload);
                         break;
@@ -180,6 +185,7 @@ namespace SS
 
                 if (spaceFirstWord.Equals("CREATE"))
                 {
+                    // @todo check array length before access
                     string thirdWord = spaceSplitup[2].ToUpper().Trim();
                     if (thirdWord.Equals("OK"))
                     {
@@ -243,6 +249,7 @@ namespace SS
         /// <param name="payload"></param>
         private void JoinSSCallback(String message, Exception e, object payload)
         {
+            Debug.WriteLine("Join Callback entered");
             string[] colonSplit = message.Split(':');
             string colonFirstWord = "";
 
@@ -262,22 +269,33 @@ namespace SS
                 {
                     // get name
                     socket.BeginReceive(JoinSSCallback, new Payload(2, true));
+                    Debug.WriteLine("Join Name Response Recognized");
+
                 }
                 else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                 {
                     // get Version
+                    // @todo check array length before access or make some sort of helper method
+                    
+
                     version = Int32.Parse(colonSplit[1].Trim());
                     socket.BeginReceive(JoinSSCallback, new Payload(3, true));
+                    Debug.WriteLine("Join Version Response Recognized");
+
                 }
                 else if (colonFirstWord.Equals("LENGTH") && load.number == 3)
                 {
                     // get length
                     socket.BeginReceive(JoinSSCallback, new Payload(4, true));
+                    Debug.WriteLine("Join Length Response Recognized");
+
                 }
                 else if(load.number == 4)
                 {
                     // must be the xml
                     socket.BeginReceive(MasterCallback, null);
+                    Debug.WriteLine("Join xml Response Recognized");
+
                 }
             }
             else if (!load.valid) // status == false
@@ -510,6 +528,8 @@ namespace SS
 
                 if (spaceFirstWord.Equals("SAVE"))
                 {
+                    // @todo check array length before access or make some sort of helper method
+
                     string thirdWord = spaceSplitup[2].ToUpper().Trim();
                     if (thirdWord.Equals("OK"))
                     {
