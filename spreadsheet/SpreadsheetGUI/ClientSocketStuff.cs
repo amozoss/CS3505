@@ -740,7 +740,7 @@ namespace SS
         /// <param name="cellContent">content of cell</param>
         public void ChangeCell(string cellName, string cellContent)
         {
-            socket.BeginSend("CHANGE\n" + "Version:" + version.ToString() + "\n" + "Password:" + password + "\n"
+            socket.BeginSend("CHANGE\n" +  "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
                 + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
             //socket.BeginReceive(MasterCallback, "NOTHING");
         }
