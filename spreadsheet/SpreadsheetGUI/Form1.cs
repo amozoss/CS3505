@@ -21,6 +21,7 @@ namespace SS
         private Spreadsheet spreadsheet; // The spreadsheet model for the form. Each new form has its own spreadsheet.
         private string filename; // keeps track of the current file name, if filename is null, the saveAs menu is used
         public delegate void EnterPressed(String cell, String cellContents);
+        private ClientSocketStuff clientCommunication;
 
         /**
          * This is used for posting on the UI thread from another thread.  
@@ -49,6 +50,7 @@ namespace SS
             // registering a method so that it is notified when an event happens.
             spreadsheetPanel1.SelectionChanged += displaySelection;
             spreadsheetPanel1.SetSelection(2, 3);
+            clientCommunication = new ClientSocketStuff("localhost", spreadsheet, null, 1984);
 
             displaySelection(spreadsheetPanel1); // update display when loaded
         }
