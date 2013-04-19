@@ -237,10 +237,9 @@ namespace SS
         private void JoinSSCallback(String message, Exception e, object payload)
         {
             string[] colonSplit = message.Split(':');
-            string[] payloadSplit = null;
-            string spaceFirstWord = "";
             string colonFirstWord = "";
-            // This if statement parses the string we send in the payload.
+
+
             Payload load = new Payload(0, false);
             if (payload is Payload)
             {
@@ -257,18 +256,18 @@ namespace SS
                     // get name
                     socket.BeginReceive(JoinSSCallback, new Payload(2, true));
                 }
-                else if (colonFirstWord.Equals("VERSION"))
+                else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                 {
                     // get Version
                     version = Int32.Parse(colonSplit[1].Trim());
                     socket.BeginReceive(JoinSSCallback, new Payload(3, true));
                 }
-                else if (colonFirstWord.Equals("LENGTH"))
+                else if (colonFirstWord.Equals("LENGTH") && load.number == 3)
                 {
                     // get length
                     socket.BeginReceive(JoinSSCallback, new Payload(4, true));
                 }
-                else 
+                else if(load.number == 4)
                 {
                     // must be the xml
                     socket.BeginReceive(MasterCallback, null);
@@ -276,12 +275,12 @@ namespace SS
             }
             else if (!load.valid) // status == false
             {
-                if (colonFirstWord.Equals("NAME"))
+                if (colonFirstWord.Equals("NAME") && load.number == 1)
                 {
                     // get name
                     socket.BeginReceive(JoinSSCallback, new Payload(2, false));
                 }
-                else
+                else if(load.number == 2)
                 {
                     // must be a message
                     socket.BeginReceive(MasterCallback, null);
