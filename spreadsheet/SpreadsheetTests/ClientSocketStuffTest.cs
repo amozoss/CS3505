@@ -172,5 +172,28 @@ namespace SpreadsheetTests
             }
 
         }// end ChangeCellTest1 class
+
+        /// <summary>
+        ///A test for ChangeCell
+        ///</summary>
+        [TestMethod()]
+        public void ChangeCellTester()
+        {
+            string ipAddress = "localhost";
+            int port = 1984;
+            Spreadsheet spreadsheet = new Spreadsheet();
+            ClientSocketStuff ssClient = new ClientSocketStuff(ipAddress, spreadsheet, null, port);
+            //ChangeCellTest1 cellTest = new ChangeCellTest1(ipAddress, port);
+            ssClient.ChangeCell("jackson", "jackson");
+            while (true)
+            {
+
+
+            }
+
+            //cellTest.run();
+            // assertions are made in the run() method
+
+        }
     }
 }

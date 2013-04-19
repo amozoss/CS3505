@@ -446,49 +446,32 @@ namespace SS
                     }
                 }
 
-
-                ///Otherwise, the server should respond with
-                ///
-                ///UNDO SP FAIL LF
-                ///Name:name LF; false 1
-                ///message LF; false 2
-                /// 
-                /// 
-                /// If there are no unsaved changes, the server should respond with
-                /// 
-                ///UNDO SP END LF
-                ///Name:name LF; false 1
-                ///Version:version LF false 2
-                ///
-                ///If the client’s version is out of date, the server should respond with 
-                ///
-                ///UNDO SP WAIT LF
-                ///Name:name LF; false 1
-                ///Version:version LF; false 2
-                
-                /*else if (!load.valid)
+                else if (!load.valid)
                 {
-                    if (colonFirstWord.Equals("NAME") && load.number == 1)
+                    switch (load.number)
                     {
-                        
-                        // get name
-                        socket.BeginReceive(UndoCallback, new Payload(2, false));
-                    }
-                    else if(load.number == (int)UndoSpecialStatus.WAIT)
-                    {
+                        case 1:                                         // It is FAIL's name.
+                            socket.BeginReceive(UndoCallback, new Payload(2, false));
+                            break;
+                        case 200:                                       // It is END's name.
+                            socket.BeginReceive(UndoCallback, new Payload((int)UndoSpecialStatus.END + 1, false));
+                            break;
+                        case 100:                                       // It is WAIT's name.
+                            socket.BeginReceive(UndoCallback, new Payload((int)UndoSpecialStatus.WAIT + 1, false));
+                            break;
+                        case 2:                                         // It is FAIL's message.
+                            socket.BeginReceive(MasterCallback, null);
+                            break;
+                        case 201:                                       // It is WAIT's Version.
 
+                        case 101:                                       // It is END's Version.
+                            socket.BeginReceive(MasterCallback, null);
+                            break;
+                        default:
+                            socket.BeginReceive(MasterCallback, null);
+                            break;
                     }
-                    else if(load.number == (int)UndoSpecialStatus.END)
-                    {
-
-                    }
-                    else if(colonFirstWord)
-                    {
-                        switch(
-                        // must be a message
-                    }
-                }*/
-
+                }
             }
         }
 
