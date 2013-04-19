@@ -18,6 +18,13 @@ namespace SS
                 number = num;
                 valid = passed;
             }
+
+            public Payload()
+            {
+                number = 0;
+                valid = false;
+            }
+
             public Boolean valid;
             public int number;
         }
@@ -131,7 +138,10 @@ namespace SS
                         break;
                 }
             }
+
         }
+
+
 
         /// <summary>
         /// If the server successfully created the new spreadsheet file, it should respond with
@@ -218,7 +228,7 @@ namespace SS
         ///Name:name LF; true 1
         ///Version:version LF; true 2
         ///Length:length LF;true 3
-        ///xml LF 
+        ///xml LF; true 4
         ///
         ///Otherwise, the server should respond with
         ///JOIN SP FAIL LF
@@ -232,29 +242,23 @@ namespace SS
         /// <param name="payload"></param>
         private void JoinSSCallback(String message, Exception e, object payload)
         {
-            string[] spaceSplit = message.Split(' ');
             string[] colonSplit = message.Split(':');
             string[] payloadSplit = null;
             string spaceFirstWord = "";
             string colonFirstWord = "";
-            Boolean status = true;
-            int number = 0;
             // This if statement parses the string we send in the payload.
+            Payload load = new Payload();
             if (payload is Payload)
             {
-                Payload load = (Payload)payload;
-                status = load.valid;
-                number = load.number;
+                load = (Payload)payload;
             }
 
-            if (spaceSplit.Length > 0)
-                spaceFirstWord = spaceSplit[0].ToUpper().Trim();
             if (colonSplit.Length > 0)
                 colonFirstWord = colonSplit[0].ToUpper().Trim();
 
-            if (status) // status == true
+            if (load.valid) // status == true
             {
-                if (colonFirstWord.Equals("NAME") && number.Equals("1"))
+                if (colonFirstWord.Equals("NAME") && load.number == 1)
                 {
                     // get name
                     socket.BeginReceive(JoinSSCallback, new Payload(2, true));
@@ -263,28 +267,30 @@ namespace SS
                 {
                     // get Version
                     version = Int32.Parse(colonSplit[1].Trim());
-                    socket.BeginReceive(JoinSSCallback, status);
+                    socket.BeginReceive(JoinSSCallback, new Payload(3, true));
                 }
                 else if (colonFirstWord.Equals("LENGTH"))
                 {
                     // get length
-                    socket.BeginReceive(JoinSSCallback, status);
+                    socket.BeginReceive(JoinSSCallback, new Payload(4, true));
                 }
                 else 
                 {
                     // must be the xml
+                    //socket.BeginReceive(Master
                 }
             }
-            else if (status.Equals("FAILED"))
+            else if (load.valid) // status == false
             {
                 if (colonFirstWord.Equals("NAME"))
                 {
                     // get name
-                    socket.BeginReceive(JoinSSCallback, status);
+                    socket.BeginReceive(JoinSSCallback, new Payload(2, false));
                 }
                 else
                 {
                     // must be a message
+                    socket.BeginReceive(MasterCallback, null);
                 }
             }
             updateGUI_SS(message); // the message from the server will be parsed in a separate class
