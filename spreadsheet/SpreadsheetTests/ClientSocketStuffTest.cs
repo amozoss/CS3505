@@ -83,6 +83,19 @@ namespace SpreadsheetTests
             string words = cellTest.run();
             string newWords = "";
 
+            string something = "HELLO";
+            switch (something)
+            {
+                case "HELLO":
+                    Assert.Inconclusive("IT WORKED, DAN");
+                    break;
+                default:
+                    break;
+            }
+
+
+
+
             Assert.Inconclusive(words);
         }
 

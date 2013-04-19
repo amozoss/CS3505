@@ -19,12 +19,6 @@ namespace SS
                 valid = passed;
             }
 
-            public Payload()
-            {
-                number = 0;
-                valid = false;
-            }
-
             public Boolean valid;
             public int number;
         }
@@ -204,7 +198,7 @@ namespace SS
             string spaceFirstWord = "";
             string colonFirstWord = "";
             // This if statement parses the string we send in the payload.
-            Payload load = new Payload();
+            Payload load = new Payload(0, false);
             if (payload is Payload)
             {
                 load = (Payload)payload;
@@ -234,10 +228,10 @@ namespace SS
                 else 
                 {
                     // must be the xml
-                    //socket.BeginReceive(Master
+                    socket.BeginReceive(MasterCallback, null);
                 }
             }
-            else if (load.valid) // status == false
+            else if (!load.valid) // status == false
             {
                 if (colonFirstWord.Equals("NAME"))
                 {
@@ -250,28 +244,27 @@ namespace SS
                     socket.BeginReceive(MasterCallback, null);
                 }
             }
-            updateGUI_SS(message); // the message from the server will be parsed in a separate class
         }
 
         /// <summary>
         /// If the request succeeded, the server should respond with
         ///
         ///CHANGE SP OK LF
-        ///Name:name LF
-        ///Version:version LF
+        ///Name:name LF; true 1
+        ///Version:version LF true 2
         ///
         ///Otherwise, it should respond with
         ///
         ///CHANGE SP FAIL LF
-        ///Name:name LF
-        ///Version:version LF
-        ///message LF
+        ///Name:name LF; true 1
+        ///Version:version LF; true 2
+        ///message LF; true 3
         ///
         /// </summary>
         /// <param name="message"></param>
         /// <param name="e"></param>
-        /// <param name="o"></param>
-        private void ChangeCellCallback(String message, Exception e, object o)
+        /// <param name="Payload"></param>
+        private void ChangeCellCallback(String message, Exception e, object payload)
         {
             if (message != null)
             {
@@ -280,57 +273,46 @@ namespace SS
                 string spaceFirstWord = "";
                 string colonFirstWord = "";
                 string status = "";
-                if (o is string)
-                    status = (string)o;
+                Payload load = new Payload();
+                if (payload is Payload)
+                {
+                    load = (Payload)payload;
+                }
 
                 if (spaceSplitup.Length > 0)
                     spaceFirstWord = spaceSplitup[0].ToUpper().Trim();
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                if (spaceFirstWord.Equals("CHANGE"))
+                if (load.valid) // load.valid == true
                 {
-                    string thirdWord = spaceSplitup[2].ToUpper().Trim();
-                    if (thirdWord.Equals("OK"))
+                    if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
-                        //passed
-                        status = "PASSED";
+                        socket.BeginReceive(ChangeCellCallback, new Payload(2, true));
                     }
-                    else if (thirdWord.Equals("FAIL"))
+                    else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
-                        //failed
-                        status = "FAILED";
+                        socket.BeginReceive(MasterCallback, null);
                     }
-                    socket.BeginReceive(ChangeCellCallback, status);
                 }
-                else if (spaceFirstWord.Equals("message"))
-                {
-                    // message
-                    //socket.BeginReceive(mainCallback, something);
-                }
-                else if (colonFirstWord.Equals("Version"))
-                {
-                    version = Int32.Parse(colonSplitup[1].Trim());
-                    if(status.Equals("FAILED"))
-                    {
-                        socket.BeginReceive(ChangeCellCallback, status);
-                    }
-                    //version
-                }
-                else if (colonFirstWord.Equals("Name"))
-                {
-                    if (status.Equals("PASSED"))
-                    {
 
-                    }
-                    else
-                    {
 
+
+                else if (!load.valid)
+                {
+                    if(colonFirstWord.Equals("NAME") && load.number == 1)
+                    {
+                        socket.BeginReceive(ChangeCellCallback, new Payload(2, false));
                     }
-                    // get name
-                    socket.BeginReceive(ChangeCellCallback, status);
+                    else if(colonFirstWord.Equals("VERSION") && load.number == 2)
+                    {
+                        socket.BeginReceive(ChangeCellCallback, new Payload(3, false));
+                    }
+                    else if (load.number == 3)
+                    {
+                        socket.BeginReceive(MasterCallback, null);
+                    }
                 }
-                updateGUI_SS(message); // the message from the server will be parsed in a separate class
             }
         }
 
