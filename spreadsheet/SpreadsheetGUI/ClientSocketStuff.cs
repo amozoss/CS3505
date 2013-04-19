@@ -120,9 +120,20 @@ namespace SS
                     //failed
                     payload = new Payload(1, false);
                 }
+                else if (thirdWord.Equals("WAIT") && firstWord.Equals("UNDO"))
+                {
+                    //Undo wait message
+                    payload = new Payload(100, false);
+                }
+                else if (thirdWord.Equals("END") && firstWord.Equals("UNDO"))
+                {
+                    //Undo end message
+                    payload = new Payload(200, false);
+                }
                 else if (!firstWord.Equals("UPDATE"))
                 {
                     // there was an error
+                    // @todo handle error
                     socket.BeginReceive(MasterCallback, payload);
                 }
 
@@ -141,7 +152,7 @@ namespace SS
                         break;
                     case "UPDATE": socket.BeginReceive(UpdateCallback, payload);
                         break;
-                    default: socket.BeginReceive(MasterCallback, payload);
+                    default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
                         break;
                 }
             }
@@ -258,8 +269,6 @@ namespace SS
                 {
                     // get Version
                     // @todo check array length before access or make some sort of helper method
-                    
-
                     version = Int32.Parse(colonSplit[1].Trim());
                     socket.BeginReceive(JoinSSCallback, new Payload(3, true));
                     Debug.WriteLine("Join Version Response Recognized");
@@ -270,14 +279,19 @@ namespace SS
                     // get length
                     socket.BeginReceive(JoinSSCallback, new Payload(4, true));
                     Debug.WriteLine("Join Length Response Recognized");
-
                 }
-                else if(load.number == 4)
+                else if (load.number == 4)
                 {
                     // must be the xml
                     socket.BeginReceive(MasterCallback, null);
                     Debug.WriteLine("Join xml Response Recognized");
 
+                }
+                else
+                {
+                    // something went wrong 
+                    // @todo handle error
+                    socket.BeginReceive(MasterCallback, null);
                 }
             }
             else if (!load.valid) // status == false
@@ -290,6 +304,12 @@ namespace SS
                 else if(load.number == 2)
                 {
                     // must be a message
+                    socket.BeginReceive(MasterCallback, null);
+                }
+                else
+                {
+                    // something went wrong 
+                    // @todo handle error
                     socket.BeginReceive(MasterCallback, null);
                 }
             }
@@ -338,6 +358,12 @@ namespace SS
                     {
                         socket.BeginReceive(MasterCallback, null);
                     }
+                    else
+                    {
+                        // something went wrong 
+                        // @todo handle error
+                        socket.BeginReceive(MasterCallback, null);
+                    }
                 }
 
 
@@ -354,6 +380,12 @@ namespace SS
                     }
                     else if (load.number == 3)
                     {
+                        socket.BeginReceive(MasterCallback, null);
+                    }
+                    else
+                    {
+                        // something went wrong 
+                        // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
@@ -444,6 +476,12 @@ namespace SS
                         // must be the content
                         socket.BeginReceive(MasterCallback, null);
                     }
+                    else
+                    {
+                        // something went wrong 
+                        // @todo handle error
+                        socket.BeginReceive(MasterCallback, null);
+                    }
                 }
 
                 else if (!load.valid)
@@ -468,6 +506,8 @@ namespace SS
                             socket.BeginReceive(MasterCallback, null);
                             break;
                         default:
+                            // something went wrong 
+                            // @todo handle error
                             socket.BeginReceive(MasterCallback, null);
                             break;
                     }

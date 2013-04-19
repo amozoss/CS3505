@@ -867,7 +867,7 @@ namespace SpreadsheetTests
                                         "Verison:" + version + "\n" + "Length:" + length +
                                         "\n" + xml + "\n",ServerSendCallback, null);
 
-                Thread.Sleep(30000);
+                
                 Assert.AreEqual(true, mre2.WaitOne(timeout), "Timed out waiting 1");
                    
             }
