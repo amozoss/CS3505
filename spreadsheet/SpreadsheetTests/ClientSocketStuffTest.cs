@@ -116,7 +116,7 @@ namespace SpreadsheetTests
                 server.Start();
                 clientMessages = new List<string>();
                 // the is the GUI message sender thing
-                ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something;
+                ClientSocketStuff.ClientToGUI_SS receivedMessage = something;
 
                 server.BeginAcceptSocket(ConnectionReceived, null);
                 ssClient = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
@@ -260,7 +260,7 @@ namespace SpreadsheetTests
                 server.Start();
                 clientMessages = new List<string>();
                 // the is the GUI message sender thing
-                ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something;
+                ClientSocketStuff.ClientToGUI_SS receivedMessage = something;
 
                 server.BeginAcceptSocket(ConnectionReceived, null);
                 ssClient = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
@@ -371,7 +371,7 @@ namespace SpreadsheetTests
                 server.Start();
                 clientMessages = new List<string>();
                 // the is the GUI message sender thing
-                ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something;
+                ClientSocketStuff.ClientToGUI_SS receivedMessage = something;
 
                 server.BeginAcceptSocket(ConnectionReceived, null);
                 ssClient = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
@@ -482,7 +482,7 @@ namespace SpreadsheetTests
                 server.Start();
                 clientMessages = new List<string>();
                 // the is the GUI message sender thing
-                ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something;
+                ClientSocketStuff.ClientToGUI_SS receivedMessage = something;
 
                 server.BeginAcceptSocket(ConnectionReceived, null);
                 ssClient = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
@@ -593,7 +593,7 @@ namespace SpreadsheetTests
                 server.Start();
                 clientMessages = new List<string>();
                 // the is the GUI message sender thing
-                ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something;
+                ClientSocketStuff.ClientToGUI_SS receivedMessage = something;
 
                 server.BeginAcceptSocket(ConnectionReceived, null);
                 ssClient = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
@@ -702,7 +702,7 @@ namespace SpreadsheetTests
                 server.Start();
                 clientMessages = new List<string>();
                 // the is the GUI message sender thing
-                ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something;
+                ClientSocketStuff.ClientToGUI_SS receivedMessage = something;
 
                 server.BeginAcceptSocket(ConnectionReceived, null);
                 ssClient = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
@@ -815,7 +815,7 @@ namespace SpreadsheetTests
                 server.Start();
                 clientMessages = new List<string>();
                 // the is the GUI message sender thing
-                ClientSocketStuff.ClientUpdateGUI_SS receivedMessage = something;
+                ClientSocketStuff.ClientToGUI_SS receivedMessage = something;
 
                 server.BeginAcceptSocket(ConnectionReceived, null);
                 ssClient = new ClientSocketStuff(ipAddress, spreadsheet, receivedMessage, port);
