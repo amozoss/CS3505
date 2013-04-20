@@ -272,6 +272,7 @@ namespace SS
             if (dialogResult == DialogResult.Yes)
             {
                 saveFile();
+                clientCommunication.Leave();
             }
         }
 
