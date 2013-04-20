@@ -13,27 +13,35 @@ namespace SS
     {
         public delegate void Create(string ipadd, string pt, string ssN, string pswd);
         public delegate void Join(string ipadd, string pt, string ssN, string pswd);
-
+        private Create cfunk;
+        private Join jfunk;
         
-        public CreateOrJoin(Create cFunk, Join jFunk)
+        public CreateOrJoin(Create a, Join n)
         {
+            cfunk = a;
+            jfunk = n;
             InitializeComponent();
-            createButton.Focus();
-            port.GotFocus += OnFocus;
         }
 
         private void createButton_Click(object sender, EventArgs e)
         {
-            
-            //ipAddress.Text = box.text
+           
+            cfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
+            this.Close();
         }
 
-        private void OnFocus(object sender, EventArgs e)
+        private void joinButton_Click(object sender, EventArgs e)
         {
-            TextBox box = (TextBox)sender;
-            box.Text = "";
-
-            //MessageBox.Show("Got focus.");
+            jfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
+            this.Close();
         }
+
+        private void cancelButton_Click(object sender, EventArgs e)
+        {
+            //Application.Exit();
+            this.Close();
+        }
+
+
     }
 }

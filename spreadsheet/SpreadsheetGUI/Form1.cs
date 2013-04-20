@@ -48,16 +48,16 @@ namespace SS
 
 
             // Create and join are figured out here.
-
+            spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
             CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
             firstForm.ShowDialog();
             
             // Create the spreadsheet model and the validator to check if the cell names are correct. 
-            spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
+            
             // registering a method so that it is notified when an event happens.
             spreadsheetPanel1.SelectionChanged += displaySelection;
             spreadsheetPanel1.SetSelection(2, 3);
-            clientCommunication = new ClientSocketStuff("localhost", spreadsheet, Update, 1984);
+            //clientCommunication = new ClientSocketStuff("localhost", spreadsheet, Update, 1984);
 
             displaySelection(spreadsheetPanel1); // update display when loaded
         }
