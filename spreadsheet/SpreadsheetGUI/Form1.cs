@@ -11,6 +11,8 @@ using System.IO;
 using CustomNetworking;
 using System.Net.Sockets;
 
+
+
 namespace SS
 {
     /// <summary>
@@ -22,7 +24,8 @@ namespace SS
         private string filename; // keeps track of the current file name, if filename is null, the saveAs menu is used
         public delegate void EnterPressed(String cell, String cellContents);
         private ClientSocketStuff clientCommunication;
-
+        private Control dispatcher;//used to call methods on main thread
+        public delegate void MyDelegate();
         /**
          * This is used for posting on the UI thread from another thread.  
          * 
@@ -50,11 +53,25 @@ namespace SS
             // registering a method so that it is notified when an event happens.
             spreadsheetPanel1.SelectionChanged += displaySelection;
             spreadsheetPanel1.SetSelection(2, 3);
-            clientCommunication = new ClientSocketStuff("localhost", spreadsheet, null, 1984);
+            clientCommunication = new ClientSocketStuff("localhost", spreadsheet, Update, 1984);
+            this.dispatcher = new Control();
+            this.dispatcher.CreateControl();
+
 
             displaySelection(spreadsheetPanel1); // update display when loaded
         }
 
+        private void Update(string message)
+        {
+            dispatcher.BeginInvoke(new MyDelegate(mainthread), null);
+           
+        }
+
+        private void mainthread()
+        {
+            displaySelection(spreadsheetPanel1);
+        }
+        
 
 
         /// <summary>
@@ -271,6 +288,7 @@ namespace SS
 
                 // set cell contents @@@
                 ISet<string> dependentCells = spreadsheet.SetContentsOfCell(nameOfCell, contentsTextBox.Text);
+                IEnumerable<string> nonempty = spreadsheet.GetNamesOfAllNonemptyCells();
 
                 // update all dependent cells
                 foreach (var name33 in dependentCells)

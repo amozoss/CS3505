@@ -24,6 +24,17 @@ namespace SS
             public int number;
         }
 
+        public struct UpdatePayload
+        {
+            public Boolean valid;
+            public int number;
+            public string name;
+            public int version;
+            public string cell;
+            public int contentLength;
+            public string content;
+        }
+
         enum UndoSpecialStatus{WAIT=100, END=200}
 
         public delegate void ClientUpdateGUI_SS(String message); // The message will be handled by a separate class 
@@ -34,6 +45,7 @@ namespace SS
         private static int SERVERPORT = 1984;
         private ClientUpdateGUI_SS updateGUI_SS;
         private int version;
+        private Spreadsheet spreadsheet;
 
         /// <summary>
         ///  Creates the communication outlet that the client will use to "talk" to the server.
@@ -45,6 +57,7 @@ namespace SS
             // set private instance variables 
             this.ipAddress = ipAddress;
             this.updateGUI_SS = receivedMessage;
+            this.spreadsheet = spreadsheet;
 
             TcpClient client = new TcpClient(ipAddress, port);
             Socket sock = client.Client;
@@ -103,6 +116,9 @@ namespace SS
                 string[] spaceSplit = message.Split(' ');
                 string firstWord = "";
                 Payload payload = new Payload(0, false);
+                UpdatePayload upPay = new UpdatePayload();
+
+
                 if (spaceSplit.Length > 0)
                     firstWord = spaceSplit[0].ToUpper().Trim();
 
@@ -111,10 +127,15 @@ namespace SS
                 if (spaceSplit.Length > 2)
                     thirdWord = spaceSplit[2].ToUpper().Trim();
 
-                if (thirdWord.Equals("OK") || firstWord.Equals("UPDATE"))
+                if (thirdWord.Equals("OK"))
                 {
                     //passed
                     payload = new Payload(1, true);
+                }
+                else if (firstWord.Equals("UPDATE"))
+                {
+                    upPay.number = 1;
+                    upPay.valid = true;
                 }
                 else if (thirdWord.Equals("FAIL") && !firstWord.Equals("UPDATE"))
                 {
@@ -155,7 +176,7 @@ namespace SS
                     case "SAVE": socket.BeginReceive(SaveCallback, payload);
                         Debug.WriteLine("Save Response Recognized");
                         break;
-                    case "UPDATE": socket.BeginReceive(UpdateCallback, payload);
+                    case "UPDATE": socket.BeginReceive(UpdateCallback, upPay);
                         Debug.WriteLine("Update Response Recognized");
                         break;
                     default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
@@ -290,9 +311,10 @@ namespace SS
                 else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                 {
                     // get Version
-                    
-                    if (colonSplit.Length > 1)
-                        version = Int32.Parse(colonSplit[1].Trim());
+
+                    int v;
+                    Int32.TryParse(getSecondWord(colonSplit), out v);
+                    version = v;
                     socket.BeginReceive(JoinSSCallback, new Payload(3, true));
                     Debug.WriteLine("Join Version Response Recognized");
 
@@ -493,9 +515,9 @@ namespace SS
                     {
                         // get Version
                         Debug.WriteLine("Undo version Response Recognized");
-
-                        //@todo check that array has a valid string for version
-                        version = Int32.Parse(colonSplitup[1].Trim());
+                        int v;
+                        Int32.TryParse(getSecondWord(colonSplitup), out v);
+                        this.version = v;
                         socket.BeginReceive(UndoCallback, new Payload(3, true));
                     }
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
@@ -637,6 +659,18 @@ namespace SS
             }
         }
 
+        private string getSecondWord(string[] colonSplit)
+        {
+            string second = "";
+            if (colonSplit.Length > 1)
+                second = colonSplit[1].ToUpper().Trim();
+            else
+            {
+                // @todo some error
+            }
+
+            return second;
+        }
         /// <summary>
         /// To communicate a committed change to other clients, the server should send
         ///UPDATE LF
@@ -656,10 +690,10 @@ namespace SS
                 string[] colonSplitup = message.Split(':');
                 string colonFirstWord = "";
                 string status = "";
-                Payload load = new Payload();
-                if (payload is Payload)
+                UpdatePayload load = new UpdatePayload();
+                if (payload is UpdatePayload)
                 {
-                    load = (Payload)payload;
+                    load = (UpdatePayload)payload;
                 }
 
                 if (colonSplitup.Length > 0)
@@ -670,7 +704,8 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        socket.BeginReceive(UpdateCallback, new Payload(2, true));
+                        load.number++;
+                        socket.BeginReceive(UpdateCallback, load);
                         Debug.WriteLine("Update name Response Recognized");
 
                     }
@@ -678,27 +713,42 @@ namespace SS
                     {
                         // get Version
                         Debug.WriteLine("Update version Response Recognized");
-                        //@todo check array is not empty and is of type string
-                        version = Int32.Parse(colonSplitup[1].Trim());
-                        socket.BeginReceive(UpdateCallback, new Payload(3, true));
+                       
+                        load.number++;
+
+                        int v;
+                        Int32.TryParse(getSecondWord(colonSplitup), out v);
+                        load.version = v;
+                        socket.BeginReceive(UpdateCallback, load);
                     }
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
                         // get cell
                         Debug.WriteLine("Update cell Response Recognized");
-                        socket.BeginReceive(UpdateCallback, new Payload(4, true));
+                        load.number++;
+                        load.cell = getSecondWord(colonSplitup);
+                        
+                        socket.BeginReceive(UpdateCallback, load);
                     }
                     else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
                         // get length
+                        load.number++;
+                        int length;
+                        Int32.TryParse(getSecondWord(colonSplitup), out length);
+                        load.contentLength = length;
                         Debug.WriteLine("Update length Response Recognized");
-                        socket.BeginReceive(UpdateCallback, new Payload(5, true));
+                        socket.BeginReceive(UpdateCallback, load);
                     }
                     else if(load.number == 5)
                     {
                         // must be the content
+                        load.content = message;
                         Debug.WriteLine("Update content Response Recognized");
+                        spreadsheet.SetContentsOfCell(load.cell, message.Trim());
+                        IEnumerable<string> nonEmptyCells = spreadsheet.GetNamesOfAllNonemptyCells();
                         socket.BeginReceive(MasterCallback, null);
+                        updateGUI_SS("update!");
                     }
                     else
                     {
