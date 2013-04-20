@@ -184,7 +184,7 @@ namespace SpreadsheetTests
 
 
 
-            private void something(string somethingElse)
+            private void something(string somethingElse, bool isError)
             {
                 Debug.WriteLine("Hey GUI, UPDATE!");
             }
@@ -319,7 +319,7 @@ namespace SpreadsheetTests
 
 
 
-            private void something(string somethingElse)
+            private void something(string somethingElse, bool isErrorMessage)
             {
                 Debug.WriteLine("Hey GUI, UPDATE!");
             }
@@ -430,7 +430,7 @@ namespace SpreadsheetTests
 
 
 
-            private void something(string somethingElse)
+            private void something(string somethingElse, bool isError)
             {
                 Debug.WriteLine("Hey GUI, UPDATE!");
             }
@@ -541,7 +541,7 @@ namespace SpreadsheetTests
 
 
 
-            private void something(string somethingElse)
+            private void something(string somethingElse, bool isError)
             {
                 Debug.WriteLine("Hey GUI, UPDATE!");
             }
@@ -650,7 +650,7 @@ namespace SpreadsheetTests
 
 
 
-            private void something(string somethingElse)
+            private void something(string somethingElse, bool isError)
             {
                 Debug.WriteLine("Hey GUI, UPDATE!");
             }
@@ -759,7 +759,7 @@ namespace SpreadsheetTests
 
 
 
-            private void something(string somethingElse)
+            private void something(string somethingElse, bool isError)
             {
                 Debug.WriteLine("Hey GUI, UPDATE!");
             }
@@ -894,7 +894,7 @@ namespace SpreadsheetTests
 
 
 
-            private void something(string somethingElse)
+            private void something(string somethingElse, bool isError)
             {
                 Debug.WriteLine("Hey GUI, UPDATE!");
             }

@@ -28,7 +28,7 @@ namespace SS
         {
             IPAddress ad = null;
             int num = 0;
-            if (IPAddress.TryParse(ip, out ad))
+            if (IPAddress.TryParse(ip, out ad) || ip == "localhost")
                 if (Int32.TryParse(pt, out num))
                     return true;
             return false;

@@ -67,7 +67,8 @@ namespace SS
             int num = 0;
             if (Int32.TryParse(port, out num))
             {
-                clientCommunication.Leave();
+                if (clientCommunication != null)
+                    clientCommunication.Leave();
                 clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
                 clientCommunication.CreateSpreadsheet(ssName, psword);
                 displaySelection(spreadsheetPanel1);
@@ -79,18 +80,26 @@ namespace SS
             int num = 0;
             if (Int32.TryParse(port, out num))
             {
-                clientCommunication.Leave();
+                if (clientCommunication != null)
+                    clientCommunication.Leave();
                 
                 clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
                 clientCommunication.JoinSpreadsheet(ssName, psword);
                 displaySelection(spreadsheetPanel1);
             }
         }
-        private void Update(string message)
+        private void Update(string message, bool isError)
         {      
             this.Invoke((MethodInvoker)delegate
             {
-                displaySelection(spreadsheetPanel1);
+                if (!isError)
+                {
+                    displaySelection(spreadsheetPanel1);
+                }
+                else
+                {
+                    MessageBox.Show(message, "Error");
+                }
             }); 
         }
 
