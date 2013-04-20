@@ -44,7 +44,7 @@ namespace SS
         private string password; // password is the password to use for the new spreadsheet
         private StringSocket socket;
         private static int SERVERPORT = 1984;
-        private ClientToGUI_SS clientToGUI_SS;
+        private ClientToGUI_SS clientGUI_SS;
         private int version;
         private Spreadsheet spreadsheet;
 
@@ -59,7 +59,7 @@ namespace SS
 
             // set private instance variables 
             this.ipAddress = ipAddress;
-            this.clientToGUI_SS = receivedMessage;
+            this.clientGUI_SS = receivedMessage;
             this.spreadsheet = spreadsheet;
             
             TcpClient client = new TcpClient(ipAddress, port);
@@ -337,7 +337,7 @@ namespace SS
                 {
                     // must be the xml
                     socket.BeginReceive(MasterCallback, null);
-                    StreamWriter s = new StreamWriter();
+                    
 
                     Debug.WriteLine("Join xml Response Recognized");
 
@@ -765,7 +765,7 @@ namespace SS
                         // We need to lock on this, right?
                         spreadsheet.SetContentsOfCell(load.cell, message.Trim());
                         socket.BeginReceive(MasterCallback, null);
-                        clientToGUI_SS("update!");
+                        clientGUI_SS("update!");
                     }
                     else
                     {

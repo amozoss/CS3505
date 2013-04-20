@@ -1213,6 +1213,20 @@ namespace SpreadsheetTests
         }
 
         /// <summary>
+        ///A test for Save
+        ///</summary>
+        [TestMethod()]
+        public void loadStringXmlTest()
+        {
+            Spreadsheet target = new Spreadsheet();
+            string s = "<?xml version=\"1.0\" encoding=\"utf-8\"?><spreadsheet version=\"dan1\"><cell>" +
+               "<name>A1</name><content>2</content></cell><cell><name>A2</name><content>=A1</content>" +
+                "</cell><cell><name>A3</name><content>Hello</content></cell></spreadsheet>";
+            target.ReadXml(s);
+           
+        }
+
+        /// <summary>
         ///A test for GetSavedVersion
         ///</summary>
         [TestMethod()]
