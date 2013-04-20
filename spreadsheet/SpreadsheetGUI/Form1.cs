@@ -47,6 +47,9 @@ namespace SS
 
 
             // Create and join are figured out here.
+
+            CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
+            firstForm.ShowDialog();
             
             // Create the spreadsheet model and the validator to check if the cell names are correct. 
             spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
@@ -61,6 +64,25 @@ namespace SS
             displaySelection(spreadsheetPanel1); // update display when loaded
         }
 
+        private void CreateDelegate(string IPaddress, string port, string ssName, string psword)
+        {
+            int num = 0;
+            if (Int32.TryParse(port, out num))
+            {
+                clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
+                clientCommunication.CreateSpreadsheet(ssName, psword);
+            }
+        }
+
+        private void JoinDelegate(string IPaddress, string port, string ssName, string psword)
+        {
+            int num = 0;
+            if (Int32.TryParse(port, out num))
+            {
+                clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
+                clientCommunication.JoinSpreadsheet(ssName, psword);
+            }
+        }
         private void Update(string message)
         {      
             this.Invoke((MethodInvoker)delegate

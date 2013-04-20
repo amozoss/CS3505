@@ -72,6 +72,9 @@ namespace SS
 
         }
 
+        
+
+
         private void SendCallback(Exception e, object o) { }
 
 
@@ -307,6 +310,7 @@ namespace SS
                 if (colonFirstWord.Equals("NAME") && load.number == 1)
                 {
                     // get name
+                    nameOfSpreadsheet = colonSplit[1];
                     socket.BeginReceive(JoinSSCallback, new Payload(2, true));
                     Debug.WriteLine("Join Name Response Recognized");
 
