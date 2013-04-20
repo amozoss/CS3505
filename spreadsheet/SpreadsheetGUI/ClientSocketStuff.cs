@@ -47,6 +47,8 @@ namespace SS
         private int version;
         private Spreadsheet spreadsheet;
 
+        
+
         /// <summary>
         ///  Creates the communication outlet that the client will use to "talk" to the server.
         /// </summary>
@@ -65,7 +67,8 @@ namespace SS
             socket = new StringSocket(sock, new UTF8Encoding());
             socket.BeginReceive(MasterCallback, null);
             version = 0;
-
+            password = "";
+            nameOfSpreadsheet = "";
 
         }
 
@@ -485,8 +488,7 @@ namespace SS
             {
                 string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
-                string colonFirstWord = "";
-                string status = "";
+                string colonFirstWord = "";   
                 Payload load = new Payload(0, false);
                 if (payload is Payload)
                 {
@@ -668,8 +670,16 @@ namespace SS
             {
                 // @todo some error
             }
-
             return second;
+        }
+
+        /// <summary>
+        /// This method is sent the updated version.
+        /// </summary>
+        /// <param name="v"></param>
+        private void VersionString(string v)
+        {
+
         }
         /// <summary>
         /// To communicate a committed change to other clients, the server should send
@@ -689,7 +699,6 @@ namespace SS
             {
                 string[] colonSplitup = message.Split(':');
                 string colonFirstWord = "";
-                string status = "";
                 UpdatePayload load = new UpdatePayload();
                 if (payload is UpdatePayload)
                 {
@@ -745,6 +754,8 @@ namespace SS
                         // must be the content
                         load.content = message;
                         Debug.WriteLine("Update content Response Recognized");
+
+                        // We need to lock on this, right?
                         spreadsheet.SetContentsOfCell(load.cell, message.Trim());
                         IEnumerable<string> nonEmptyCells = spreadsheet.GetNamesOfAllNonemptyCells();
                         socket.BeginReceive(MasterCallback, null);
@@ -752,8 +763,8 @@ namespace SS
                     }
                     else
                     {
-                        // something went wrong 
-                        // @todo handle error
+                        // something went wrong
+                        // @todo handle error, send error message to gui about bug report or something
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
