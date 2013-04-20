@@ -471,12 +471,13 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == (int)SpecialStatus.CHANGE_WAIT)
                     {
                         Debug.WriteLine("Change fail wait name Response Recognized");
+                        load.number++;
                         socket.BeginReceive(ChangeCellCallback, load);
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == (int)SpecialStatus.CHANGE_WAIT + 1)
                     {
                         Debug.WriteLine("Change fail wait version Response Recognized");
-                        socket.BeginReceive(ChangeCellCallback, load);
+                        socket.BeginReceive(MasterCallback, load);
                     }
                     // fail status
                     else if (colonFirstWord.Equals("NAME") && load.number == 1)
