@@ -25,6 +25,14 @@ namespace SS
             public int number;
         }
 
+        public struct ChangePayload
+        {
+            public string cell;
+            public string contents;
+            public int number;
+            public Boolean valid;
+        }
+
         public struct UpdatePayload
         {
             public Boolean valid;
@@ -47,7 +55,7 @@ namespace SS
         private ClientToGUI_SS clientGUI_SS;
         private int version;
         private Spreadsheet spreadsheet;
-
+        private ChangePayload changes;
         
 
         /// <summary>
@@ -398,10 +406,10 @@ namespace SS
             {
                 string[] colonSplitup = message.Split(':');
                 string colonFirstWord = "";
-                Payload load = new Payload();
-                if (payload is Payload)
+                ChangePayload load = new ChangePayload();
+                if (payload is ChangePayload)
                 {
-                    load = (Payload)payload;
+                    load = (ChangePayload)payload;
                 }
 
                 if (colonSplitup.Length > 0)
@@ -416,6 +424,9 @@ namespace SS
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
+                        //spreadsheet.SetContentsOfCell
+                        spreadsheet.SetContentsOfCell(load.cell, load.contents);
+                        clientGUI_SS("YAY", false);
                         socket.BeginReceive(MasterCallback, null);
                         Debug.WriteLine("Change Version Response Recognized");
                     }
@@ -910,9 +921,10 @@ namespace SS
         /// <param name="cellContent">content of cell</param>
         public void ChangeCell(string cellName, string cellContent)
         {
+            changes.cell = cellName;
+            changes.contents = cellContent;
             socket.BeginSend("CHANGE\n" +  "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
                 + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
-            //socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
         /// <summary>
