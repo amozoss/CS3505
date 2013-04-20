@@ -128,11 +128,11 @@ namespace SS
                     firstWord = spaceSplit[0].ToUpper().Trim();
 
                 // Check the status
-                string thirdWord = "";
-                if (spaceSplit.Length > 2)
-                    thirdWord = spaceSplit[2].ToUpper().Trim();
+                string secondWord = "";
+                if (spaceSplit.Length > 1)
+                    secondWord = spaceSplit[1].ToUpper().Trim();
 
-                if (thirdWord.Equals("OK"))
+                if (secondWord.Equals("OK"))
                 {
                     //passed
                     payload = new Payload(1, true);
@@ -142,17 +142,17 @@ namespace SS
                     upPay.number = 1;
                     upPay.valid = true;
                 }
-                else if (thirdWord.Equals("FAIL") && !firstWord.Equals("UPDATE"))
+                else if (secondWord.Equals("FAIL") && !firstWord.Equals("UPDATE"))
                 {
                     //failed
                     payload = new Payload(1, false);
                 }
-                else if (thirdWord.Equals("WAIT") && firstWord.Equals("UNDO"))
+                else if (secondWord.Equals("WAIT") && firstWord.Equals("UNDO"))
                 {
                     //Undo wait message
                     payload = new Payload(100, false);
                 }
-                else if (thirdWord.Equals("END") && firstWord.Equals("UNDO"))
+                else if (secondWord.Equals("END") && firstWord.Equals("UNDO"))
                 {
                     //Undo end message
                     payload = new Payload(200, false);
