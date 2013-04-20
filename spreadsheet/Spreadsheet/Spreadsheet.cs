@@ -336,23 +336,23 @@ namespace SS
             object savedContents = GetCellContents(name);
 
 
-
-            if (spreadsheet.ContainsKey(name))
-            {
-                // if name already exists change its contents
-                dependencyGraph.ReplaceDependees(name, formula.GetVariables());
-                spreadsheet[name].setContents(formula);
-                spreadsheet[name].setValue(formula.Evaluate(calculateValueOfCell));
-
-            }
-            else
-            {
-                // create a new cell with contents
-                spreadsheet.Add(name, new Cell(formula, formula.Evaluate(calculateValueOfCell)));
-                dependencyGraph.ReplaceDependees(name, formula.GetVariables());
-            }
             try
             {
+                if (spreadsheet.ContainsKey(name))
+                {
+                    // if name already exists change its contents
+                    dependencyGraph.ReplaceDependees(name, formula.GetVariables());
+                    spreadsheet[name].setContents(formula);
+                    spreadsheet[name].setValue(formula.Evaluate(calculateValueOfCell));
+
+                }
+                else
+                {
+                    // create a new cell with contents
+                    spreadsheet.Add(name, new Cell(formula, formula.Evaluate(calculateValueOfCell)));
+                    dependencyGraph.ReplaceDependees(name, formula.GetVariables());
+                }
+
                 return generateReturnSetForName(name);
             }
             // reset the value back to the old one and then throw the circular exception
@@ -378,6 +378,10 @@ namespace SS
                 }
                 throw e;
             }
+            catch (ArgumentException e)
+            {
+                throw e;
+            }
         }
 
         /// <summary>
@@ -393,9 +397,10 @@ namespace SS
                 return (double)this.GetCellValue(name);
             }
             else
-           {
-                throw new ArgumentException();
+            {
+                   throw new ArgumentException();
             }
+
         }
 
         protected override IEnumerable<string> GetDirectDependents(string name)
