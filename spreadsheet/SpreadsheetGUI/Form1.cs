@@ -262,23 +262,17 @@ namespace SS
         // Deals with the Close menu
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (spreadsheet.Changed)
-            {
-                DialogResult dialogResult = MessageBox.Show("The document has been modified. Would you like to save before you continue?", "Warning", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    saveFile();
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    Close();
-                }
-            }
-            else
-            {
-                Close();
-            }
+            this.Close();
+        }
 
+
+        private void CloseThisJunk()
+        {
+            DialogResult dialogResult = MessageBox.Show("The document has been modified. Would you like to save before you continue?", "Warning", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                saveFile();
+            }
         }
 
         /// <summary>
@@ -288,15 +282,6 @@ namespace SS
         {
             if(!ReferenceEquals(clientCommunication, null))
                 clientCommunication.Save();
-            using (var saveFile = new System.Windows.Forms.SaveFileDialog()) // use the save file dialog class
-            {
-                saveFile.DefaultExt = "*.ss"; // set the extensions
-                saveFile.Filter = "Spreadsheet files (*.ss)|*.ss|All files (*.*)|*.*"; // filter results choices
-                saveFile.DefaultExt = ".ss"; // Default file extension
-                saveFile.FileName = filename; // save off the filename
-
-                DialogResult result = saveFile.ShowDialog(); // show the dialog
-            }
         }
 
 
@@ -377,6 +362,7 @@ namespace SS
                 if (clientCommunication != null)
                     clientCommunication.ChangeCell(nameOfCell, contentsTextBox.Text);
             }
+
             displaySelection(spreadsheetPanel1); // Update Everything on the spreadsheet panel
         }
 
@@ -454,15 +440,7 @@ namespace SS
         // deals with form closing 
         private void SpreadsheetGUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (spreadsheet.Changed)
-            {
-                DialogResult dialogResult = MessageBox.Show("The document has been modified. Would you like to save before you continue?", "Warning", MessageBoxButtons.YesNo);
-
-                if (dialogResult == DialogResult.Yes)
-                {
-                    saveFile();
-                }
-            }
+            CloseThisJunk();// closeToolStripMenuItem_Click(sender, e);
         }
 
         // deals with help menu item
@@ -485,7 +463,6 @@ namespace SS
 
         private void SpreadsheetGUI_Load(object sender, EventArgs e)
         {
-            this.Text = "Michael";
         }
 
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
