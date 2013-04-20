@@ -349,10 +349,7 @@ namespace SS
                 else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                 {
                     // get Version
-
-                    int v;
-                    Int32.TryParse(getSecondWord(colonSplit), out v);
-                    version = v;
+                    updateVersion(getSecondWord(colonSplit));
                     socket.BeginReceive(JoinSSCallback, new Payload(3, true));
                     Debug.WriteLine("Join Version Response Recognized");
 
@@ -450,9 +447,7 @@ namespace SS
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         //spreadsheet.SetContentsOfCell
-                        int v;
-                        Int32.TryParse(getSecondWord(colonSplitup), out v);
-                        version = v;
+                        updateVersion(getSecondWord(colonSplitup));
                         spreadsheet.SetContentsOfCell(load.cell, load.contents);
                         clientGUI_SS("YAY", false);
                         socket.BeginReceive(MasterCallback, null);
@@ -494,7 +489,7 @@ namespace SS
                     {
                         Debug.WriteLine("Change fail version Response Recognized");
                         load.number++;
-                        version = Int32.Parse(getSecondWord(colonSplitup));
+                        // @TODO: Maybe do versioning stuff.
                         socket.BeginReceive(ChangeCellCallback, load);
                     }
                     else if (load.number == 3)
@@ -511,6 +506,13 @@ namespace SS
                     }
                 }
             }
+        }
+
+        private void updateVersion(string newV)
+        {
+            int v;
+            Int32.TryParse(newV, out v);
+            version = v;
         }
 
         /// <summary>
@@ -581,9 +583,7 @@ namespace SS
                     {
                         // get Version
                         Debug.WriteLine("Undo version Response Recognized");
-                        int v;
-                        Int32.TryParse(getSecondWord(colonSplitup), out v);
-                        this.version = v;
+                        updateVersion(getSecondWord(colonSplitup));
                         socket.BeginReceive(UndoCallback, new Payload(3, true));
                     }
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
@@ -790,10 +790,7 @@ namespace SS
                         Debug.WriteLine("Update version Response Recognized");
                        
                         load.number++;
-
-                        int v;
-                        Int32.TryParse(getSecondWord(colonSplitup), out v);
-                        load.version = v;
+                        updateVersion(getSecondWord(colonSplitup));
                         socket.BeginReceive(UpdateCallback, load);
                     }
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
