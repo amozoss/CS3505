@@ -44,7 +44,7 @@ namespace SS
             public string content;
         }
 
-        enum UndoSpecialStatus{WAIT=100, END=200}
+        enum SpecialStatus{UNDO_WAIT=100, UNDO_END=200, CHANGE_WAIT = 300}
 
         public delegate void ClientToGUI_SS(String message, bool isError); // The message will be handled by a separate class 
         private string ipAddress;
@@ -164,13 +164,13 @@ namespace SS
                     if (firstWord.Equals("UNDO")) 
                     {
                         //Undo wait message
-                        payload = new Payload(100, false);
+                        payload = new Payload((int)SpecialStatus.UNDO_WAIT, false);
                     }
                     else if (firstWord.Equals("CHANGE"))
                     {
                         //changes wait message
                          changePayload.valid = false;
-                            changePayload.number = 1;
+                         changePayload.number = (int)SpecialStatus.CHANGE_WAIT;
                     }
                 }
                 else if (firstWord.Equals("UPDATE"))
@@ -181,7 +181,7 @@ namespace SS
                 else if (secondWord.Equals("END"))
                 {
                     //Undo end message
-                    payload = new Payload(200, false);
+                    payload = new Payload((int)SpecialStatus.UNDO_END, false);
                 }
                 else if (!firstWord.Equals("UPDATE"))
                 {
@@ -409,6 +409,10 @@ namespace SS
         ///Name:name LF; true 1
         ///Version:version LF true 2
         ///
+        /// /CHANGE SP OK LF
+        ///Name:name LF; true 1
+        ///Version:version LF true 2
+        ///
         ///Otherwise, it should respond with
         ///
         ///CHANGE SP FAIL LF
@@ -439,13 +443,16 @@ namespace SS
                 {
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
-                        socket.BeginReceive(ChangeCellCallback, new Payload(2, true));
+                        load.number++;
+                        socket.BeginReceive(ChangeCellCallback, load);
                         Debug.WriteLine("Change Name Response Recognized");
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         //spreadsheet.SetContentsOfCell
-                        version = Int32.Parse(getSecondWord(colonSplitup));
+                        int v;
+                        Int32.TryParse(getSecondWord(colonSplitup), out v);
+                        version = v;
                         spreadsheet.SetContentsOfCell(load.cell, load.contents);
                         clientGUI_SS("YAY", false);
                         socket.BeginReceive(MasterCallback, null);
@@ -463,16 +470,32 @@ namespace SS
 
                 else if (!load.valid)
                 {
-                    if(colonFirstWord.Equals("NAME") && load.number == 1)
+                    
+                    
+                    // wait status
+                    if (colonFirstWord.Equals("NAME") && load.number == (int)SpecialStatus.CHANGE_WAIT)
+                    {
+                        Debug.WriteLine("Change fail wait name Response Recognized");
+                        socket.BeginReceive(ChangeCellCallback, load);
+                    }
+                    else if (colonFirstWord.Equals("VERSION") && load.number == (int)SpecialStatus.CHANGE_WAIT + 1)
+                    {
+                        Debug.WriteLine("Change fail wait version Response Recognized");
+                        socket.BeginReceive(ChangeCellCallback, load);
+                    }
+                    // fail status
+                    else if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         Debug.WriteLine("Change fail name Response Recognized");
-                        socket.BeginReceive(ChangeCellCallback, new Payload(2, false));
+                        load.number++;
+                        socket.BeginReceive(ChangeCellCallback, load);
                     }
                     else if(colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         Debug.WriteLine("Change fail version Response Recognized");
+                        load.number++;
                         version = Int32.Parse(getSecondWord(colonSplitup));
-                        socket.BeginReceive(ChangeCellCallback, new Payload(3, false));
+                        socket.BeginReceive(ChangeCellCallback, load);
                     }
                     else if (load.number == 3)
                     {
@@ -601,13 +624,13 @@ namespace SS
                             Debug.WriteLine("Undo fail name Response Recognized");
 
                             break;
-                        case 200:                                       // It is END's name.
-                            socket.BeginReceive(UndoCallback, new Payload((int)UndoSpecialStatus.END + 1, false));
+                        case (int)SpecialStatus.UNDO_END:                                       // It is END's name.
+                            socket.BeginReceive(UndoCallback, new Payload((int)SpecialStatus.UNDO_END + 1, false));
                             Debug.WriteLine("Undo end name Response Recognized");
 
                             break;
-                        case 100:                                       // It is WAIT's name.
-                            socket.BeginReceive(UndoCallback, new Payload((int)UndoSpecialStatus.WAIT + 1, false));
+                        case (int)SpecialStatus.UNDO_WAIT:                                       // It is WAIT's name.
+                            socket.BeginReceive(UndoCallback, new Payload((int)SpecialStatus.UNDO_WAIT + 1, false));
                              Debug.WriteLine("Undo wait name Response Recognized");
                             break;
                         case 2:                                         // It is FAIL's message.
