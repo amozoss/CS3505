@@ -263,7 +263,7 @@ namespace CustomNetworking
         }
 
         /// <summary>
-        /// Closes then shutsdown
+        /// Closes then shuts down
         /// </summary>
         public void CloseAndShutdown()
         {

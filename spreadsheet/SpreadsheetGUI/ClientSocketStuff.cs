@@ -6,6 +6,7 @@ using CustomNetworking;
 using System.Net.Sockets;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace SS
 {
@@ -31,6 +32,7 @@ namespace SS
             public string contents;
             public int number;
             public Boolean valid;
+            public ChangeStatus availability;
         }
 
         public struct UpdatePayload
@@ -45,7 +47,7 @@ namespace SS
         }
 
         enum SpecialStatus{UNDO_WAIT=100, UNDO_END=200, CHANGE_WAIT = 300}
-
+        public enum ChangeStatus { CANSEND, WAITING_TO_SEND, CANT_SEND }
         public delegate void ClientToGUI_SS(String message, bool isError); // The message will be handled by a separate class 
         private string ipAddress;
         private string nameOfSpreadsheet; // name is the name for the new spreadsheet
@@ -56,7 +58,6 @@ namespace SS
         private int version;
         private Spreadsheet spreadsheet;
         private ChangePayload changePayload;
-        
 
         /// <summary>
         ///  Creates the communication outlet that the client will use to "talk" to the server.
@@ -78,7 +79,6 @@ namespace SS
             version = 0;
             password = "";
             nameOfSpreadsheet = "";
-
         }
 
 
@@ -402,11 +402,11 @@ namespace SS
         /// <summary>
         /// If the request succeeded, the server should respond with
         ///
-        ///CHANGE SP OK LF
+        ///CHANGE OK \N
         ///Name:name LF; true 1
         ///Version:version LF true 2
         ///
-        /// /CHANGE SP OK LF
+        /// /CHANGE SP WAIT LF
         ///Name:name LF; true 1
         ///Version:version LF true 2
         ///
@@ -452,6 +452,7 @@ namespace SS
                         clientGUI_SS("YAY", false);
                         socket.BeginReceive(MasterCallback, null);
                         Debug.WriteLine("Change Version Response Recognized");
+                        resetChangePayload();
                     }
                     else
                     {
@@ -477,6 +478,7 @@ namespace SS
                     else if (colonFirstWord.Equals("VERSION") && load.number == (int)SpecialStatus.CHANGE_WAIT + 1)
                     {
                         Debug.WriteLine("Change fail wait version Response Recognized");
+
                         socket.BeginReceive(MasterCallback, load);
                     }
                     // fail status
@@ -496,6 +498,7 @@ namespace SS
                     else if (load.number == 3)
                     {
                         Debug.WriteLine("Change fail message Response Recognized");
+                        resetChangePayload();
                         clientGUI_SS(message, true);
                         socket.BeginReceive(MasterCallback, null);
                     }
@@ -508,6 +511,17 @@ namespace SS
                 }
             }
         }
+
+        /// <summary>
+        /// The spreadsheet is eligible to make changes.
+        /// </summary>
+        private void resetChangePayload()
+        {
+            changePayload.availability = ChangeStatus.CANSEND;
+            changePayload.cell = "";
+            changePayload.contents = "";
+        }
+
 
         private void updateVersion(string newV)
         {
@@ -823,6 +837,13 @@ namespace SS
                         spreadsheet.SetContentsOfCell(load.cell, message.Trim());
                         socket.BeginReceive(MasterCallback, null);
                         clientGUI_SS("update!", false);
+
+                        if (changePayload.availability == ChangeStatus.WAITING_TO_SEND)
+                        {
+                            changePayload.availability = ChangeStatus.CANSEND;
+                            ChangeCell(changePayload.cell, changePayload.contents);
+
+                        }
                     }
                     else
                     {
@@ -963,14 +984,15 @@ namespace SS
         /// <param name="cellContent">content of cell</param>
         public void ChangeCell(string cellName, string cellContent)
         {
-
-            if (changePayload.cell != cellName && changePayload.contents != cellContent)
+            if (changePayload.availability == ChangeStatus.CANSEND)
             {
                 changePayload.cell = cellName;
                 changePayload.contents = cellContent;
+                changePayload.availability = ChangeStatus.CANT_SEND;
                 socket.BeginSend("CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
                     + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
             }
+           
         }
 
         /// <summary>
@@ -1053,6 +1075,7 @@ namespace SS
             if (socket.isConnected())
             {
                 socket.BeginSend("LEAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, null);
+                Thread.Sleep(200);
                 socket.CloseAndShutdown();
             }
         }
