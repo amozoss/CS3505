@@ -22,10 +22,11 @@ namespace SS
     {
         private Spreadsheet spreadsheet; // The spreadsheet model for the form. Each new form has its own spreadsheet.
         private string filename; // keeps track of the current file name, if filename is null, the saveAs menu is used
-        public delegate void EnterPressed(String cell, String cellContents);
+      
         private ClientSocketStuff clientCommunication;
-        private Control dispatcher;//used to call methods on main thread
-        public delegate void MyDelegate();
+       
+       
+        
         /**
          * This is used for posting on the UI thread from another thread.  
          * 
@@ -54,9 +55,6 @@ namespace SS
             spreadsheetPanel1.SelectionChanged += displaySelection;
             spreadsheetPanel1.SetSelection(2, 3);
             clientCommunication = new ClientSocketStuff("localhost", spreadsheet, Update, 1984);
-            this.dispatcher = new Control();
-            this.dispatcher.CreateControl();
-
 
             displaySelection(spreadsheetPanel1); // update display when loaded
         }
@@ -276,6 +274,8 @@ namespace SS
         /// </summary>
         private void updateCells()
         {
+            bool validFormula = true; // assume its valid, set to false if invalid formula, circular dependant, invalid name
+            string nameOfCell = "";
             try
             {
                 //get name of cell
@@ -284,7 +284,7 @@ namespace SS
                 ss.GetSelection(out col, out row);
 
                 // get cell name
-                string nameOfCell = "" + GetExcelColumnName(col) + (row + 1);
+                nameOfCell = "" + GetExcelColumnName(col) + (row + 1);
 
                 // set cell contents @@@
                 ISet<string> dependentCells = spreadsheet.SetContentsOfCell(nameOfCell, contentsTextBox.Text);
@@ -319,17 +319,26 @@ namespace SS
                     }
                 }
             }
+            
             catch (InvalidNameException) // Invalid name
             {
                 MessageBox.Show("Invalid variable name", "Error");
+                validFormula = false;
             }
             catch (SpreadsheetUtilities.FormulaFormatException e) //Formula Format Exception
             {
                 MessageBox.Show(e.Message, "Formula Error");
+                validFormula = false;
             }
             catch (SS.CircularException) // Circular Exception
             {
                 MessageBox.Show("A cicular dependency was detected. Make sure the cell's formula doesn't depend on itself.", "Circular Error");
+                validFormula = false;
+            }
+            if (validFormula)
+            {
+                // send the change to the server
+                clientCommunication.ChangeCell(nameOfCell, contentsTextBox.Text);
             }
             displaySelection(spreadsheetPanel1); // Update Everything on the spreadsheet panel
         }
