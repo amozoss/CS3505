@@ -337,8 +337,8 @@ namespace SS
                 {
                     // must be the xml
                     socket.BeginReceive(MasterCallback, null);
-                    
-
+                    spreadsheet.ReadXml(message);
+                    clientGUI_SS("Updateness!");
                     Debug.WriteLine("Join xml Response Recognized");
 
                 }

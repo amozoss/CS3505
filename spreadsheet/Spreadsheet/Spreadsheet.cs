@@ -119,7 +119,7 @@ namespace SS
                 foreach (XmlNode childrenNode in parentNode)
                 {
                     var name = childrenNode.SelectSingleNode("name").InnerText;
-                    var content = childrenNode.SelectSingleNode("content").InnerText;
+                    var content = childrenNode.SelectSingleNode("contents").InnerText;
                     SetContentsOfCell(name, content);
                 }
                
