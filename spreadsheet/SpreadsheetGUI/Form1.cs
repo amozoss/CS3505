@@ -81,11 +81,18 @@ namespace SS
                 displaySelection(spreadsheetPanel1);
             }
         }
-        private void Update(string message)
+        private void Update(string message, bool isError)
         {      
             this.Invoke((MethodInvoker)delegate
             {
-                displaySelection(spreadsheetPanel1);
+                if (!isError)
+                {
+                    displaySelection(spreadsheetPanel1);
+                }
+                else
+                {
+                    MessageBox.Show(message, "Error");
+                }
             }); 
         }
 

@@ -38,7 +38,7 @@ namespace SS
 
         enum UndoSpecialStatus{WAIT=100, END=200}
 
-        public delegate void ClientToGUI_SS(String message); // The message will be handled by a separate class 
+        public delegate void ClientToGUI_SS(String message, bool isError); // The message will be handled by a separate class 
         private string ipAddress;
         private string nameOfSpreadsheet; // name is the name for the new spreadsheet
         private string password; // password is the password to use for the new spreadsheet
@@ -259,6 +259,7 @@ namespace SS
                     {
                         // must be a message
                         Debug.WriteLine("Create fail message Response Recognized");
+                        clientGUI_SS(message, true);
                         socket.BeginReceive(MasterCallback, null);
                     }
                     else
@@ -338,9 +339,9 @@ namespace SS
                 {
                     // must be the xml
                     socket.BeginReceive(MasterCallback, null);
-
-                    Debug.WriteLine("Join xml Response Recognized");
-
+                    spreadsheet.ReadXml(message);
+                    clientGUI_SS("Updateness!", false);
+                      Debug.WriteLine("Join xml Response Recognized");
                 }
                 else
                 {
@@ -361,6 +362,7 @@ namespace SS
                 {
                     // must be a message
                     Debug.WriteLine("Join fail message Response Recognized");
+                    clientGUI_SS(message, true);
                     socket.BeginReceive(MasterCallback, null);
                 }
                 else
@@ -443,7 +445,7 @@ namespace SS
                     else if (load.number == 3)
                     {
                         Debug.WriteLine("Change fail message Response Recognized");
-
+                        clientGUI_SS(message, true);
                         socket.BeginReceive(MasterCallback, null);
                     }
                     else
@@ -579,6 +581,7 @@ namespace SS
                         case 2:                                         // It is FAIL's message.
                             socket.BeginReceive(MasterCallback, null);
                             Debug.WriteLine("Undo fail message Response Recognized");
+                            clientGUI_SS(message, true);
                             break;
                         case 201:                                       // It is WAIT's Version.
                             socket.BeginReceive(MasterCallback, null);
@@ -654,8 +657,9 @@ namespace SS
                     }
                     else if(load.number == 2)
                     {
-                        // must be a message
+                        // must be a error message
                         Debug.WriteLine("Save fail message Response Recognized");
+                        clientGUI_SS(message, true);
                         socket.BeginReceive(MasterCallback, null);
                     }
                     else
@@ -765,7 +769,7 @@ namespace SS
                         // We need to lock on this, right?
                         spreadsheet.SetContentsOfCell(load.cell, message.Trim());
                         socket.BeginReceive(MasterCallback, null);
-                        clientGUI_SS("update!");
+                        clientGUI_SS("update!", false);
                     }
                     else
                     {

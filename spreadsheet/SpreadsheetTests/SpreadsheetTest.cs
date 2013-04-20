@@ -1220,8 +1220,8 @@ namespace SpreadsheetTests
         {
             Spreadsheet target = new Spreadsheet();
             string s = "<?xml version=\"1.0\" encoding=\"utf-8\"?><spreadsheet version=\"dan1\"><cell>" +
-               "<name>A1</name><content>2</content></cell><cell><name>A2</name><content>=A1</content>" +
-                "</cell><cell><name>A3</name><content>Hello</content></cell></spreadsheet>";
+               "<name>A1</name><contents>2</contents></cell><cell><name>A2</name><contents>=A1</contents>" +
+                "</cell><cell><name>A3</name><contents>Hello</contents></cell></spreadsheet>";
             target.ReadXml(s);
            
         }
