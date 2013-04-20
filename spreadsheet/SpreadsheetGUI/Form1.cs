@@ -46,20 +46,14 @@ namespace SS
             // To convert the data from the server to regular data, we should just save it as xml then have 
             // our spreadsheet open it for us.
 
-
-            // Create and join are figured out here.
             spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
 
-            
-            // Create the spreadsheet model and the validator to check if the cell names are correct. 
-            
             // registering a method so that it is notified when an event happens.
             spreadsheetPanel1.SelectionChanged += displaySelection;
             spreadsheetPanel1.SetSelection(2, 3);
             //clientCommunication = new ClientSocketStuff("localhost", spreadsheet, Update, 1984);
             CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
             firstForm.ShowDialog();
-            //displaySelection(spreadsheetPanel1); // update display when loaded
         }
 
         private void CreateDelegate(string IPaddress, string port, string ssName, string psword)
@@ -67,7 +61,8 @@ namespace SS
             int num = 0;
             if (Int32.TryParse(port, out num))
             {
-                clientCommunication.Leave();
+                if(!ReferenceEquals(clientCommunication, null))
+                    clientCommunication.Leave();
                 clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
                 clientCommunication.CreateSpreadsheet(ssName, psword);
                 displaySelection(spreadsheetPanel1);
@@ -79,8 +74,8 @@ namespace SS
             int num = 0;
             if (Int32.TryParse(port, out num))
             {
-                clientCommunication.Leave();
-                
+                if (!ReferenceEquals(clientCommunication, null))
+                    clientCommunication.Leave();
                 clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
                 clientCommunication.JoinSpreadsheet(ssName, psword);
                 displaySelection(spreadsheetPanel1);

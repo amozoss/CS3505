@@ -11,7 +11,7 @@ namespace SS
 {
    
 
-    class ClientSocketStuff
+    public class ClientSocketStuff
     {
         public struct Payload
         {
