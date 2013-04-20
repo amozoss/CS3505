@@ -415,7 +415,7 @@ namespace SS
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                if (load.valid) // load.valid == true
+                if (load.valid)
                 {
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
@@ -425,6 +425,7 @@ namespace SS
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         //spreadsheet.SetContentsOfCell
+                        version = Int32.Parse(getSecondWord(colonSplitup));
                         spreadsheet.SetContentsOfCell(load.cell, load.contents);
                         clientGUI_SS("YAY", false);
                         socket.BeginReceive(MasterCallback, null);
@@ -450,7 +451,7 @@ namespace SS
                     else if(colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         Debug.WriteLine("Change fail version Response Recognized");
-
+                        version = Int32.Parse(getSecondWord(colonSplitup));
                         socket.BeginReceive(ChangeCellCallback, new Payload(3, false));
                     }
                     else if (load.number == 3)
@@ -921,10 +922,13 @@ namespace SS
         /// <param name="cellContent">content of cell</param>
         public void ChangeCell(string cellName, string cellContent)
         {
-            changes.cell = cellName;
-            changes.contents = cellContent;
-            socket.BeginSend("CHANGE\n" +  "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
-                + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
+            if (changes.cell != cellName && changes.contents != cellContent)
+            {
+                changes.cell = cellName;
+                changes.contents = cellContent;
+                socket.BeginSend("CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
+                    + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
+            }
         }
 
         /// <summary>
