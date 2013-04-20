@@ -62,15 +62,14 @@ namespace SS
         }
 
         private void Update(string message)
-        {
-            dispatcher.BeginInvoke(new MyDelegate(mainthread), null);
-           
+        {      
+            this.Invoke((MethodInvoker)delegate
+            {
+                displaySelection(spreadsheetPanel1);
+            }); 
         }
 
-        private void mainthread()
-        {
-            displaySelection(spreadsheetPanel1);
-        }
+
         
 
 
@@ -120,6 +119,7 @@ namespace SS
 
             if (valueOfCell is SpreadsheetUtilities.FormulaError)//*******************************************************************************************************************
             {//***********************************************************************************************************************************************************************
+                //clientCommunication.
                                                                                 // If it is an FormulaError we don't do anytyhing here.
                 valueOfCellString = "##########";
             }
