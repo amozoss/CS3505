@@ -55,7 +55,7 @@ namespace SS
         private ClientToGUI_SS clientGUI_SS;
         private int version;
         private Spreadsheet spreadsheet;
-        private ChangePayload changes;
+        private ChangePayload changePayload;
         
 
         /// <summary>
@@ -130,8 +130,7 @@ namespace SS
                 string firstWord = "";
                 Payload payload = new Payload(0, false);
                 UpdatePayload upPay = new UpdatePayload();
-
-
+                
                 if (spaceSplit.Length > 0)
                     firstWord = spaceSplit[0].ToUpper().Trim();
 
@@ -140,27 +139,46 @@ namespace SS
                 if (spaceSplit.Length > 1)
                     secondWord = spaceSplit[1].ToUpper().Trim();
 
+                // Deal with Each status
                 if (secondWord.Equals("OK"))
                 {
                     //passed
                     payload = new Payload(1, true);
+                    if (firstWord.Equals("CHANGE")) {
+                        changePayload.valid = true;
+                        changePayload.number = 1;
+                    }
+                }
+                else if (secondWord.Equals("FAIL"))
+                {
+                    //failed
+                    payload = new Payload(1, false);
+                    if (firstWord.Equals("CHANGE"))
+                    {
+                        changePayload.valid = true;
+                        changePayload.number = 1;
+                    }
+                }
+                else if (secondWord.Equals("WAIT"))
+                {
+                    if (firstWord.Equals("UNDO")) 
+                    {
+                        //Undo wait message
+                        payload = new Payload(100, false);
+                    }
+                    else if (firstWord.Equals("CHANGE"))
+                    {
+                        //changes wait message
+                         changePayload.valid = false;
+                            changePayload.number = 1;
+                    }
                 }
                 else if (firstWord.Equals("UPDATE"))
                 {
                     upPay.number = 1;
                     upPay.valid = true;
                 }
-                else if (secondWord.Equals("FAIL") && !firstWord.Equals("UPDATE"))
-                {
-                    //failed
-                    payload = new Payload(1, false);
-                }
-                else if (secondWord.Equals("WAIT") && firstWord.Equals("UNDO"))
-                {
-                    //Undo wait message
-                    payload = new Payload(100, false);
-                }
-                else if (secondWord.Equals("END") && firstWord.Equals("UNDO"))
+                else if (secondWord.Equals("END"))
                 {
                     //Undo end message
                     payload = new Payload(200, false);
@@ -180,7 +198,7 @@ namespace SS
                     case "JOIN": socket.BeginReceive(JoinSSCallback, payload);
                         Debug.WriteLine("Join Response Recognized");
                         break;
-                    case "CHANGE": socket.BeginReceive(ChangeCellCallback, payload);
+                    case "CHANGE": socket.BeginReceive(ChangeCellCallback, changePayload);
                         Debug.WriteLine("Change Response Recognized");
                         break;
                     case "UNDO": socket.BeginReceive(UndoCallback, payload);
@@ -197,6 +215,8 @@ namespace SS
                 }
             }
         }
+
+        
 
 
 
@@ -921,8 +941,8 @@ namespace SS
         /// <param name="cellContent">content of cell</param>
         public void ChangeCell(string cellName, string cellContent)
         {
-            changes.cell = cellName;
-            changes.contents = cellContent;
+            changePayload.cell = cellName;
+            changePayload.contents = cellContent;
             socket.BeginSend("CHANGE\n" +  "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
                 + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
         }
