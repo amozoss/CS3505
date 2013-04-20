@@ -208,7 +208,6 @@ namespace SS
         {
             if (message != null)
             {
-                string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
                 string colonFirstWord = "";
                 Payload load = new Payload(0, false);
@@ -224,6 +223,8 @@ namespace SS
                     {
                         // get name
                          socket.BeginReceive(CreateSSCallback, new Payload(2, true));
+                        // Store the name of the SS
+                         nameOfSpreadsheet = getSecondWord(colonSplitup);
                          Debug.WriteLine("Create Name Response Recognized");
                     }
                     else if (colonFirstWord.Equals("PASSWORD") && load.number == 2)

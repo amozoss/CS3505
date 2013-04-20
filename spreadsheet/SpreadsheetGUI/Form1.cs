@@ -288,7 +288,7 @@ namespace SS
 
                 // set cell contents @@@
                 ISet<string> dependentCells = spreadsheet.SetContentsOfCell(nameOfCell, contentsTextBox.Text);
-                IEnumerable<string> nonempty = spreadsheet.GetNamesOfAllNonemptyCells();
+             
 
                 // update all dependent cells
                 foreach (var name33 in dependentCells)
