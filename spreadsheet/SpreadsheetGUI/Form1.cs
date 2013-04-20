@@ -363,6 +363,8 @@ namespace SS
                     clientCommunication.ChangeCell(nameOfCell, contentsTextBox.Text);
             }
 
+            // The contents are valid. Remove the cell contents and wait for the server to update. 
+            spreadsheet.SetContentsOfCell(nameOfCell, "");
             displaySelection(spreadsheetPanel1); // Update Everything on the spreadsheet panel
         }
 
