@@ -478,7 +478,7 @@ namespace SS
                     else if (colonFirstWord.Equals("VERSION") && load.number == (int)SpecialStatus.CHANGE_WAIT + 1)
                     {
                         Debug.WriteLine("Change fail wait version Response Recognized");
-
+                        changePayload.availability = ChangeStatus.WAITING_TO_SEND;
                         socket.BeginReceive(MasterCallback, load);
                     }
                     // fail status
