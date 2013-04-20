@@ -381,7 +381,8 @@ namespace SS
             if (validFormula)
             {
                 // send the change to the server
-                clientCommunication.ChangeCell(nameOfCell, contentsTextBox.Text);
+                if (clientCommunication != null)
+                    clientCommunication.ChangeCell(nameOfCell, contentsTextBox.Text);
             }
             displaySelection(spreadsheetPanel1); // Update Everything on the spreadsheet panel
         }

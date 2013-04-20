@@ -5,6 +5,7 @@ using System.Text;
 using CustomNetworking;
 using System.Net.Sockets;
 using System.Diagnostics;
+using System.IO;
 
 namespace SS
 {
@@ -37,13 +38,13 @@ namespace SS
 
         enum UndoSpecialStatus{WAIT=100, END=200}
 
-        public delegate void ClientUpdateGUI_SS(String message); // The message will be handled by a separate class 
+        public delegate void ClientToGUI_SS(String message); // The message will be handled by a separate class 
         private string ipAddress;
         private string nameOfSpreadsheet; // name is the name for the new spreadsheet
         private string password; // password is the password to use for the new spreadsheet
         private StringSocket socket;
         private static int SERVERPORT = 1984;
-        private ClientUpdateGUI_SS updateGUI_SS;
+        private ClientToGUI_SS clientToGUI_SS;
         private int version;
         private Spreadsheet spreadsheet;
 
@@ -53,14 +54,14 @@ namespace SS
         ///  Creates the communication outlet that the client will use to "talk" to the server.
         /// </summary>
         /// <param name="ipAddress"></param>
-        public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet,  ClientUpdateGUI_SS receivedMessage, int port)
+        public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet,  ClientToGUI_SS receivedMessage, int port)
         {
 
             // set private instance variables 
             this.ipAddress = ipAddress;
-            this.updateGUI_SS = receivedMessage;
+            this.clientToGUI_SS = receivedMessage;
             this.spreadsheet = spreadsheet;
-
+            
             TcpClient client = new TcpClient(ipAddress, port);
             Socket sock = client.Client;
 
@@ -234,6 +235,7 @@ namespace SS
                     else if (colonFirstWord.Equals("PASSWORD") && load.number == 2)
                     {
                          // get password
+                        password = getSecondWord(colonSplitup);
                         Debug.WriteLine("Create password Response Recognized");
                         socket.BeginReceive(MasterCallback, null);
                     }
@@ -309,7 +311,7 @@ namespace SS
                 if (colonFirstWord.Equals("NAME") && load.number == 1)
                 {
                     // get name
-                    nameOfSpreadsheet = colonSplit[1];
+                    nameOfSpreadsheet = getSecondWord(colonSplit);
                     socket.BeginReceive(JoinSSCallback, new Payload(2, true));
                     Debug.WriteLine("Join Name Response Recognized");
 
@@ -335,6 +337,8 @@ namespace SS
                 {
                     // must be the xml
                     socket.BeginReceive(MasterCallback, null);
+                    StreamWriter s = new StreamWriter();
+
                     Debug.WriteLine("Join xml Response Recognized");
 
                 }
@@ -668,7 +672,7 @@ namespace SS
         {
             string second = "";
             if (colonSplit.Length > 1)
-                second = colonSplit[1].ToUpper().Trim();
+                second = colonSplit[1].Trim();
             else
             {
                 // @todo some error
@@ -761,7 +765,7 @@ namespace SS
                         // We need to lock on this, right?
                         spreadsheet.SetContentsOfCell(load.cell, message.Trim());
                         socket.BeginReceive(MasterCallback, null);
-                        updateGUI_SS("update!");
+                        clientToGUI_SS("update!");
                     }
                     else
                     {

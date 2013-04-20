@@ -252,6 +252,26 @@ namespace CustomNetworking
                // Thread.Sleep(10); // stop thread from using 100% cpu
             }
         }
+        /// <summary>
+        /// Returns true if connected, false otherwise
+        /// </summary>
+        /// <returns></returns>
+        public bool isConnected()
+        {
+            return socket.Connected;
+        }
+
+        /// <summary>
+        /// Closes then shutsdown
+        /// </summary>
+        public void CloseAndShutdown()
+        {
+            if (socket.Connected)
+            {
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
+            }
+        }
     }
 }
 
