@@ -135,7 +135,9 @@ namespace SS
         }
 
 
-
+        /// <summary>
+        /// This doesn't have comments.
+        /// </summary>
         public override bool Changed { get; protected set; }
 
 

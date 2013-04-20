@@ -236,6 +236,7 @@ namespace SS
                     {
                          // get password
                         password = getSecondWord(colonSplitup);
+                        this.JoinSpreadsheet(nameOfSpreadsheet, password); // Just for fun, and the protocol. After a spreadsheet has been created, we join it.
                         Debug.WriteLine("Create password Response Recognized");
                         socket.BeginReceive(MasterCallback, null);
                     }
@@ -339,8 +340,7 @@ namespace SS
                     socket.BeginReceive(MasterCallback, null);
                     spreadsheet.ReadXml(message);
                     clientGUI_SS("Updateness!");
-                    Debug.WriteLine("Join xml Response Recognized");
-
+                      Debug.WriteLine("Join xml Response Recognized");
                 }
                 else
                 {
@@ -979,7 +979,6 @@ namespace SS
         public void Save()
         {
             socket.BeginSend("SAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, socket);
-            //socket.BeginReceive(MasterCallback, "NOTHING");
         }
 
         /// <summary>
@@ -989,7 +988,11 @@ namespace SS
         /// </summary>
         public void Leave()
         {
-            socket.BeginSend("LEAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, null);
+            if (socket.isConnected())
+            {
+                socket.BeginSend("LEAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, null);
+                socket.CloseAndShutdown();
+            }
         }
 
 

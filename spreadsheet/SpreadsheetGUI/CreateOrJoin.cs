@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Net;
 
 namespace SS
 {
@@ -23,17 +24,42 @@ namespace SS
             InitializeComponent();
         }
 
+        private bool crapChecker(string ip, string pt)
+        {
+            IPAddress ad = null;
+            int num = 0;
+            if (IPAddress.TryParse(ip, out ad))
+                if (Int32.TryParse(pt, out num))
+                    return true;
+            return false;
+        }
+
+
         private void createButton_Click(object sender, EventArgs e)
         {
-           
-            cfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
-            this.Close();
+            if (crapChecker(ipAddress.Text, port.Text))
+            {
+                cfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
+                this.Close();
+            }
+            else
+            {
+
+            }
         }
 
         private void joinButton_Click(object sender, EventArgs e)
         {
-            jfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
-            this.Close();
+            if (crapChecker(ipAddress.Text, port.Text))
+            {
+                jfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
+                this.Close();
+            }
+            else
+            {
+
+
+            }
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

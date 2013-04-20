@@ -49,8 +49,7 @@ namespace SS
 
             // Create and join are figured out here.
             spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
-            CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
-            firstForm.ShowDialog();
+
             
             // Create the spreadsheet model and the validator to check if the cell names are correct. 
             
@@ -58,8 +57,9 @@ namespace SS
             spreadsheetPanel1.SelectionChanged += displaySelection;
             spreadsheetPanel1.SetSelection(2, 3);
             //clientCommunication = new ClientSocketStuff("localhost", spreadsheet, Update, 1984);
-
-            displaySelection(spreadsheetPanel1); // update display when loaded
+            CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
+            firstForm.ShowDialog();
+            //displaySelection(spreadsheetPanel1); // update display when loaded
         }
 
         private void CreateDelegate(string IPaddress, string port, string ssName, string psword)
@@ -67,8 +67,10 @@ namespace SS
             int num = 0;
             if (Int32.TryParse(port, out num))
             {
+                clientCommunication.Leave();
                 clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
                 clientCommunication.CreateSpreadsheet(ssName, psword);
+                displaySelection(spreadsheetPanel1);
             }
         }
 
@@ -77,8 +79,11 @@ namespace SS
             int num = 0;
             if (Int32.TryParse(port, out num))
             {
+                clientCommunication.Leave();
+                
                 clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
                 clientCommunication.JoinSpreadsheet(ssName, psword);
+                displaySelection(spreadsheetPanel1);
             }
         }
         private void Update(string message)
@@ -279,6 +284,8 @@ namespace SS
         /// </summary>
         private void saveFile()
         {
+            if(!ReferenceEquals(clientCommunication, null))
+                clientCommunication.Save();
             using (var saveFile = new System.Windows.Forms.SaveFileDialog()) // use the save file dialog class
             {
                 saveFile.DefaultExt = "*.ss"; // set the extensions
@@ -286,23 +293,7 @@ namespace SS
                 saveFile.DefaultExt = ".ss"; // Default file extension
                 saveFile.FileName = filename; // save off the filename
 
-
                 DialogResult result = saveFile.ShowDialog(); // show the dialog
-
-
-                if (result == DialogResult.OK)
-                {
-
-                    try
-                    {
-                        spreadsheet.Save(saveFile.FileName);
-                        filename = saveFile.FileName;
-                    }
-                    catch (Exception except) // Catch all exceptions that may happen
-                    {
-                        MessageBox.Show(except.Message, "Error");
-                    }
-                }
             }
         }
 
@@ -438,6 +429,7 @@ namespace SS
         // deals with file save menu item
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            
             // Save file if it exists, else prompt the save as.
             if (filename != null)
             {
@@ -491,7 +483,13 @@ namespace SS
 
         private void SpreadsheetGUI_Load(object sender, EventArgs e)
         {
+            this.Text = "Michael";
+        }
 
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(!ReferenceEquals(clientCommunication, null))
+                clientCommunication.Undo();
         }
 
        
