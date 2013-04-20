@@ -104,8 +104,40 @@ namespace SS
 
         }
 
+        /// <summary>
+        /// Read an xml file
+        /// </summary>
+        /// <param name="file"></param>
+        public void ReadXml(string xml)
+        {
+            // check veriosn
+            try
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(xml);
+                XmlNodeList parentNode = xmlDoc.GetElementsByTagName("cell");
+                foreach (XmlNode childrenNode in parentNode)
+                {
+                    var name = childrenNode.SelectSingleNode("name").InnerText;
+                    var content = childrenNode.SelectSingleNode("content").InnerText;
+                    SetContentsOfCell(name, content);
+                }
+               
+                // created so its false
+                Changed = false;
+            }
+            // if anything goes wrong the constructor should throw a Spreadsheetreadwriteexception
+            catch (Exception e)
+            {
+                throw new SpreadsheetReadWriteException(e.Message);
+            }
+
+        }
 
 
+        /// <summary>
+        /// This doesn't have comments.
+        /// </summary>
         public override bool Changed { get; protected set; }
 
 

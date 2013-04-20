@@ -252,6 +252,7 @@ namespace CustomNetworking
                // Thread.Sleep(10); // stop thread from using 100% cpu
             }
         }
+
         /// <summary>
         /// Returns true if connected, false otherwise
         /// </summary>
