@@ -67,6 +67,7 @@ namespace SS
             int num = 0;
             if (Int32.TryParse(port, out num))
             {
+                clientCommunication.Leave();
                 clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
                 clientCommunication.CreateSpreadsheet(ssName, psword);
             }
@@ -77,6 +78,7 @@ namespace SS
             int num = 0;
             if (Int32.TryParse(port, out num))
             {
+                clientCommunication.Leave();
                 clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
                 clientCommunication.JoinSpreadsheet(ssName, psword);
             }
@@ -438,6 +440,7 @@ namespace SS
         // deals with file save menu item
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            clientCommunication.Save();
             // Save file if it exists, else prompt the save as.
             if (filename != null)
             {

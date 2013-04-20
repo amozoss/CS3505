@@ -38,10 +38,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Spreadsheet\Formula.dll</HintPath>
     </Reference>
-    <Reference Include="PS7, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\string_socket\PS7\bin\Debug\PS7.dll</HintPath>
-    </Reference>
     <Reference Include="SpreadsheetPanel">
       <HintPath>..\Spreadsheet\SpreadsheetPanel.dll</HintPath>
     </Reference>
@@ -51,6 +47,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -106,6 +103,10 @@
     <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj">
       <Project>{6FD19AB9-F83A-4592-87C9-51A3C3B1E145}</Project>
       <Name>Spreadsheet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\string_socket\PS7\StringSocket.csproj">
+      <Project>{C97CFCB6-DDE2-4C61-BD26-AB9109A16E88}</Project>
+      <Name>StringSocket</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
