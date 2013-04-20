@@ -760,7 +760,6 @@ namespace SS
 
                         // We need to lock on this, right?
                         spreadsheet.SetContentsOfCell(load.cell, message.Trim());
-                        IEnumerable<string> nonEmptyCells = spreadsheet.GetNamesOfAllNonemptyCells();
                         socket.BeginReceive(MasterCallback, null);
                         updateGUI_SS("update!");
                     }

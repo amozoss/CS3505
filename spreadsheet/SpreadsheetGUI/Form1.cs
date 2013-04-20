@@ -288,7 +288,7 @@ namespace SS
 
                 // set cell contents @@@
                 ISet<string> dependentCells = spreadsheet.SetContentsOfCell(nameOfCell, contentsTextBox.Text);
-             
+
 
                 // update all dependent cells
                 foreach (var name33 in dependentCells)
@@ -313,13 +313,13 @@ namespace SS
                         {
                             valueOfDependentCellString = valueOfDependentCell.ToString();
                             // @todo this is where we can push the changes to the server
-                            
+
                         }
                         ss.SetValue(column, rowNumber, valueOfDependentCellString); // update panel
                     }
                 }
             }
-            
+
             catch (InvalidNameException) // Invalid name
             {
                 MessageBox.Show("Invalid variable name", "Error");
@@ -334,6 +334,10 @@ namespace SS
             {
                 MessageBox.Show("A cicular dependency was detected. Make sure the cell's formula doesn't depend on itself.", "Circular Error");
                 validFormula = false;
+            }
+            catch (ArgumentException)
+            {
+
             }
             if (validFormula)
             {
