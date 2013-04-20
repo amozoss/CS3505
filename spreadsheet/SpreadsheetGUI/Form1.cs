@@ -227,13 +227,30 @@ namespace SS
 
         }
 
-        // Deals with the New menu
+
+
+
+
+        /// <summary>
+        /// Deals with the New menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Tell the application context to run the form on the same
             // thread as the other forms.
-            SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUI());
+            //SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUI());
+            spreadsheet = new Spreadsheet();
+            CreateOrJoin cj = new CreateOrJoin(CreateDelegate, JoinDelegate);
+            cj.ShowDialog();
         }
+
+
+
+
+
 
         // Deals with the Close menu
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
