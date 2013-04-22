@@ -211,6 +211,10 @@ namespace SS
                         Debug.WriteLine("Update Response Recognized");
                         break;
                     default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
+                     
+                        Debug.WriteLine("Something went wrong {0}", message);
+
+
                         break;
                 }
             }
@@ -272,6 +276,8 @@ namespace SS
                     {
                         // something went wrong 
                         // @todo handle error
+                        Debug.WriteLine("Something went wrong {0}",message);
+
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
@@ -295,6 +301,8 @@ namespace SS
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
+                        Debug.WriteLine("Something went wrong {0}", message);
+
                     }
                 }
             }
@@ -373,6 +381,8 @@ namespace SS
                     // something went wrong 
                     // @todo handle error
                     socket.BeginReceive(MasterCallback, null);
+                    Debug.WriteLine("Something went wrong {0}", message);
+
                 }
             }
             else if (!load.valid) // status == false
@@ -395,6 +405,8 @@ namespace SS
                     // something went wrong 
                     // @todo handle error
                     socket.BeginReceive(MasterCallback, null);
+                    Debug.WriteLine("Something went wrong {0}", message);
+
                 }
             }
         }
@@ -459,6 +471,8 @@ namespace SS
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
+                        Debug.WriteLine("Something went wrong {0}", message);
+
                     }
                 }
 
@@ -480,6 +494,7 @@ namespace SS
                         Debug.WriteLine("Change fail wait version Response Recognized");
                         changePayload.availability = ChangeStatus.WAITING_TO_SEND;
                         socket.BeginReceive(MasterCallback, load);
+
                     }
                     // fail status
                     else if (colonFirstWord.Equals("NAME") && load.number == 1)
@@ -507,6 +522,8 @@ namespace SS
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
+                        Debug.WriteLine("Something went wrong {0}", message);
+
                     }
                 }
             }
@@ -627,6 +644,8 @@ namespace SS
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
+                        Debug.WriteLine("Something went wrong {0}", message);
+
                     }
                 }
 
@@ -664,6 +683,8 @@ namespace SS
                         default:
                             // something went wrong 
                             // @todo handle error
+                            Debug.WriteLine("Something went wrong {0}", message);
+
                             socket.BeginReceive(MasterCallback, null);
                             break;
                     }
@@ -713,6 +734,8 @@ namespace SS
                     else
                     {
                         // something went wrong 
+                        Debug.WriteLine("Something went wrong {0}", message);
+
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                     }
@@ -735,6 +758,8 @@ namespace SS
                     else
                     {
                         // something went wrong 
+                        Debug.WriteLine("Something went wrong {0}", message);
+
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                     }
@@ -841,6 +866,8 @@ namespace SS
                         if (changePayload.availability == ChangeStatus.WAITING_TO_SEND)
                         {
                             changePayload.availability = ChangeStatus.CANSEND;
+                            Debug.WriteLine("Something went wrong {0}", message);
+
                             ChangeCell(changePayload.cell, changePayload.contents);
 
                         }

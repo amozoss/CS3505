@@ -37,29 +37,29 @@ namespace SS
 
         private void createButton_Click(object sender, EventArgs e)
         {
-            if (crapChecker(ipAddress.Text, port.Text))
-            {
+           // if (crapChecker(ipAddress.Text, port.Text))
+           // {
                 cfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
                 this.Close();
-            }
-            else
-            {
+           // }
+          //  else
+          //  {
 
-            }
+          //  }
         }
 
         private void joinButton_Click(object sender, EventArgs e)
         {
-            if (crapChecker(ipAddress.Text, port.Text))
-            {
+          //  if (crapChecker(ipAddress.Text, port.Text))
+          //  {
                 jfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
                 this.Close();
-            }
-            else
-            {
+          //  }
+          //  else
+           // {
 
 
-            }
+           // }
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

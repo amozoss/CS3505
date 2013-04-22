@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringSocket", "string_sock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{E058EAF2-36CA-4198-9D94-6CBBA280D252}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{0F4F0610-F6EA-4329-807D-D23203C5F53D}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -90,6 +92,12 @@ Global
 		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Release|Mixed Platforms.Build.0 = Release|x86
 		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Release|x86.ActiveCfg = Release|x86
 		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Release|x86.Build.0 = Release|x86
+		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Debug|Any CPU.ActiveCfg = Debug
+		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Debug|x86.ActiveCfg = Debug
+		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Release|Any CPU.ActiveCfg = Release
+		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Release|Mixed Platforms.ActiveCfg = Release
+		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
