@@ -21,11 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUI", "Spreadshe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringSocket", "string_socket\PS7\StringSocket.csproj", "{C97CFCB6-DDE2-4C61-BD26-AB9109A16E88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{E058EAF2-36CA-4198-9D94-6CBBA280D252}"
-EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{0F4F0610-F6EA-4329-807D-D23203C5F53D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringSocketOfficial", "\\chips.eng.utah.edu\home\dwilloug\.win_my_documents\Visual Studio 2010\Projects\PS7(4)\StringSocketOfficial\StringSocketOfficial.csproj", "{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSocket", "ClientSocket\ClientSocket.csproj", "{FBEF98A2-E124-494B-A910-883A712060A8}"
 EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
@@ -84,16 +84,6 @@ Global
 		{C97CFCB6-DDE2-4C61-BD26-AB9109A16E88}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C97CFCB6-DDE2-4C61-BD26-AB9109A16E88}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C97CFCB6-DDE2-4C61-BD26-AB9109A16E88}.Release|x86.ActiveCfg = Release|Any CPU
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Debug|x86.ActiveCfg = Debug|x86
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Debug|x86.Build.0 = Debug|x86
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Release|Any CPU.ActiveCfg = Release|x86
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Release|Mixed Platforms.Build.0 = Release|x86
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Release|x86.ActiveCfg = Release|x86
-		{E058EAF2-36CA-4198-9D94-6CBBA280D252}.Release|x86.Build.0 = Release|x86
 		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Debug|Any CPU.ActiveCfg = Debug
 		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Debug|Mixed Platforms.ActiveCfg = Debug
 		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Debug|x86.ActiveCfg = Debug
@@ -110,6 +100,16 @@ Global
 		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Release|Mixed Platforms.Build.0 = Release|x86
 		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Release|x86.ActiveCfg = Release|x86
 		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Release|x86.Build.0 = Release|x86
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FBEF98A2-E124-494B-A910-883A712060A8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

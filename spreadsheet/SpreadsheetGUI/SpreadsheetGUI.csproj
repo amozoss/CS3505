@@ -100,6 +100,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClientSocket\ClientSocket.csproj">
+      <Project>{FBEF98A2-E124-494B-A910-883A712060A8}</Project>
+      <Name>ClientSocket</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj">
       <Project>{6FD19AB9-F83A-4592-87C9-51A3C3B1E145}</Project>
       <Name>Spreadsheet</Name>
