@@ -94,7 +94,7 @@ namespace SS
             }
             catch (Exception e)
             {
-
+                clientGUI_SS("Server connection aborted, \n" + e.Message, true);
             }
         }
 
@@ -948,7 +948,9 @@ namespace SS
         /// <param name="password">password is the password to use for the new spreadsheet</param>
         public void CreateSpreadsheet(string name, string password)
         {
-            socket.BeginSend("CREATE\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
+            if (!ReferenceEquals(socket, null) && socket.isConnected())
+                socket.BeginSend("CREATE\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
+            else clientGUI_SS("Not connected to server", true);
         }
 
 
@@ -987,7 +989,9 @@ namespace SS
         /// <param name="password">password is the password to use for the spreadsheet</param>
         public void JoinSpreadsheet(string name, string password)
         {
-            socket.BeginSend("JOIN\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
+            if (!ReferenceEquals(socket, null) && socket.isConnected())
+                socket.BeginSend("JOIN\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
+            else clientGUI_SS("Not connected to server", true);
         }
 
 
@@ -1034,14 +1038,19 @@ namespace SS
         /// <param name="cellContent">content of cell</param>
         public void ChangeCell(string cellName, string cellContent)
         {
-            if (changePayload.availability == ChangeStatus.CANSEND)
+            if (!ReferenceEquals(socket, null) && socket.isConnected())
             {
-                changePayload.cell = cellName;
-                changePayload.contents = cellContent;
-                changePayload.availability = ChangeStatus.CANT_SEND;
-                socket.BeginSend("CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
-                    + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
+                if (changePayload.availability == ChangeStatus.CANSEND)
+                {
+                    changePayload.cell = cellName;
+                    changePayload.contents = cellContent;
+                    changePayload.availability = ChangeStatus.CANT_SEND;
+                    socket.BeginSend("CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
+                        + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
+                }
             }
+            else
+                clientGUI_SS("Not connected to server", true);
            
         }
 
@@ -1086,7 +1095,11 @@ namespace SS
         ///
         public void Undo()
         {
-            socket.BeginSend("UNDO\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString()+ "\n", SendCallback, socket);
+            if(socket.isConnected())
+                socket.BeginSend("UNDO\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString()+ "\n", SendCallback, socket);
+            else
+                clientGUI_SS("Not connected to server", true);
+
             //socket.BeginReceive(MasterCallback, "NOTHING");
         }
         /// <summary>
@@ -1112,7 +1125,11 @@ namespace SS
         /// </summary>
         public void Save()
         {
-            socket.BeginSend("SAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, socket);
+            if(socket.isConnected())
+                socket.BeginSend("SAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, socket);
+            else
+                clientGUI_SS("Not connected to server", true);
+
         }
 
         /// <summary>
@@ -1122,22 +1139,14 @@ namespace SS
         /// </summary>
         public void Leave()
         {
-            if (socket.isConnected())
+            if (!ReferenceEquals(socket, null) && socket.isConnected())
             {
                 socket.BeginSend("LEAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, null);
                 Thread.Sleep(200);
                 socket.CloseAndShutdown();
             }
-        }
-
-
-        /// <summary>
-        /// Call this method to close the connection with the current server.
-        /// </summary>
-        public void Close()
-        {
-         //   socket.CloseAndShutdown();
-
+            else
+                clientGUI_SS("Not connected to server", true);
         }
 
         #endregion
