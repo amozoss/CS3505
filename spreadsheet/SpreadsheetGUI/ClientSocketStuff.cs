@@ -682,7 +682,7 @@ namespace SS
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Undo success commands corrupted {0}", message);
 
                     }
                 }
@@ -722,7 +722,7 @@ namespace SS
                         default:
                             // something went wrong 
                             // @todo handle error
-                            Debug.WriteLine("Something went wrong", message);
+                            Debug.WriteLine("Undo fail command corrupted", message);
 
                             socket.BeginReceive(MasterCallback, null);
                             break;
@@ -772,7 +772,7 @@ namespace SS
                     else
                     {
                         // something went wrong 
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Save succeed commands corrupted {0}", message);
 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
@@ -796,7 +796,7 @@ namespace SS
                     else
                     {
                         // something went wrong 
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Save fail commands corrupted {0}", message);
 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
@@ -887,14 +887,14 @@ namespace SS
                         int length;
                         Int32.TryParse(getSecondWord(colonSplitup), out length);
                         load.contentLength = length;
-                        Debug.WriteLine("Update length Response Recognized");
+                        Debug.WriteLine("Update length Response Recognized", message);
                         socket.BeginReceive(UpdateCallback, load);
                     }
                     else if (load.number == 5)
                     {
                         // must be the content
                         load.contents = message;
-                        Debug.WriteLine("Update content Response Recognized");
+                        Debug.WriteLine("Update content Response Recognized", message);
 
                         // We need to lock on this, right?
                         spreadsheet.SetContentsOfCell(load.cell, message.Trim());
@@ -904,8 +904,7 @@ namespace SS
                         if (changePayload.availability == ChangeStatus.WAITING_TO_SEND)
                         {
                             changePayload.availability = ChangeStatus.CANSEND;
-                            Debug.WriteLine("Something went wrong {0}", message);
-
+                            Debug.WriteLine("Resending waited change");
                             ChangeCell(changePayload.cell, changePayload.contents);
 
                         }
@@ -914,6 +913,7 @@ namespace SS
                     {
                         // something went wrong
                         // @todo handle error, send error message to gui about bug report or something
+                        Debug.WriteLine("Update commands order corrupted  {0}", message);
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
