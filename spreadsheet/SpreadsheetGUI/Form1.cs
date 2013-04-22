@@ -194,11 +194,12 @@ namespace SS
 
                     string valueOfDependentCellString;
                     var valueOfDependentCell = spreadsheet.GetCellValue(name33);
-
+                  
                     // Set the value if there is a formula error
                     if (valueOfDependentCell is SpreadsheetUtilities.FormulaError)
                     {
                         valueOfDependentCellString = "##########";
+                        
                     }
                     else
                     {
