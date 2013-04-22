@@ -24,17 +24,6 @@ namespace SS
         private string filename; // keeps track of the current file name, if filename is null, the saveAs menu is used
       
         private ClientSocketStuff clientCommunication;
-       
-       
-        
-        /**
-         * This is used for posting on the UI thread from another thread.  
-         * 
-            this.Invoke((MethodInvoker)delegate
-            {
-                valueTextBox.Text = message; // runs on UI thread
-            });
-         */
 
         /// <summary>
         /// Creates a new spreadsheetGUI and spreadsheet model
@@ -83,7 +72,7 @@ namespace SS
         }
         private void Update(string message, bool isError)
         {      
-            if (this != null) {
+            if (this.IsHandleCreated) {
                 this.Invoke((MethodInvoker)delegate
                  {
                      if (!isError)
@@ -93,13 +82,11 @@ namespace SS
                      else
                      {
                         MessageBox.Show(message, "Error");
+                         
                      }
                  }); 
             }
         }
-
-
-        
 
 
         /// <summary>
@@ -146,8 +133,8 @@ namespace SS
             var valueOfCell = spreadsheet.GetCellValue(nameOfCell); // get value of cell
             string valueOfCellString;
 
-            if (valueOfCell is SpreadsheetUtilities.FormulaError)//*******************************************************************************************************************
-            {//***********************************************************************************************************************************************************************
+            if (valueOfCell is SpreadsheetUtilities.FormulaError)
+            {
                 //clientCommunication.
                                                                                 // If it is an FormulaError we don't do anytyhing here.
                 valueOfCellString = "##########";
@@ -275,7 +262,8 @@ namespace SS
             if (dialogResult == DialogResult.Yes)
             {
                 saveFile();
-                clientCommunication.Leave();
+                if(!ReferenceEquals(clientCommunication, null))
+                    clientCommunication.Leave();
             }
         }
 
@@ -378,9 +366,16 @@ namespace SS
         // updates cells when enter is pressed
         private void contentsTextBox_KeyDown(object sender, KeyEventArgs e)
         {
+            
             if (e.KeyCode == Keys.Enter)
             {
-                updateCells();
+                if (ReferenceEquals(clientCommunication, null))
+                {
+                    MessageBox.Show("You are not connected to a spreadsheet server!", "WARNING! ERRROR! NOTICE!");
+                }
+                else
+                    updateCells();
+                
             }
         }
 
@@ -423,30 +418,13 @@ namespace SS
         // deals with file save menu item
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-            // Save file if it exists, else prompt the save as.
-            if (filename != null)
-            {
-                try
-                {
-                    spreadsheet.Save(filename);
-
-                }
-                catch (Exception except)
-                {
-                    MessageBox.Show(except.Message, "Error");
-                }
-            }
-            else
-            {
-                saveFile();
-            }
+            saveFile();
         }
 
         // deals with form closing 
         private void SpreadsheetGUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CloseThisJunk();// closeToolStripMenuItem_Click(sender, e);
+            CloseThisJunk();
         }
 
         // deals with help menu item
@@ -476,20 +454,5 @@ namespace SS
             if(!ReferenceEquals(clientCommunication, null))
                 clientCommunication.Undo();
         }
-
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
