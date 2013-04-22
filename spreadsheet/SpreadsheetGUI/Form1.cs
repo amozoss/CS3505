@@ -354,7 +354,7 @@ namespace SS
             if (validFormula)
             {
                 // send the change to the server
-                if (clientCommunication != null)
+                if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.ChangeCell(nameOfCell, contentsTextBox.Text);
             }
 
