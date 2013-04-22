@@ -1021,9 +1021,15 @@ namespace SS
             {
                 changePayload.cell = cellName;
                 changePayload.contents = cellContent;
+                string length;
+                if (cellContent.Equals(""))
+                    length = "0";
+                else
+                    length = cellContent.Length.ToString();
+
                 changePayload.availability = ChangeStatus.CANT_SEND;
                 socket.BeginSend("CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
-                    + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
+                    + "Cell:" + cellName + "\n" + "Length:" + length  + "\n" + cellContent + "\n", SendCallback, socket);
             }
            
         }
