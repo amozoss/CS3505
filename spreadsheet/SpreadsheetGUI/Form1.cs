@@ -146,8 +146,8 @@ namespace SS
             var valueOfCell = spreadsheet.GetCellValue(nameOfCell); // get value of cell
             string valueOfCellString;
 
-            if (valueOfCell is SpreadsheetUtilities.FormulaError)//*******************************************************************************************************************
-            {//***********************************************************************************************************************************************************************
+            if (valueOfCell is SpreadsheetUtilities.FormulaError)
+            {
                 //clientCommunication.
                                                                                 // If it is an FormulaError we don't do anytyhing here.
                 valueOfCellString = "##########";
@@ -476,20 +476,5 @@ namespace SS
             if(!ReferenceEquals(clientCommunication, null))
                 clientCommunication.Undo();
         }
-
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }

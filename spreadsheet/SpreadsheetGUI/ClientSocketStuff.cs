@@ -35,6 +35,17 @@ namespace SS
             public ChangeStatus availability;
         }
 
+        public struct UndoPayload
+        {
+            public Boolean valid;
+            public int number;
+            public string name;
+            public int version;
+            public string cell;
+            public int contentLength;
+            public string contents;
+        }
+
         public struct UpdatePayload
         {
             public Boolean valid;
@@ -43,7 +54,7 @@ namespace SS
             public int version;
             public string cell;
             public int contentLength;
-            public string content;
+            public string contents;
         }
 
         enum SpecialStatus{UNDO_WAIT=100, UNDO_END=200, CHANGE_WAIT = 300}
@@ -593,10 +604,10 @@ namespace SS
                 string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
                 string colonFirstWord = "";   
-                Payload load = new Payload(0, false);
-                if (payload is Payload)
+                UndoPayload load = new UndoPayload();
+                if (payload is UndoPayload)
                 {
-                    load = (Payload)payload;
+                    load = (UndoPayload)payload;
                 }
 
 
@@ -613,36 +624,42 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        Debug.WriteLine("Undo name Response Recognized"); 
-
-                        socket.BeginReceive(UndoCallback, new Payload(2, true));
+                        Debug.WriteLine("Undo name Response Recognized");
+                        load.number = 2;
+                        socket.BeginReceive(UndoCallback, load);
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         // get Version
                         Debug.WriteLine("Undo version Response Recognized");
                         updateVersion(getSecondWord(colonSplitup));
-                        socket.BeginReceive(UndoCallback, new Payload(3, true));
+                        load.number = 3;
+                        socket.BeginReceive(UndoCallback, load);
                     }
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
                         // get cell
                         Debug.WriteLine("Undo cell Response Recognized");
-
-                        socket.BeginReceive(UndoCallback, new Payload(4, true));
+                        load.cell = getSecondWord(colonSplitup);
+                        load.number = 4;
+                        socket.BeginReceive(UndoCallback, load);
                     }
                     else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
                         // get length
                         Debug.WriteLine("Undo length Response Recognized");
-
-                        socket.BeginReceive(UndoCallback, new Payload(5, true));
+                        load.number = 5;
+                        int lNum = 0;
+                        Int32.TryParse(getSecondWord(colonSplitup), out lNum);
+                        load.contentLength = lNum;
+                        socket.BeginReceive(UndoCallback, load);
                     }
                     else if(load.number == 5)
                     {
                         // must be the content
                         Debug.WriteLine("Undo content Response Recognized");
-
+                        spreadsheet.SetContentsOfCell(load.cell, message);
+                        clientGUI_SS("random", false);
                         socket.BeginReceive(MasterCallback, null);
                     }
                     else
@@ -861,7 +878,7 @@ namespace SS
                     else if(load.number == 5)
                     {
                         // must be the content
-                        load.content = message;
+                        load.contents = message;
                         Debug.WriteLine("Update content Response Recognized");
 
                         // We need to lock on this, right?
