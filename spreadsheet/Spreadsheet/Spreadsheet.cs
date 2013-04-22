@@ -284,9 +284,10 @@ namespace SS
         public override IEnumerable<string> GetNamesOfAllNonemptyCells()
         {
             List<string> nonEmpty = new List<string>();
-            foreach (string c in spreadsheet.Keys)
+            Dictionary<string, Cell>.KeyCollection someKeys = spreadsheet.Keys;
+            foreach (string c in someKeys.ToList())
             {
-                if (!GetCellContents(c).ToString().Equals("")) // if its not empty
+                if (!"".Equals(GetCellContents(c).ToString())) // if its not empty
                 {
                     nonEmpty.Add(c);
                 }
@@ -431,7 +432,6 @@ namespace SS
             {
                    throw new ArgumentException();
             }
-
         }
 
         protected override IEnumerable<string> GetDirectDependents(string name)

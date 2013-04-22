@@ -7,12 +7,13 @@ using System.Net.Sockets;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using SS;
 
-namespace SS
+namespace Client
 {
 
 
-    public class ClientSocketStuff
+    public class ClientSocket
     {
         public struct Payload
         {
@@ -69,14 +70,14 @@ namespace SS
         private int version;
         private Spreadsheet spreadsheet;
         private ChangePayload changePayload;
-      
+
 
 
         /// <summary>
         ///  Creates the communication outlet that the client will use to "talk" to the server.
         /// </summary>
         /// <param name="ipAddress"></param>
-        public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet, ClientToGUI_SS receivedMessage, int port)
+        public ClientSocket(string ipAddress, Spreadsheet spreadsheet, ClientToGUI_SS receivedMessage, int port)
         {
             changePayload.contents = "";
             try
@@ -196,7 +197,7 @@ namespace SS
                     if (firstWord.Equals("UNDO"))
                     {
                         //Undo wait message
-                        
+
                         undoPay.valid = false;
                         undoPay.number = (int)SpecialStatus.UNDO_WAIT;
                     }
@@ -638,14 +639,14 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        Debug.WriteLine("Undo name Response Recognized",message);
+                        Debug.WriteLine("Undo name Response Recognized");
                         load.number = 2;
                         socket.BeginReceive(UndoCallback, load);
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         // get Version
-                        Debug.WriteLine("Undo version Response Recognized",message);
+                        Debug.WriteLine("Undo version Response Recognized");
                         updateVersion(getSecondWord(colonSplitup));
                         load.number = 3;
                         socket.BeginReceive(UndoCallback, load);
@@ -653,7 +654,7 @@ namespace SS
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
                         // get cell
-                        Debug.WriteLine("Undo cell Response Recognized",message);
+                        Debug.WriteLine("Undo cell Response Recognized");
                         load.cell = getSecondWord(colonSplitup);
                         load.number = 4;
                         socket.BeginReceive(UndoCallback, load);
@@ -661,7 +662,7 @@ namespace SS
                     else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
                         // get length
-                        Debug.WriteLine("Undo length Response Recognized",message);
+                        Debug.WriteLine("Undo length Response Recognized");
                         load.number = 5;
                         int lNum = 0;
                         Int32.TryParse(getSecondWord(colonSplitup), out lNum);
@@ -671,7 +672,7 @@ namespace SS
                     else if (load.number == 5)
                     {
                         // must be the content
-                        Debug.WriteLine("Undo content Response Recognized",message);
+                        Debug.WriteLine("Undo content Response Recognized");
                         spreadsheet.SetContentsOfCell(load.cell, message);
                         clientGUI_SS("random", false);
                         socket.BeginReceive(MasterCallback, null);
@@ -1062,7 +1063,7 @@ namespace SS
                     string length;
                     if (cellContent.Equals(""))
                         cellContent = " ";
-                  
+
                     changePayload.availability = ChangeStatus.CANT_SEND;
                     string sendString = "CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
                         + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n";

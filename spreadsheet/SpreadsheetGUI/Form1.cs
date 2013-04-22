@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using CustomNetworking;
 using System.Net.Sockets;
+using Client;
 
 
 
@@ -23,7 +24,7 @@ namespace SS
         private Spreadsheet spreadsheet; // The spreadsheet model for the form. Each new form has its own spreadsheet.
         private string filename; // keeps track of the current file name, if filename is null, the saveAs menu is used
 
-        private ClientSocketStuff clientCommunication;
+        private ClientSocket clientCommunication;
 
         /// <summary>
         /// Creates a new spreadsheetGUI and spreadsheet model
@@ -59,7 +60,7 @@ namespace SS
             {
                 if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
-                clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
+                clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
                 clientCommunication.CreateSpreadsheet(ssName, psword);
                 displaySelection(spreadsheetPanel1);
             }
@@ -72,7 +73,7 @@ namespace SS
             {
                 if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
-                clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
+                clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
                 clientCommunication.JoinSpreadsheet(ssName, psword);
                 displaySelection(spreadsheetPanel1);
             }
@@ -129,6 +130,7 @@ namespace SS
             ss.GetSelection(out col, out row);
             ss.SetSelection(col, row);
             string nameOfCell = "" + GetExcelColumnName(col) + (row + 1); // get cell name
+
             // Cell Display
             cellDisplayBox.Text = nameOfCell;
 
