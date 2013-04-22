@@ -21,7 +21,6 @@ namespace SS
                 number = num;
                 valid = passed;
             }
-
             public Boolean valid;
             public int number;
         }
@@ -59,6 +58,7 @@ namespace SS
 
         enum SpecialStatus { UNDO_WAIT = 100, UNDO_END = 200, CHANGE_WAIT = 300 }
         public enum ChangeStatus { CANSEND, WAITING_TO_SEND, CANT_SEND }
+
         public delegate void ClientToGUI_SS(String message, bool isError); // The message will be handled by a separate class 
         private string ipAddress;
         private string nameOfSpreadsheet; // name is the name for the new spreadsheet
@@ -78,6 +78,7 @@ namespace SS
         /// <param name="ipAddress"></param>
         public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet, ClientToGUI_SS receivedMessage, int port)
         {
+            changePayload.contents = "";
             try
             {
                 // set private instance variables 
@@ -245,10 +246,7 @@ namespace SS
                         Debug.WriteLine("Update Response Recognized");
                         break;
                     default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
-
                         Debug.WriteLine("Something went wrong {0}", message);
-
-
                         break;
                 }
             }
@@ -1067,8 +1065,10 @@ namespace SS
                         cellContent = " ";
                   
                     changePayload.availability = ChangeStatus.CANT_SEND;
-                    socket.BeginSend("CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
-                        + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
+                    string sendString = "CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
+                        + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n";
+                    Debug.WriteLine(sendString);
+                    socket.BeginSend(sendString, SendCallback, socket);
                 }
 
             }
