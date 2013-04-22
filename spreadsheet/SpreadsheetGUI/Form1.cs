@@ -41,6 +41,13 @@ namespace SS
             spreadsheetPanel1.SelectionChanged += displaySelection;
             spreadsheetPanel1.SetSelection(2, 3);
             //clientCommunication = new ClientSocketStuff("localhost", spreadsheet, Update, 1984);
+            this.Shown += LoadStartupGUIConnection;
+          
+           
+        }
+
+        private void LoadStartupGUIConnection(object o, EventArgs e)
+        {
             CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
             firstForm.ShowDialog();
         }
@@ -120,12 +127,8 @@ namespace SS
             // Get col and row of cell.
             int row, col;
             ss.GetSelection(out col, out row);
+            ss.SetSelection(col, row);
             string nameOfCell = "" + GetExcelColumnName(col) + (row + 1); // get cell name
-
-
-
-
-
             // Cell Display
             cellDisplayBox.Text = nameOfCell;
 
@@ -165,6 +168,7 @@ namespace SS
             else
             {
                 contentsTextBox.Text = contentsOfCell.ToString();
+                ss.SetSelection(col, row);
             }
 
 
@@ -241,6 +245,7 @@ namespace SS
             // thread as the other forms.
             //SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUI());
             spreadsheet = new Spreadsheet();
+            spreadsheetPanel1 = new SpreadsheetPanel();
             CreateOrJoin cj = new CreateOrJoin(CreateDelegate, JoinDelegate);
             cj.ShowDialog();
         }
@@ -294,6 +299,7 @@ namespace SS
                 SpreadsheetPanel ss = spreadsheetPanel1;
                 int row, col;
                 ss.GetSelection(out col, out row);
+                ss.SetSelection(col, row);
 
                 // get cell name
                 nameOfCell = "" + GetExcelColumnName(col) + (row + 1);
@@ -312,6 +318,7 @@ namespace SS
                         string translated = m.Groups[1].Value;
                         int column = TranslateColumnNameToIndex(translated);
                         int rowNumber = Int32.Parse(m.Groups[2].Value) - 1;
+                        ss.SetSelection(column, rowNumber);
 
                         string valueOfDependentCellString;
                         var valueOfDependentCell = spreadsheet.GetCellValue(name33);

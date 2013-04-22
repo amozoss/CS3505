@@ -638,14 +638,14 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        Debug.WriteLine("Undo name Response Recognized");
+                        Debug.WriteLine("Undo name Response Recognized",message);
                         load.number = 2;
                         socket.BeginReceive(UndoCallback, load);
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         // get Version
-                        Debug.WriteLine("Undo version Response Recognized");
+                        Debug.WriteLine("Undo version Response Recognized",message);
                         updateVersion(getSecondWord(colonSplitup));
                         load.number = 3;
                         socket.BeginReceive(UndoCallback, load);
@@ -653,7 +653,7 @@ namespace SS
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
                         // get cell
-                        Debug.WriteLine("Undo cell Response Recognized");
+                        Debug.WriteLine("Undo cell Response Recognized",message);
                         load.cell = getSecondWord(colonSplitup);
                         load.number = 4;
                         socket.BeginReceive(UndoCallback, load);
@@ -661,7 +661,7 @@ namespace SS
                     else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
                         // get length
-                        Debug.WriteLine("Undo length Response Recognized");
+                        Debug.WriteLine("Undo length Response Recognized",message);
                         load.number = 5;
                         int lNum = 0;
                         Int32.TryParse(getSecondWord(colonSplitup), out lNum);
@@ -671,7 +671,7 @@ namespace SS
                     else if (load.number == 5)
                     {
                         // must be the content
-                        Debug.WriteLine("Undo content Response Recognized");
+                        Debug.WriteLine("Undo content Response Recognized",message);
                         spreadsheet.SetContentsOfCell(load.cell, message);
                         clientGUI_SS("random", false);
                         socket.BeginReceive(MasterCallback, null);
