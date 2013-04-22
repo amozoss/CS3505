@@ -22,7 +22,7 @@ namespace SS
     {
         private Spreadsheet spreadsheet; // The spreadsheet model for the form. Each new form has its own spreadsheet.
         private string filename; // keeps track of the current file name, if filename is null, the saveAs menu is used
-      
+
         private ClientSocketStuff clientCommunication;
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace SS
         /// </summary>
         public SpreadsheetGUI()
         {
-            InitializeComponent(); 
+            InitializeComponent();
 
             // To convert the data from the server to regular data, we should just save it as xml then have 
             // our spreadsheet open it for us.
@@ -50,7 +50,7 @@ namespace SS
             int num = 0;
             if (Int32.TryParse(port, out num))
             {
-                if(!ReferenceEquals(clientCommunication, null))
+                if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
                 clientCommunication = new ClientSocketStuff(IPaddress, spreadsheet, Update, num);
                 clientCommunication.CreateSpreadsheet(ssName, psword);
@@ -71,20 +71,21 @@ namespace SS
             }
         }
         private void Update(string message, bool isError)
-        {      
-            if (this.IsHandleCreated) {
+        {
+            if (this.IsHandleCreated)
+            {
                 this.Invoke((MethodInvoker)delegate
                  {
                      if (!isError)
                      {
-                        displaySelection(spreadsheetPanel1);
-                    }
+                         displaySelection(spreadsheetPanel1);
+                     }
                      else
                      {
-                        MessageBox.Show(message, "Error");
-                         
+                         MessageBox.Show(message, "Error");
+
                      }
-                 }); 
+                 });
             }
         }
 
@@ -136,18 +137,18 @@ namespace SS
             if (valueOfCell is SpreadsheetUtilities.FormulaError)
             {
                 //clientCommunication.
-                                                                                // If it is an FormulaError we don't do anytyhing here.
+                // If it is an FormulaError we don't do anytyhing here.
                 valueOfCellString = "##########";
             }
             else
-            {   
+            {
                 /**If is isn't a FormulaError, we send "CHANGE VERSION #\n" to the server.
                  * The state of the client’s local spreadsheet should remain unchanged until approved by the server.
                  Socket.BeginSend("message", SendCallback, null/whatever);
                  Socket.BeginReceive(ReceiveCallback, null/whatever);
                  probably a loop with thread.sleep in it while we wait for the message.
                  */
-                valueOfCellString = valueOfCell.ToString();                     
+                valueOfCellString = valueOfCell.ToString();
             }
 
 
@@ -181,12 +182,12 @@ namespace SS
 
                     string valueOfDependentCellString;
                     var valueOfDependentCell = spreadsheet.GetCellValue(name33);
-                  
+
                     // Set the value if there is a formula error
                     if (valueOfDependentCell is SpreadsheetUtilities.FormulaError)
                     {
                         valueOfDependentCellString = "##########";
-                        
+
                     }
                     else
                     {
@@ -255,14 +256,16 @@ namespace SS
             this.Close();
         }
 
-
+        /// <summary>
+        /// This function takes care of saving when a user wants to close.
+        /// </summary>
         private void CloseThisJunk()
         {
             DialogResult dialogResult = MessageBox.Show("The document has been modified. Would you like to save before you continue?", "Warning", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
                 saveFile();
-                if(!ReferenceEquals(clientCommunication, null))
+                if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
             }
         }
@@ -272,7 +275,7 @@ namespace SS
         /// </summary>
         private void saveFile()
         {
-            if(!ReferenceEquals(clientCommunication, null))
+            if (!ReferenceEquals(clientCommunication, null))
                 clientCommunication.Save();
         }
 
@@ -341,7 +344,7 @@ namespace SS
             }
             catch (SS.CircularException) // Circular Exception
             {
-                MessageBox.Show("A cicular dependency was detected. Make sure the cell's formula doesn't depend on itself.", "Circular Error");
+                MessageBox.Show("A circular dependency was detected. Make sure the cell's formula doesn't depend on itself.", "Circular Error");
                 validFormula = false;
             }
             catch (ArgumentException)
@@ -366,7 +369,7 @@ namespace SS
         // updates cells when enter is pressed
         private void contentsTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            
+
             if (e.KeyCode == Keys.Enter)
             {
                 if (ReferenceEquals(clientCommunication, null))
@@ -375,7 +378,7 @@ namespace SS
                 }
                 else
                     updateCells();
-                
+
             }
         }
 
@@ -451,7 +454,7 @@ namespace SS
 
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(!ReferenceEquals(clientCommunication, null))
+            if (!ReferenceEquals(clientCommunication, null))
                 clientCommunication.Undo();
         }
     }

@@ -76,6 +76,7 @@ namespace SS
         /// <param name="ipAddress"></param>
         public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet,  ClientToGUI_SS receivedMessage, int port)
         {
+            changePayload.contents = "";
             try
             {
                 // set private instance variables 
@@ -1045,8 +1046,10 @@ namespace SS
                     changePayload.cell = cellName;
                     changePayload.contents = cellContent;
                     changePayload.availability = ChangeStatus.CANT_SEND;
-                    socket.BeginSend("CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
-                        + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
+                    string sendString = "CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
+                        + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n";
+                    Debug.WriteLine(sendString);
+                    socket.BeginSend(sendString, SendCallback, socket);
                 }
             }
             else
