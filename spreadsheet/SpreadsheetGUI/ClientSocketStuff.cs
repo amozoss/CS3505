@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace SS
 {
-   
+
 
     public class ClientSocketStuff
     {
@@ -57,7 +57,7 @@ namespace SS
             public string contents;
         }
 
-        enum SpecialStatus{UNDO_WAIT=100, UNDO_END=200, CHANGE_WAIT = 300}
+        enum SpecialStatus { UNDO_WAIT = 100, UNDO_END = 200, CHANGE_WAIT = 300 }
         public enum ChangeStatus { CANSEND, WAITING_TO_SEND, CANT_SEND }
         public delegate void ClientToGUI_SS(String message, bool isError); // The message will be handled by a separate class 
         private string ipAddress;
@@ -74,7 +74,7 @@ namespace SS
         ///  Creates the communication outlet that the client will use to "talk" to the server.
         /// </summary>
         /// <param name="ipAddress"></param>
-        public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet,  ClientToGUI_SS receivedMessage, int port)
+        public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet, ClientToGUI_SS receivedMessage, int port)
         {
             changePayload.contents = "";
             try
@@ -148,7 +148,7 @@ namespace SS
                 string firstWord = "";
                 Payload payload = new Payload(0, false);
                 UpdatePayload upPay = new UpdatePayload();
-                
+
                 if (spaceSplit.Length > 0)
                     firstWord = spaceSplit[0].ToUpper().Trim();
 
@@ -162,7 +162,8 @@ namespace SS
                 {
                     //passed
                     payload = new Payload(1, true);
-                    if (firstWord.Equals("CHANGE")) {
+                    if (firstWord.Equals("CHANGE"))
+                    {
                         changePayload.valid = true;
                         changePayload.number = 1;
                     }
@@ -179,7 +180,7 @@ namespace SS
                 }
                 else if (secondWord.Equals("WAIT"))
                 {
-                    if (firstWord.Equals("UNDO")) 
+                    if (firstWord.Equals("UNDO"))
                     {
                         //Undo wait message
                         payload = new Payload((int)SpecialStatus.UNDO_WAIT, false);
@@ -187,8 +188,8 @@ namespace SS
                     else if (firstWord.Equals("CHANGE"))
                     {
                         //changes wait message
-                         changePayload.valid = false;
-                         changePayload.number = (int)SpecialStatus.CHANGE_WAIT;
+                        changePayload.valid = false;
+                        changePayload.number = (int)SpecialStatus.CHANGE_WAIT;
                     }
                 }
                 else if (firstWord.Equals("UPDATE"))
@@ -229,7 +230,7 @@ namespace SS
                         Debug.WriteLine("Update Response Recognized");
                         break;
                     default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
-                     
+
                         Debug.WriteLine("Something went wrong {0}", message);
 
 
@@ -238,7 +239,7 @@ namespace SS
             }
         }
 
-        
+
 
 
 
@@ -277,14 +278,14 @@ namespace SS
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                         socket.BeginReceive(CreateSSCallback, new Payload(2, true));
+                        socket.BeginReceive(CreateSSCallback, new Payload(2, true));
                         // Store the name of the SS
-                         nameOfSpreadsheet = getSecondWord(colonSplitup);
-                         Debug.WriteLine("Create Name Response Recognized");
+                        nameOfSpreadsheet = getSecondWord(colonSplitup);
+                        Debug.WriteLine("Create Name Response Recognized");
                     }
                     else if (colonFirstWord.Equals("PASSWORD") && load.number == 2)
                     {
-                         // get password
+                        // get password
                         password = getSecondWord(colonSplitup);
                         this.JoinSpreadsheet(nameOfSpreadsheet, password); // Just for fun, and the protocol. After a spreadsheet has been created, we join it.
                         Debug.WriteLine("Create password Response Recognized");
@@ -294,7 +295,7 @@ namespace SS
                     {
                         // something went wrong 
                         // @todo handle error
-                        Debug.WriteLine("Something went wrong {0}",message);
+                        Debug.WriteLine("Something went wrong {0}", message);
 
                         socket.BeginReceive(MasterCallback, null);
                     }
@@ -392,7 +393,7 @@ namespace SS
                     socket.BeginReceive(MasterCallback, null);
                     spreadsheet.ReadXml(message);
                     clientGUI_SS("Updateness!", false);
-                      Debug.WriteLine("Join xml Response Recognized");
+                    Debug.WriteLine("Join xml Response Recognized");
                 }
                 else
                 {
@@ -411,7 +412,7 @@ namespace SS
                     Debug.WriteLine("Join fail Name Response Recognized");
                     socket.BeginReceive(JoinSSCallback, new Payload(2, false));
                 }
-                else if(load.number == 2)
+                else if (load.number == 2)
                 {
                     // must be a message
                     Debug.WriteLine("Join fail message Response Recognized");
@@ -498,8 +499,8 @@ namespace SS
 
                 else if (!load.valid)
                 {
-                    
-                    
+
+
                     // wait status
                     if (colonFirstWord.Equals("NAME") && load.number == (int)SpecialStatus.CHANGE_WAIT)
                     {
@@ -521,7 +522,7 @@ namespace SS
                         load.number++;
                         socket.BeginReceive(ChangeCellCallback, load);
                     }
-                    else if(colonFirstWord.Equals("VERSION") && load.number == 2)
+                    else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         Debug.WriteLine("Change fail version Response Recognized");
                         load.number++;
@@ -604,7 +605,7 @@ namespace SS
             {
                 string[] spaceSplitup = message.Split(' ');
                 string[] colonSplitup = message.Split(':');
-                string colonFirstWord = "";   
+                string colonFirstWord = "";
                 UndoPayload load = new UndoPayload();
                 if (payload is UndoPayload)
                 {
@@ -620,7 +621,7 @@ namespace SS
                 ///Cell:cell LF; true 3
                 ///Length:length LF; true 4
                 ///content LF; true 5
-                if (load.valid) 
+                if (load.valid)
                 {
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
@@ -655,7 +656,7 @@ namespace SS
                         load.contentLength = lNum;
                         socket.BeginReceive(UndoCallback, load);
                     }
-                    else if(load.number == 5)
+                    else if (load.number == 5)
                     {
                         // must be the content
                         Debug.WriteLine("Undo content Response Recognized");
@@ -689,7 +690,7 @@ namespace SS
                             break;
                         case (int)SpecialStatus.UNDO_WAIT:                                       // It is WAIT's name.
                             socket.BeginReceive(UndoCallback, new Payload((int)SpecialStatus.UNDO_WAIT + 1, false));
-                             Debug.WriteLine("Undo wait name Response Recognized");
+                            Debug.WriteLine("Undo wait name Response Recognized");
                             break;
                         case 2:                                         // It is FAIL's message.
                             socket.BeginReceive(MasterCallback, null);
@@ -749,7 +750,6 @@ namespace SS
                 if (load.valid)
                 {
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
-
                     {
                         // get name
                         Debug.WriteLine("Save name Response Recognized");
@@ -772,7 +772,7 @@ namespace SS
                         Debug.WriteLine("Save fail name Response Recognized");
                         socket.BeginReceive(SaveCallback, new Payload(2, false));
                     }
-                    else if(load.number == 2)
+                    else if (load.number == 2)
                     {
                         // must be a error message
                         Debug.WriteLine("Save fail message Response Recognized");
@@ -852,7 +852,7 @@ namespace SS
                     {
                         // get Version
                         Debug.WriteLine("Update version Response Recognized");
-                       
+
                         load.number++;
                         updateVersion(getSecondWord(colonSplitup));
                         socket.BeginReceive(UpdateCallback, load);
@@ -863,7 +863,7 @@ namespace SS
                         Debug.WriteLine("Update cell Response Recognized");
                         load.number++;
                         load.cell = getSecondWord(colonSplitup);
-                        
+
                         socket.BeginReceive(UpdateCallback, load);
                     }
                     else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
@@ -876,7 +876,7 @@ namespace SS
                         Debug.WriteLine("Update length Response Recognized");
                         socket.BeginReceive(UpdateCallback, load);
                     }
-                    else if(load.number == 5)
+                    else if (load.number == 5)
                     {
                         // must be the content
                         load.contents = message;
@@ -1041,20 +1041,27 @@ namespace SS
         {
             if (!ReferenceEquals(socket, null) && socket.isConnected())
             {
+
                 if (changePayload.availability == ChangeStatus.CANSEND)
                 {
                     changePayload.cell = cellName;
                     changePayload.contents = cellContent;
+                    string length;
+                    if (cellContent.Equals(""))
+                        length = "0";
+                    else
+                        length = cellContent.Length.ToString();
                     changePayload.availability = ChangeStatus.CANT_SEND;
                     string sendString = "CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
                         + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n";
                     Debug.WriteLine(sendString);
                     socket.BeginSend(sendString, SendCallback, socket);
                 }
+
             }
             else
                 clientGUI_SS("Not connected to server", true);
-           
+
         }
 
         /// <summary>
@@ -1098,8 +1105,8 @@ namespace SS
         ///
         public void Undo()
         {
-            if(socket.isConnected())
-                socket.BeginSend("UNDO\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString()+ "\n", SendCallback, socket);
+            if (socket.isConnected())
+                socket.BeginSend("UNDO\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n", SendCallback, socket);
             else
                 clientGUI_SS("Not connected to server", true);
 
@@ -1128,7 +1135,7 @@ namespace SS
         /// </summary>
         public void Save()
         {
-            if(socket.isConnected())
+            if (socket.isConnected())
                 socket.BeginSend("SAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, socket);
             else
                 clientGUI_SS("Not connected to server", true);
