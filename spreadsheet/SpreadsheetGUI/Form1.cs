@@ -122,10 +122,6 @@ namespace SS
             ss.GetSelection(out col, out row);
             string nameOfCell = "" + GetExcelColumnName(col) + (row + 1); // get cell name
 
-
-
-
-
             // Cell Display
             cellDisplayBox.Text = nameOfCell;
 

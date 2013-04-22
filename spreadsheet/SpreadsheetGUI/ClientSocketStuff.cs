@@ -246,7 +246,7 @@ namespace SS
                         Debug.WriteLine("Update Response Recognized");
                         break;
                     default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Mastercallback: unrecognized command {0}", message);
                         break;
                 }
             }
@@ -308,7 +308,7 @@ namespace SS
                     {
                         // something went wrong 
                         // @todo handle error
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Create valid commands corrupted {0}", message);
 
                         socket.BeginReceive(MasterCallback, null);
                     }
@@ -333,7 +333,7 @@ namespace SS
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Create fail commands corrupted {0}", message);
 
                     }
                 }
@@ -413,7 +413,7 @@ namespace SS
                     // something went wrong 
                     // @todo handle error
                     socket.BeginReceive(MasterCallback, null);
-                    Debug.WriteLine("Something went wrong {0}", message);
+                    Debug.WriteLine("Join succeed commands corrupted {0}", message);
 
                 }
             }
@@ -437,7 +437,7 @@ namespace SS
                     // something went wrong 
                     // @todo handle error
                     socket.BeginReceive(MasterCallback, null);
-                    Debug.WriteLine("Something went wrong {0}", message);
+                    Debug.WriteLine("Join fail commands corrupted {0}", message);
 
                 }
             }
@@ -508,12 +508,8 @@ namespace SS
                     }
                 }
 
-
-
                 else if (!load.valid)
                 {
-
-
                     // wait status
                     if (colonFirstWord.Equals("NAME") && load.number == (int)SpecialStatus.CHANGE_WAIT)
                     {
@@ -526,7 +522,6 @@ namespace SS
                         Debug.WriteLine("Change fail wait version Response Recognized");
                         changePayload.availability = ChangeStatus.WAITING_TO_SEND;
                         socket.BeginReceive(MasterCallback, load);
-
                     }
                     // fail status
                     else if (colonFirstWord.Equals("NAME") && load.number == 1)
@@ -554,7 +549,7 @@ namespace SS
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Change fail commands corrupted {0}", message);
 
                     }
                 }
