@@ -480,7 +480,7 @@ namespace SS
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                if (load.valid)
+                if (load.availability == ChangeStatus.CANT_SEND)
                 {
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
@@ -503,12 +503,13 @@ namespace SS
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
+                        resetChangePayload();
                         Debug.WriteLine("Something went wrong {0}", message);
 
                     }
                 }
 
-                else if (!load.valid)
+                else if (load.availability == ChangeStatus.WAITING_TO_SEND || load.availability == ChangeStatus.CANT_SEND)
                 {
                     // wait status
                     if (colonFirstWord.Equals("NAME") && load.number == (int)SpecialStatus.CHANGE_WAIT)
@@ -550,6 +551,9 @@ namespace SS
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                         Debug.WriteLine("Change fail commands corrupted {0}", message);
+
+                        resetChangePayload();
+
 
                     }
                 }
@@ -677,7 +681,7 @@ namespace SS
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
-                        Debug.WriteLine("Undo success commands corrupted {0}", message);
+                        Debug.WriteLine("Something went wrong {0}", message);
 
                     }
                 }
@@ -717,7 +721,7 @@ namespace SS
                         default:
                             // something went wrong 
                             // @todo handle error
-                            Debug.WriteLine("Undo fail command corrupted", message);
+                            Debug.WriteLine("Something went wrong", message);
 
                             socket.BeginReceive(MasterCallback, null);
                             break;
@@ -767,7 +771,7 @@ namespace SS
                     else
                     {
                         // something went wrong 
-                        Debug.WriteLine("Save succeed commands corrupted {0}", message);
+                        Debug.WriteLine("Something went wrong {0}", message);
 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
@@ -791,7 +795,7 @@ namespace SS
                     else
                     {
                         // something went wrong 
-                        Debug.WriteLine("Save fail commands corrupted {0}", message);
+                        Debug.WriteLine("Something went wrong {0}", message);
 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
@@ -882,14 +886,14 @@ namespace SS
                         int length;
                         Int32.TryParse(getSecondWord(colonSplitup), out length);
                         load.contentLength = length;
-                        Debug.WriteLine("Update length Response Recognized", message);
+                        Debug.WriteLine("Update length Response Recognized");
                         socket.BeginReceive(UpdateCallback, load);
                     }
                     else if (load.number == 5)
                     {
                         // must be the content
                         load.contents = message;
-                        Debug.WriteLine("Update content Response Recognized", message);
+                        Debug.WriteLine("Update content Response Recognized");
 
                         // We need to lock on this, right?
                         spreadsheet.SetContentsOfCell(load.cell, message.Trim());
@@ -899,7 +903,8 @@ namespace SS
                         if (changePayload.availability == ChangeStatus.WAITING_TO_SEND)
                         {
                             changePayload.availability = ChangeStatus.CANSEND;
-                            Debug.WriteLine("Resending waited change");
+                            Debug.WriteLine("Something went wrong {0}", message);
+
                             ChangeCell(changePayload.cell, changePayload.contents);
 
                         }
@@ -908,7 +913,6 @@ namespace SS
                     {
                         // something went wrong
                         // @todo handle error, send error message to gui about bug report or something
-                        Debug.WriteLine("Update commands order corrupted  {0}", message);
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }
