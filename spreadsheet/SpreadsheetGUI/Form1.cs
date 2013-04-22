@@ -83,17 +83,19 @@ namespace SS
         }
         private void Update(string message, bool isError)
         {      
-            this.Invoke((MethodInvoker)delegate
-            {
-                if (!isError)
-                {
-                    displaySelection(spreadsheetPanel1);
-                }
-                else
-                {
-                    MessageBox.Show(message, "Error");
-                }
-            }); 
+            if (this != null) {
+                this.Invoke((MethodInvoker)delegate
+                 {
+                     if (!isError)
+                     {
+                        displaySelection(spreadsheetPanel1);
+                    }
+                     else
+                     {
+                        MessageBox.Show(message, "Error");
+                     }
+                 }); 
+            }
         }
 
 

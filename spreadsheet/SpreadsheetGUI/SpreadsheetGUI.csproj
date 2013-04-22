@@ -108,6 +108,10 @@
       <Project>{C97CFCB6-DDE2-4C61-BD26-AB9109A16E88}</Project>
       <Name>StringSocket</Name>
     </ProjectReference>
+    <ProjectReference Include="\\chips.eng.utah.edu\home\dwilloug\.win_my_documents\Visual Studio 2010\Projects\PS7%284%29\StringSocketOfficial\StringSocketOfficial.csproj">
+      <Project>{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}</Project>
+      <Name>StringSocketOfficial</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

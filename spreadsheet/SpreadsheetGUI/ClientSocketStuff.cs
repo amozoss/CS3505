@@ -52,7 +52,7 @@ namespace SS
         private string ipAddress;
         private string nameOfSpreadsheet; // name is the name for the new spreadsheet
         private string password; // password is the password to use for the new spreadsheet
-        private StringSocket socket;
+        private SSOffical socket;
         private static int SERVERPORT = 1984;
         private ClientToGUI_SS clientGUI_SS;
         private int version;
@@ -65,20 +65,26 @@ namespace SS
         /// <param name="ipAddress"></param>
         public ClientSocketStuff(string ipAddress, Spreadsheet spreadsheet,  ClientToGUI_SS receivedMessage, int port)
         {
+            try
+            {
+                // set private instance variables 
+                this.ipAddress = ipAddress;
+                this.clientGUI_SS = receivedMessage;
+                this.spreadsheet = spreadsheet;
 
-            // set private instance variables 
-            this.ipAddress = ipAddress;
-            this.clientGUI_SS = receivedMessage;
-            this.spreadsheet = spreadsheet;
-            
-            TcpClient client = new TcpClient(ipAddress, port);
-            Socket sock = client.Client;
+                TcpClient client = new TcpClient(ipAddress, port);
+                Socket sock = client.Client;
 
-            socket = new StringSocket(sock, new UTF8Encoding());
-            socket.BeginReceive(MasterCallback, null);
-            version = 0;
-            password = "";
-            nameOfSpreadsheet = "";
+                socket = new SSOffical(sock, new UTF8Encoding());
+                socket.BeginReceive(MasterCallback, null);
+                version = 0;
+                password = "";
+                nameOfSpreadsheet = "";
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
 

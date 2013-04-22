@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "Cons
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{0F4F0610-F6EA-4329-807D-D23203C5F53D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringSocketOfficial", "\\chips.eng.utah.edu\home\dwilloug\.win_my_documents\Visual Studio 2010\Projects\PS7(4)\StringSocketOfficial\StringSocketOfficial.csproj", "{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -98,6 +100,16 @@ Global
 		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Release|Any CPU.ActiveCfg = Release
 		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Release|Mixed Platforms.ActiveCfg = Release
 		{0F4F0610-F6EA-4329-807D-D23203C5F53D}.Release|x86.ActiveCfg = Release
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Debug|x86.ActiveCfg = Debug|x86
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Debug|x86.Build.0 = Debug|x86
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Release|Any CPU.ActiveCfg = Release|x86
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Release|Mixed Platforms.Build.0 = Release|x86
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Release|x86.ActiveCfg = Release|x86
+		{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

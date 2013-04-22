@@ -1,0 +1,53 @@
+/*
+ * Date Class uses the ctime library to keep track of dates. 
+ *
+ * The day can be incremented forward one day. 
+ *
+ *
+ * Authoers: Dan Willoughby and Michael Banks
+ *
+ */
+#ifndef DATE_CLASS
+#define DATE_CLASS
+
+#include <string>
+#include <ctime>
+#include <iostream>
+#include <boost/date_time/posix_time/posix_time.hpp>
+using boost::posix_time::time_input_facet;
+using std::locale;
+
+using namespace std;
+
+class date {
+public:
+  date(string start_date); 
+  string next_date();
+private:
+  time_t the_date;
+};
+
+#endif
+
+// implementation
+
+/* 
+ * Constructs a date from the given start date string
+ */
+date::date(string start_date)  {
+    // this is the fancy custom date class
+
+  //this->the_date = date;
+  
+}
+
+/*
+ * Increments the date by one day
+ *
+ * If date is null, calls the start date constructor with current date
+ */
+string date::next_date() {
+
+
+
+} 
