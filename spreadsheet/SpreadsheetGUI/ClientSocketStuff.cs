@@ -69,6 +69,8 @@ namespace SS
         private int version;
         private Spreadsheet spreadsheet;
         private ChangePayload changePayload;
+      
+
 
         /// <summary>
         ///  Creates the communication outlet that the client will use to "talk" to the server.
@@ -147,6 +149,7 @@ namespace SS
                 string firstWord = "";
                 Payload payload = new Payload(0, false);
                 UpdatePayload upPay = new UpdatePayload();
+                UndoPayload undoPay = new UndoPayload();
 
                 if (spaceSplit.Length > 0)
                     firstWord = spaceSplit[0].ToUpper().Trim();
@@ -166,6 +169,11 @@ namespace SS
                         changePayload.valid = true;
                         changePayload.number = 1;
                     }
+                    else if (firstWord.Equals("UNDO"))
+                    {
+                        undoPay.valid = true;
+                        undoPay.number = 1;
+                    }
                 }
                 else if (secondWord.Equals("FAIL"))
                 {
@@ -173,8 +181,13 @@ namespace SS
                     payload = new Payload(1, false);
                     if (firstWord.Equals("CHANGE"))
                     {
-                        changePayload.valid = true;
+                        changePayload.valid = false;
                         changePayload.number = 1;
+                    }
+                    else if (firstWord.Equals("UNDO"))
+                    {
+                        undoPay.valid = false;
+                        undoPay.number = 1;
                     }
                 }
                 else if (secondWord.Equals("WAIT"))
@@ -182,7 +195,9 @@ namespace SS
                     if (firstWord.Equals("UNDO"))
                     {
                         //Undo wait message
-                        payload = new Payload((int)SpecialStatus.UNDO_WAIT, false);
+                        
+                        undoPay.valid = false;
+                        undoPay.number = (int)SpecialStatus.UNDO_WAIT;
                     }
                     else if (firstWord.Equals("CHANGE"))
                     {
@@ -199,7 +214,8 @@ namespace SS
                 else if (secondWord.Equals("END"))
                 {
                     //Undo end message
-                    payload = new Payload((int)SpecialStatus.UNDO_END, false);
+                    undoPay.valid = false;
+                    undoPay.number = (int)SpecialStatus.UNDO_END;
                 }
                 else if (!firstWord.Equals("UPDATE"))
                 {
@@ -219,7 +235,7 @@ namespace SS
                     case "CHANGE": socket.BeginReceive(ChangeCellCallback, changePayload);
                         Debug.WriteLine("Change Response Recognized");
                         break;
-                    case "UNDO": socket.BeginReceive(UndoCallback, payload);
+                    case "UNDO": socket.BeginReceive(UndoCallback, undoPay);
                         Debug.WriteLine("Undo Response Recognized");
                         break;
                     case "SAVE": socket.BeginReceive(SaveCallback, payload);
@@ -703,11 +719,12 @@ namespace SS
                         case 101:                                       // It is END's Version.
                             socket.BeginReceive(MasterCallback, null);
                             Debug.WriteLine("Wait version Response Recognized");
+                            clientGUI_SS("YOu can no longer undo!", true);
                             break;
                         default:
                             // something went wrong 
                             // @todo handle error
-                            Debug.WriteLine("Something went wrong {0}", message);
+                            Debug.WriteLine("Something went wrong", message);
 
                             socket.BeginReceive(MasterCallback, null);
                             break;
@@ -950,7 +967,7 @@ namespace SS
         {
             if (!ReferenceEquals(socket, null) && socket.isConnected())
                 socket.BeginSend("CREATE\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
-            else clientGUI_SS("Not connected to server", true);
+            else clientGUI_SS("Could not create speadsheet. Connection to server could not be established.", true);
         }
 
 
@@ -991,7 +1008,7 @@ namespace SS
         {
             if (!ReferenceEquals(socket, null) && socket.isConnected())
                 socket.BeginSend("JOIN\n" + "Name:" + name + "\n" + "Password:" + password + "\n", SendCallback, socket);
-            else clientGUI_SS("Not connected to server", true);
+            else clientGUI_SS("Could not join spreadsheet. Connection could not be established.", true);
         }
 
 
@@ -1047,9 +1064,8 @@ namespace SS
                     changePayload.contents = cellContent;
                     string length;
                     if (cellContent.Equals(""))
-                        length = "0";
-                    else
-                        length = cellContent.Length.ToString();
+                        cellContent = " ";
+                  
                     changePayload.availability = ChangeStatus.CANT_SEND;
                     socket.BeginSend("CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
                         + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n", SendCallback, socket);
@@ -1057,7 +1073,7 @@ namespace SS
 
             }
             else
-                clientGUI_SS("Not connected to server", true);
+                clientGUI_SS("Connection to server was lost. Cannot make change to spreadsheet.", true);
 
         }
 
@@ -1105,7 +1121,7 @@ namespace SS
             if (socket.isConnected())
                 socket.BeginSend("UNDO\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n", SendCallback, socket);
             else
-                clientGUI_SS("Not connected to server", true);
+                clientGUI_SS("Connection to server was lost. Cannot Undo spreadsheet.", true);
 
             //socket.BeginReceive(MasterCallback, "NOTHING");
         }
@@ -1135,7 +1151,7 @@ namespace SS
             if (socket.isConnected())
                 socket.BeginSend("SAVE\n" + "Name:" + nameOfSpreadsheet + "\n", SendCallback, socket);
             else
-                clientGUI_SS("Not connected to server", true);
+                clientGUI_SS("Connection to server was lost. Could not save spreadsheet.", true);
 
         }
 
@@ -1153,7 +1169,7 @@ namespace SS
                 socket.CloseAndShutdown();
             }
             else
-                clientGUI_SS("Not connected to server", true);
+                clientGUI_SS("Connection to server was lost.", true);
         }
 
         #endregion
