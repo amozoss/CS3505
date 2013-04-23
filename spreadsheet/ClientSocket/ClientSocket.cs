@@ -232,6 +232,7 @@ namespace Client
                         
                         changePayload.valid = false;
                         changePayload.number = (int)SpecialStatus.CHANGE_WAIT;
+                        changePayload.availability = ChangeStatus.WAITING_TO_SEND;
                     }
                 }
                 else if (firstWord.Equals("UPDATE"))
@@ -338,6 +339,7 @@ namespace Client
                         // something went wrong 
                         // @todo handle error
                         Debug.WriteLine("Create valid commands corrupted {0}", message);
+                        resetChangePayload();
 
                         socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
@@ -362,6 +364,8 @@ namespace Client
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
+                        resetChangePayload();
+
                         Debug.WriteLine("Create fail commands corrupted {0}", message);
 
                     }
@@ -946,6 +950,7 @@ namespace Client
                         // something went wrong
                         // @todo handle error, send error message to gui about bug report or something
                         Debug.WriteLine("Update fail unrecognized command {0}", message);
+                        resetChangePayload();
 
                         socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
