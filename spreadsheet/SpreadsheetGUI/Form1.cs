@@ -128,7 +128,7 @@ namespace SS
             // Get col and row of cell.
             int row, col;
             ss.GetSelection(out col, out row);
-            ss.SetSelection(col, row);
+           
             string nameOfCell = "" + GetExcelColumnName(col) + (row + 1); // get cell name
 
             // Cell Display
@@ -247,7 +247,7 @@ namespace SS
             // thread as the other forms.
             //SpreadsheetApplicationContext.getAppContext().RunForm(new SpreadsheetGUI());
             spreadsheet = new Spreadsheet();
-            spreadsheetPanel1 = new SpreadsheetPanel();
+            //spreadsheetPanel1 = new SpreadsheetPanel();
             CreateOrJoin cj = new CreateOrJoin(CreateDelegate, JoinDelegate);
             cj.ShowDialog();
         }
