@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.IO;
-using CustomNetworking;
+//using CustomNetworking;
 using System.Net.Sockets;
 using Client;
 
@@ -60,7 +60,7 @@ namespace SS
             {
                 if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
-                clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
+                //clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
                 clientCommunication.CreateSpreadsheet(ssName, psword);
                 displaySelection(spreadsheetPanel1);
             }
@@ -73,7 +73,7 @@ namespace SS
             {
                 if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
-                clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
+                //clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
                 clientCommunication.JoinSpreadsheet(ssName, psword);
                 displaySelection(spreadsheetPanel1);
             }

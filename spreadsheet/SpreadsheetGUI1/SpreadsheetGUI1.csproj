@@ -149,7 +149,7 @@
       <Project>{6FD19AB9-F83A-4592-87C9-51A3C3B1E145}</Project>
       <Name>Spreadsheet</Name>
     </ProjectReference>
-    <ProjectReference Include="\\chips.eng.utah.edu\home\dwilloug\.win_my_documents\Visual Studio 2010\Projects\PS7%284%29\StringSocketOfficial\StringSocketOfficial.csproj">
+    <ProjectReference Include="..\StringSocketOfficial\StringSocketOfficial.csproj">
       <Project>{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}</Project>
       <Name>StringSocketOfficial</Name>
     </ProjectReference>

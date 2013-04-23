@@ -68,8 +68,11 @@ namespace Client
         private static int SERVERPORT = 1984;
         private ClientToGUI_SS clientGUI_SS;
         private int version;
-        private Spreadsheet spreadsheet;
+        public delegate void EditCell(String name, String contents);
+        public delegate void SendXML(String name);
         private ChangePayload changePayload;
+        private EditCell e_Cell;
+        private SendXML send_XML;
 
 
 
@@ -77,7 +80,7 @@ namespace Client
         ///  Creates the communication outlet that the client will use to "talk" to the server.
         /// </summary>
         /// <param name="ipAddress"></param>
-        public ClientSocket(string ipAddress, Spreadsheet spreadsheet, ClientToGUI_SS receivedMessage, int port)
+        public ClientSocket(string ipAddress, EditCell spreadsheet, ClientToGUI_SS receivedMessage, int port, SendXML xmlSender)
         {
             changePayload.contents = "";
             try
@@ -85,13 +88,14 @@ namespace Client
                 // set private instance variables 
                 this.ipAddress = ipAddress;
                 this.clientGUI_SS = receivedMessage;
-                this.spreadsheet = spreadsheet;
+                this.e_Cell = spreadsheet;
+                this.send_XML = xmlSender;
 
                 TcpClient client = new TcpClient(ipAddress, port);
                 Socket sock = client.Client;
 
                 socket = new SSOffical(sock, new UTF8Encoding());
-                socket.BeginReceive(MasterCallback, null);
+                socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                 version = 0;
                 password = "";
                 nameOfSpreadsheet = "";
@@ -224,30 +228,30 @@ namespace Client
                 {
                     // there was an error
                     // @todo handle error
-                    socket.BeginReceive(MasterCallback, payload);
+                    socket.BeginReceive(MasterCallback, payload, CustomNetworking.callbacks.MASTER);
                 }
 
                 switch (firstWord)
                 {
-                    case "CREATE": socket.BeginReceive(CreateSSCallback, payload);
+                    case "CREATE": socket.BeginReceive(CreateSSCallback, payload, CustomNetworking.callbacks.CREATE);
                         Debug.WriteLine("Create Response Recognized");
                         break;
-                    case "JOIN": socket.BeginReceive(JoinSSCallback, payload);
+                    case "JOIN": socket.BeginReceive(JoinSSCallback, payload, CustomNetworking.callbacks.JOIN);
                         Debug.WriteLine("Join Response Recognized");
                         break;
-                    case "CHANGE": socket.BeginReceive(ChangeCellCallback, changePayload);
+                    case "CHANGE": socket.BeginReceive(ChangeCellCallback, changePayload, CustomNetworking.callbacks.CHANGE);
                         Debug.WriteLine("Change Response Recognized");
                         break;
-                    case "UNDO": socket.BeginReceive(UndoCallback, undoPay);
+                    case "UNDO": socket.BeginReceive(UndoCallback, undoPay, CustomNetworking.callbacks.UNDO);
                         Debug.WriteLine("Undo Response Recognized");
                         break;
-                    case "SAVE": socket.BeginReceive(SaveCallback, payload);
+                    case "SAVE": socket.BeginReceive(SaveCallback, payload, CustomNetworking.callbacks.SAVE);
                         Debug.WriteLine("Save Response Recognized");
                         break;
-                    case "UPDATE": socket.BeginReceive(UpdateCallback, upPay);
+                    case "UPDATE": socket.BeginReceive(UpdateCallback, upPay, CustomNetworking.callbacks.UPDATE);
                         Debug.WriteLine("Update Response Recognized");
                         break;
-                    default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
+                    default: socket.BeginReceive(MasterCallback, payload, CustomNetworking.callbacks.MASTER); // If all else fails just call the master
                         Debug.WriteLine("Mastercallback: unrecognized command {0}", message);
                         //clientGUI_SS(message, true);
                         break;
@@ -294,7 +298,7 @@ namespace Client
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         // get name
-                        socket.BeginReceive(CreateSSCallback, new Payload(2, true));
+                        socket.BeginReceive(CreateSSCallback, new Payload(2, true), CustomNetworking.callbacks.CREATE);
                         // Store the name of the SS
                         nameOfSpreadsheet = getSecondWord(colonSplitup);
                         Debug.WriteLine("Create Name Response Recognized");
@@ -305,7 +309,7 @@ namespace Client
                         password = getSecondWord(colonSplitup);
                         this.JoinSpreadsheet(nameOfSpreadsheet, password); // Just for fun, and the protocol. After a spreadsheet has been created, we join it.
                         Debug.WriteLine("Create password Response Recognized");
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                     else
                     {
@@ -313,7 +317,7 @@ namespace Client
                         // @todo handle error
                         Debug.WriteLine("Create valid commands corrupted {0}", message);
 
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                 }
                 else if (!load.valid)
@@ -322,20 +326,20 @@ namespace Client
                     {
                         // get name
                         Debug.WriteLine("Create fail Name Response Recognized");
-                        socket.BeginReceive(CreateSSCallback, new Payload(2, false));
+                        socket.BeginReceive(CreateSSCallback, new Payload(2, false), CustomNetworking.callbacks.CREATE);
                     }
                     else if (load.number == 2)
                     {
                         // must be a message
                         Debug.WriteLine("Create fail message Response Recognized");
                         clientGUI_SS(message, true);
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                     else
                     {
                         // something went wrong 
                         // @todo handle error
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                         Debug.WriteLine("Create fail commands corrupted {0}", message);
 
                     }
@@ -385,7 +389,7 @@ namespace Client
                 {
                     // get name
                     nameOfSpreadsheet = getSecondWord(colonSplit);
-                    socket.BeginReceive(JoinSSCallback, new Payload(2, true));
+                    socket.BeginReceive(JoinSSCallback, new Payload(2, true), CustomNetworking.callbacks.JOIN);
                     Debug.WriteLine("Join Name Response Recognized");
 
                 }
@@ -393,21 +397,21 @@ namespace Client
                 {
                     // get Version
                     updateVersion(getSecondWord(colonSplit));
-                    socket.BeginReceive(JoinSSCallback, new Payload(3, true));
+                    socket.BeginReceive(JoinSSCallback, new Payload(3, true), CustomNetworking.callbacks.JOIN);
                     Debug.WriteLine("Join Version Response Recognized");
 
                 }
                 else if (colonFirstWord.Equals("LENGTH") && load.number == 3)
                 {
                     // get length
-                    socket.BeginReceive(JoinSSCallback, new Payload(4, true));
+                    socket.BeginReceive(JoinSSCallback, new Payload(4, true), CustomNetworking.callbacks.JOIN);
                     Debug.WriteLine("Join Length Response Recognized");
                 }
                 else if (load.number == 4)
                 {
                     // must be the xml
-                    socket.BeginReceive(MasterCallback, null);
-                    spreadsheet.ReadXml(message);
+                    socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
+                    send_XML(message);
                     clientGUI_SS("Updateness!", false);
                     Debug.WriteLine("Join xml Response Recognized");
                 }
@@ -415,7 +419,7 @@ namespace Client
                 {
                     // something went wrong 
                     // @todo handle error
-                    socket.BeginReceive(MasterCallback, null);
+                    socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     Debug.WriteLine("Join succeed commands corrupted {0}", message);
 
                 }
@@ -426,20 +430,20 @@ namespace Client
                 {
                     // get name
                     Debug.WriteLine("Join fail Name Response Recognized");
-                    socket.BeginReceive(JoinSSCallback, new Payload(2, false));
+                    socket.BeginReceive(JoinSSCallback, new Payload(2, false), CustomNetworking.callbacks.JOIN);
                 }
                 else if (load.number == 2)
                 {
                     // must be a message
                     Debug.WriteLine("Join fail message Response Recognized");
                     clientGUI_SS(message, true);
-                    socket.BeginReceive(MasterCallback, null);
+                    socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                 }
                 else
                 {
                     // something went wrong 
                     // @todo handle error
-                    socket.BeginReceive(MasterCallback, null);
+                    socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     Debug.WriteLine("Join fail commands corrupted {0}", message);
 
                 }
@@ -488,16 +492,16 @@ namespace Client
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         load.number++;
-                        socket.BeginReceive(ChangeCellCallback, load);
+                        socket.BeginReceive(ChangeCellCallback, load, CustomNetworking.callbacks.CHANGE);
                         Debug.WriteLine("Change Name Response Recognized");
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         //spreadsheet.SetContentsOfCell
                         updateVersion(getSecondWord(colonSplitup));
-                        spreadsheet.SetContentsOfCell(load.cell, load.contents);
+                        e_Cell(load.cell, load.contents);
                         clientGUI_SS("YAY", false);
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                         Debug.WriteLine("Change Version Response Recognized");
                         resetChangePayload();
                     }
@@ -505,7 +509,7 @@ namespace Client
                     {
                         // something went wrong 
                         // @todo handle error
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                         resetChangePayload();
                         Debug.WriteLine("Change unrecognized command valid {0}", message);
 
@@ -519,40 +523,40 @@ namespace Client
                     {
                         Debug.WriteLine("Change fail wait name Response Recognized");
                         load.number++;
-                        socket.BeginReceive(ChangeCellCallback, load);
+                        socket.BeginReceive(ChangeCellCallback, load, CustomNetworking.callbacks.CHANGE);
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == (int)SpecialStatus.CHANGE_WAIT + 1)
                     {
                         Debug.WriteLine("Change fail wait version Response Recognized");
                         changePayload.availability = ChangeStatus.WAITING_TO_SEND;
-                        socket.BeginReceive(MasterCallback, load);
+                        socket.BeginReceive(MasterCallback, load, CustomNetworking.callbacks.MASTER);
                     }
                     // fail status
                     else if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
                         Debug.WriteLine("Change fail name Response Recognized");
                         load.number++;
-                        socket.BeginReceive(ChangeCellCallback, load);
+                        socket.BeginReceive(ChangeCellCallback, load, CustomNetworking.callbacks.CHANGE);
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         Debug.WriteLine("Change fail version Response Recognized");
                         load.number++;
                         // @TODO: Maybe do versioning stuff.
-                        socket.BeginReceive(ChangeCellCallback, load);
+                        socket.BeginReceive(ChangeCellCallback, load, CustomNetworking.callbacks.CHANGE);
                     }
                     else if (load.number == 3)
                     {
                         Debug.WriteLine("Change fail message Response Recognized");
                         resetChangePayload();
                         clientGUI_SS(message, true);
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                     else
                     {
                         // something went wrong 
                         // @todo handle error
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                         Debug.WriteLine("Change fail commands corrupted {0}", message);
 
                         resetChangePayload();
@@ -643,7 +647,7 @@ namespace Client
                         // get name
                         Debug.WriteLine("Undo name Response Recognized");
                         load.number = 2;
-                        socket.BeginReceive(UndoCallback, load);
+                        socket.BeginReceive(UndoCallback, load, CustomNetworking.callbacks.UNDO);
                     }
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
@@ -651,7 +655,7 @@ namespace Client
                         Debug.WriteLine("Undo version Response Recognized");
                         updateVersion(getSecondWord(colonSplitup));
                         load.number = 3;
-                        socket.BeginReceive(UndoCallback, load);
+                        socket.BeginReceive(UndoCallback, load, CustomNetworking.callbacks.UNDO);
                     }
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
@@ -659,7 +663,7 @@ namespace Client
                         Debug.WriteLine("Undo cell Response Recognized");
                         load.cell = getSecondWord(colonSplitup);
                         load.number = 4;
-                        socket.BeginReceive(UndoCallback, load);
+                        socket.BeginReceive(UndoCallback, load, CustomNetworking.callbacks.UNDO);
                     }
                     else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
@@ -669,21 +673,21 @@ namespace Client
                         int lNum = 0;
                         Int32.TryParse(getSecondWord(colonSplitup), out lNum);
                         load.contentLength = lNum;
-                        socket.BeginReceive(UndoCallback, load);
+                        socket.BeginReceive(UndoCallback, load, CustomNetworking.callbacks.UNDO);
                     }
                     else if (load.number == 5)
                     {
                         // must be the content
                         Debug.WriteLine("Undo content Response Recognized");
-                        spreadsheet.SetContentsOfCell(load.cell, message);
+                        e_Cell(load.cell, message);
                         clientGUI_SS("random", false);
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                     else
                     {
                         // something went wrong 
                         // @todo handle error
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                         Debug.WriteLine("Undo unrecognized commands valid {0}", message);
 
                     }
@@ -694,30 +698,30 @@ namespace Client
                     switch (load.number)
                     {
                         case 1:                                         // It is FAIL's name.
-                            socket.BeginReceive(UndoCallback, new Payload(2, false));
+                            socket.BeginReceive(UndoCallback, new Payload(2, false), CustomNetworking.callbacks.UNDO);
                             Debug.WriteLine("Undo fail name Response Recognized");
 
                             break;
                         case (int)SpecialStatus.UNDO_END:                                       // It is END's name.
-                            socket.BeginReceive(UndoCallback, new Payload((int)SpecialStatus.UNDO_END + 1, false));
+                            socket.BeginReceive(UndoCallback, new Payload((int)SpecialStatus.UNDO_END + 1, false), CustomNetworking.callbacks.UNDO);
                             Debug.WriteLine("Undo end name Response Recognized");
 
                             break;
                         case (int)SpecialStatus.UNDO_WAIT:                                       // It is WAIT's name.
-                            socket.BeginReceive(UndoCallback, new Payload((int)SpecialStatus.UNDO_WAIT + 1, false));
+                            socket.BeginReceive(UndoCallback, new Payload((int)SpecialStatus.UNDO_WAIT + 1, false), CustomNetworking.callbacks.UNDO);
                             Debug.WriteLine("Undo wait name Response Recognized");
                             break;
                         case 2:                                         // It is FAIL's message.
-                            socket.BeginReceive(MasterCallback, null);
+                            socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                             Debug.WriteLine("Undo fail message Response Recognized");
                             clientGUI_SS(message, true);
                             break;
                         case 201:                                       // It is WAIT's Version.
-                            socket.BeginReceive(MasterCallback, null);
+                            socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                             Debug.WriteLine("End version Response Recognized");
                             break;
                         case 101:                                       // It is END's Version.
-                            socket.BeginReceive(MasterCallback, null);
+                            socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                             Debug.WriteLine("Wait version Response Recognized");
                             clientGUI_SS("YOu can no longer undo!", true);
                             break;
@@ -726,7 +730,7 @@ namespace Client
                             // @todo handle error
                             Debug.WriteLine("Undo fail unrecognized command", message);
 
-                            socket.BeginReceive(MasterCallback, null);
+                            socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                             break;
                     }
                 }
@@ -769,7 +773,7 @@ namespace Client
                     {
                         // get name
                         Debug.WriteLine("Save name Response Recognized");
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                     else
                     {
@@ -777,7 +781,7 @@ namespace Client
                         Debug.WriteLine("Save unrecognized command {0}", message);
 
                         // @todo handle error
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                 }
                 else if (!load.valid)
@@ -786,14 +790,14 @@ namespace Client
                     {
                         // get name
                         Debug.WriteLine("Save fail name Response Recognized");
-                        socket.BeginReceive(SaveCallback, new Payload(2, false));
+                        socket.BeginReceive(SaveCallback, new Payload(2, false), CustomNetworking.callbacks.SAVE);
                     }
                     else if (load.number == 2)
                     {
                         // must be a error message
                         Debug.WriteLine("Save fail message Response Recognized");
                         clientGUI_SS(message, true);
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                     else
                     {
@@ -801,7 +805,7 @@ namespace Client
                         Debug.WriteLine("Save fail unrecognized {0}", message);
 
                         // @todo handle error
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                 }
             }
@@ -860,7 +864,7 @@ namespace Client
                     {
                         // get name
                         load.number++;
-                        socket.BeginReceive(UpdateCallback, load);
+                        socket.BeginReceive(UpdateCallback, load, CustomNetworking.callbacks.UPDATE);
                         Debug.WriteLine("Update name Response Recognized");
 
                     }
@@ -871,7 +875,7 @@ namespace Client
 
                         load.number++;
                         updateVersion(getSecondWord(colonSplitup));
-                        socket.BeginReceive(UpdateCallback, load);
+                        socket.BeginReceive(UpdateCallback, load, CustomNetworking.callbacks.UPDATE);
                     }
                     else if (colonFirstWord.Equals("CELL") && load.number == 3)
                     {
@@ -880,7 +884,7 @@ namespace Client
                         load.number++;
                         load.cell = getSecondWord(colonSplitup);
 
-                        socket.BeginReceive(UpdateCallback, load);
+                        socket.BeginReceive(UpdateCallback, load, CustomNetworking.callbacks.UPDATE);
                     }
                     else if (colonFirstWord.Equals("LENGTH") && load.number == 4)
                     {
@@ -890,7 +894,7 @@ namespace Client
                         Int32.TryParse(getSecondWord(colonSplitup), out length);
                         load.contentLength = length;
                         Debug.WriteLine("Update length Response Recognized");
-                        socket.BeginReceive(UpdateCallback, load);
+                        socket.BeginReceive(UpdateCallback, load, CustomNetworking.callbacks.UPDATE);
                     }
                     else if (load.number == 5)
                     {
@@ -899,8 +903,8 @@ namespace Client
                         Debug.WriteLine("Update content Response Recognized");
 
                         // We need to lock on this, right?
-                        spreadsheet.SetContentsOfCell(load.cell, message.Trim());
-                        socket.BeginReceive(MasterCallback, null);
+                        e_Cell(load.cell, message.Trim());
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                         clientGUI_SS("update!", false);
 
                         if (changePayload.availability == ChangeStatus.WAITING_TO_SEND)
@@ -918,7 +922,7 @@ namespace Client
                         // @todo handle error, send error message to gui about bug report or something
                         Debug.WriteLine("Update fail unrecognized command {0}", message);
 
-                        socket.BeginReceive(MasterCallback, null);
+                        socket.BeginReceive(MasterCallback, null, CustomNetworking.callbacks.MASTER);
                     }
                 }
             }
