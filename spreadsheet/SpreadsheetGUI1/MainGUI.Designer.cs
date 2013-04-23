@@ -1,4 +1,5 @@
-﻿namespace SpreadsheetGUI
+﻿using SS;
+namespace SpreadsheetGUI
 {
     partial class MainGUI
     {
@@ -29,7 +30,7 @@
         private void InitializeComponent()
         {
             this.valueBox = new System.Windows.Forms.TextBox();
-            this.spreadsheetPanel1 = new SS.SpreadsheetPanel();
+            this.spreadsheetPanel1 = new SpreadsheetPanel();
             this.valueLabel = new System.Windows.Forms.Label();
             this.nameLabel = new System.Windows.Forms.Label();
             this.contentsLabel = new System.Windows.Forms.Label();
