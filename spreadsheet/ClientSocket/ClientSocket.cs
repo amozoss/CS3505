@@ -253,6 +253,7 @@ namespace Client
                         break;
                     default: socket.BeginReceive(MasterCallback, payload, CustomNetworking.callbacks.MASTER); // If all else fails just call the master
                         Debug.WriteLine("Mastercallback: unrecognized command {0}", message);
+                        resetChangePayload();
                         //clientGUI_SS(message, true);
                         break;
                 }
@@ -1177,8 +1178,8 @@ namespace Client
                 Thread.Sleep(200);
                 socket.CloseAndShutdown();
             }
-            else
-                clientGUI_SS("Connection to server was lost.", true);
+            //else
+                //clientGUI_SS("Connection to server was lost.", true);
         }
 
         #endregion
