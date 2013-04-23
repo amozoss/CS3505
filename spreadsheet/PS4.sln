@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringSocketOfficial", "\\c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSocket", "ClientSocket\ClientSocket.csproj", "{FBEF98A2-E124-494B-A910-883A712060A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUI1", "SpreadsheetGUI1\SpreadsheetGUI1.csproj", "{D4904F40-17AE-44CC-9FEA-5D2D045F1287}"
+EndProject
 Global
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
@@ -110,6 +112,16 @@ Global
 		{FBEF98A2-E124-494B-A910-883A712060A8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FBEF98A2-E124-494B-A910-883A712060A8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FBEF98A2-E124-494B-A910-883A712060A8}.Release|x86.ActiveCfg = Release|Any CPU
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Debug|x86.ActiveCfg = Debug|x86
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Debug|x86.Build.0 = Debug|x86
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Release|Any CPU.ActiveCfg = Release|x86
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Release|Mixed Platforms.Build.0 = Release|x86
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Release|x86.ActiveCfg = Release|x86
+		{D4904F40-17AE-44CC-9FEA-5D2D045F1287}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

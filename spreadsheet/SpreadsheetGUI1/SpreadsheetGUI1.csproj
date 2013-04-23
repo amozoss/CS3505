@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D4904F40-17AE-44CC-9FEA-5D2D045F1287}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SpreadsheetGUI</RootNamespace>
+    <AssemblyName>SpreadsheetGUI</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\SpreadsheetGUI.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Formula, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Formula.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="SpreadsheetPanel">
+      <HintPath>..\SpreadsheetPanel.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CreateOrJoin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateOrJoin.Designer.cs">
+      <DependentUpon>CreateOrJoin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExitWarning.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExitWarning.Designer.cs">
+      <DependentUpon>ExitWarning.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainGUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainGUI.Designer.cs">
+      <DependentUpon>MainGUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelpForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HelpForm.Designer.cs">
+      <DependentUpon>HelpForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Save.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Save.Designer.cs">
+      <DependentUpon>Save.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Warning.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Warning.Designer.cs">
+      <DependentUpon>Warning.cs</DependentUpon>
+    </Compile>
+    <Compile Include="YesNoWarning.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="YesNoWarning.Designer.cs">
+      <DependentUpon>YesNoWarning.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="CreateOrJoin.resx">
+      <DependentUpon>CreateOrJoin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExitWarning.resx">
+      <DependentUpon>ExitWarning.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainGUI.resx">
+      <DependentUpon>MainGUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpForm.resx">
+      <DependentUpon>HelpForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Save.resx">
+      <DependentUpon>Save.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Warning.resx">
+      <DependentUpon>Warning.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="YesNoWarning.resx">
+      <DependentUpon>YesNoWarning.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClientSocket\ClientSocket.csproj">
+      <Project>{FBEF98A2-E124-494B-A910-883A712060A8}</Project>
+      <Name>ClientSocket</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Spreadsheet\Spreadsheet.csproj">
+      <Project>{6FD19AB9-F83A-4592-87C9-51A3C3B1E145}</Project>
+      <Name>Spreadsheet</Name>
+    </ProjectReference>
+    <ProjectReference Include="\\chips.eng.utah.edu\home\dwilloug\.win_my_documents\Visual Studio 2010\Projects\PS7%284%29\StringSocketOfficial\StringSocketOfficial.csproj">
+      <Project>{396D30A7-7DC1-4DEA-8ACE-F06E62085CA3}</Project>
+      <Name>StringSocketOfficial</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
