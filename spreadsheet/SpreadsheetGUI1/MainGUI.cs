@@ -41,12 +41,24 @@ namespace SpreadsheetGUI
             //location
         }
 
+        /// <summary>
+        /// This method displays the prompt for IP Address, port, spreadhsheet name and password.
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="e"></param>
         private void LoadStartupGUIConnection(object o, EventArgs e)
         {
             CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
             firstForm.ShowDialog();
         }
 
+        /// <summary>
+        /// This method is one of the delegates sent to CreateOrJoin, it's call means the user wants to create a spreadsheet.
+        /// </summary>
+        /// <param name="IPaddress"></param>
+        /// <param name="port"></param>
+        /// <param name="ssName"></param>
+        /// <param name="psword"></param>
         private void CreateDelegate(string IPaddress, string port, string ssName, string psword)
         {
             int num = 0;
@@ -62,6 +74,13 @@ namespace SpreadsheetGUI
             }
         }
 
+        /// <summary>
+        /// This method is one of the delegates sent to CreateOrJoin, it's call means the user wants to join a spreadsheet.
+        /// </summary>
+        /// <param name="IPaddress"></param>
+        /// <param name="port"></param>
+        /// <param name="ssName"></param>
+        /// <param name="psword"></param>
         private void JoinDelegate(string IPaddress, string port, string ssName, string psword)
         {
             int num = 0;
@@ -77,6 +96,12 @@ namespace SpreadsheetGUI
 
             }
         }
+
+        /// <summary>
+        /// This method is called by the ClientSocket class when errors that need to be printed to the user occur.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="isError"></param>
         private void Update(string message, bool isError)
         {
             if (this.IsHandleCreated)
@@ -96,7 +121,7 @@ namespace SpreadsheetGUI
         }
 
         /// <summary>
-        /// 
+        /// This method is called refresh all cells that are not empty in the spreadsheet.
         /// </summary>
         public void refreshSpreadsheet()
         {
@@ -104,9 +129,8 @@ namespace SpreadsheetGUI
             foreach (string s in spreadsheet.GetNamesOfAllNonemptyCells())
                 set.Add(s);
             RenewCells(set);
-            contentsBox.Focus();
-            contentsBox.Select(contentsBox.Text.Length, 0);
-            //LocationHandling(spreadsheetPanel1);
+            //contentsBox.Focus();
+            //contentsBox.Select(contentsBox.Text.Length, 0);
         }
 
         /// <summary>
