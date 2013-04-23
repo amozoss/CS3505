@@ -140,10 +140,13 @@ namespace SpreadsheetGUI
         {
             this.Invoke((MethodInvoker)delegate
                  {
-                     HashSet<string> set = new HashSet<string>();
-                     foreach (string s in spreadsheet.GetNamesOfAllNonemptyCells())
-                         set.Add(s);
-                     RenewCells(set);
+                     lock (panelLock)
+                     {
+                         HashSet<string> set = new HashSet<string>();
+                         foreach (string s in spreadsheet.GetNamesOfAllNonemptyCells())
+                             set.Add(s);
+                         RenewCells(set);
+                     }
                  });
             //contentsBox.Focus();
             //contentsBox.Select(contentsBox.Text.Length, 0);
