@@ -248,6 +248,7 @@ namespace Client
                         break;
                     default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
                         Debug.WriteLine("Mastercallback: unrecognized command {0}", message);
+                        clientGUI_SS(message, true);
                         break;
                 }
             }
@@ -505,7 +506,7 @@ namespace Client
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
                         resetChangePayload();
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Change unrecognized command valid {0}", message);
 
                     }
                 }
@@ -682,7 +683,7 @@ namespace Client
                         // something went wrong 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Undo unrecognized commands valid {0}", message);
 
                     }
                 }
@@ -722,7 +723,7 @@ namespace Client
                         default:
                             // something went wrong 
                             // @todo handle error
-                            Debug.WriteLine("Something went wrong", message);
+                            Debug.WriteLine("Undo fail unrecognized command", message);
 
                             socket.BeginReceive(MasterCallback, null);
                             break;
@@ -772,7 +773,7 @@ namespace Client
                     else
                     {
                         // something went wrong 
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Save unrecognized command {0}", message);
 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
@@ -796,7 +797,7 @@ namespace Client
                     else
                     {
                         // something went wrong 
-                        Debug.WriteLine("Something went wrong {0}", message);
+                        Debug.WriteLine("Save fail unrecognized {0}", message);
 
                         // @todo handle error
                         socket.BeginReceive(MasterCallback, null);
@@ -865,7 +866,7 @@ namespace Client
                     else if (colonFirstWord.Equals("VERSION") && load.number == 2)
                     {
                         // get Version
-                        Debug.WriteLine("Update version Response Recognized");
+                        Debug.WriteLine("Update version Response Recognized", message);
 
                         load.number++;
                         updateVersion(getSecondWord(colonSplitup));
@@ -904,7 +905,7 @@ namespace Client
                         if (changePayload.availability == ChangeStatus.WAITING_TO_SEND)
                         {
                             changePayload.availability = ChangeStatus.CANSEND;
-                            Debug.WriteLine("Something went wrong {0}", message);
+                            Debug.WriteLine("Waiting_to_send message being sent {0}", message);
 
                             ChangeCell(changePayload.cell, changePayload.contents);
 
@@ -914,6 +915,8 @@ namespace Client
                     {
                         // something went wrong
                         // @todo handle error, send error message to gui about bug report or something
+                        Debug.WriteLine("Update fail unrecognized command {0}", message);
+
                         socket.BeginReceive(MasterCallback, null);
                     }
                 }

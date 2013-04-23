@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace SS
 {
@@ -120,7 +121,9 @@ namespace SS
                 {
                     var name = childrenNode.SelectSingleNode("name").InnerText;
                     var content = childrenNode.SelectSingleNode("contents").InnerText;
-                    SetContentsOfCell(name, content);
+                    Debug.WriteLine("Write cell:", name, content);
+                    if(!name.Equals(String.Empty)) 
+                        SetContentsOfCell(name, content);
                 }
                
                 // created so its false
