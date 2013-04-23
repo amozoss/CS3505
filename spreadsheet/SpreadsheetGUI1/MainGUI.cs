@@ -306,7 +306,9 @@ namespace SpreadsheetGUI
         private void saveToServer()
         {
             if (!ReferenceEquals(clientCommunication, null))
+            {
                 clientCommunication.Save();
+            }
         }
 
 

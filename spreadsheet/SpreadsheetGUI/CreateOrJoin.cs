@@ -21,6 +21,11 @@ namespace SS
         {
             cfunk = a;
             jfunk = n;
+            ipAddress.Text = loadFromRegistry("ipAdress");
+            port.Text = loadFromRegistry("port");
+            ssName.Text = loadFromRegistry("ssName");
+            passWord.Text = loadFromRegistry("passWord");
+
             InitializeComponent();
         }
 
@@ -37,7 +42,9 @@ namespace SS
 
         private void createButton_Click(object sender, EventArgs e)
         {
-          
+
+            saveEntries();
+
                 cfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
                 this.Close();
          
@@ -45,16 +52,41 @@ namespace SS
 
         private void joinButton_Click(object sender, EventArgs e)
         {
-         
+            saveEntries();
                 jfunk(ipAddress.Text, port.Text, ssName.Text, passWord.Text);
                 this.Close();
          
+        }
+
+        private void saveEntries()
+        {
+            saveToRegistry("ipAdress", ipAddress.Text);
+            saveToRegistry("port", port.Text);
+            saveToRegistry("ssName", ssName.Text);
+            saveToRegistry("passWord", passWord.Text);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
             //Application.Exit();
             this.Close();
+        }
+
+        private void saveToRegistry(String value, string forKey)
+        {
+            Microsoft.Win32.RegistryKey exampleRegistryKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SpreadSheet");
+            exampleRegistryKey.SetValue(forKey, value);
+            exampleRegistryKey.Close();
+        }
+
+        private string loadFromRegistry(String forKey)
+        {
+            string value = "";
+            Microsoft.Win32.RegistryKey exampleRegistryKey = Microsoft.Win32.Registry.CurrentUser.CreateSubKey("SpreadSheet");
+           
+            value = (string)exampleRegistryKey.GetValue(forKey);
+            exampleRegistryKey.Close();
+            return value;
         }
 
 
