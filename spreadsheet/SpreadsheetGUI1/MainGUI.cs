@@ -20,8 +20,8 @@ namespace SpreadsheetGUI
         private int rowSelected = 0;
         private int colSelected = 0;
         private Spreadsheet spreadsheet;
-        private SpreadsheetPanel panel;
         private ClientSocket clientCommunication;
+        private Thread locationThread;
         /// <summary>
         /// Creates the Windows form.
         /// </summary>
@@ -29,17 +29,16 @@ namespace SpreadsheetGUI
         {
             InitializeComponent();
 
-            if (newSpreadsheet == "")
-            {
-                spreadsheet = new Spreadsheet
-                    (s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
-            }
+            spreadsheet = new Spreadsheet
+                (s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
+
             spreadsheetPanel1.SelectionChanged += LocationHandling;
             nameBox.Text = "A" + 1.ToString();
 
             contentsBox.Focus();
             contentsBox.Select(contentsBox.Text.Length, 0);
             this.Shown += LoadStartupGUIConnection;
+            //location
         }
 
         private void LoadStartupGUIConnection(object o, EventArgs e)
@@ -55,7 +54,9 @@ namespace SpreadsheetGUI
             {
                 if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
+                spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
                 clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
+                EmptySSPanel();
                 clientCommunication.CreateSpreadsheet(ssName, psword);
                 refreshSpreadsheet();
             }
@@ -68,7 +69,9 @@ namespace SpreadsheetGUI
             {
                 if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
+                spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
                 clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
+                EmptySSPanel();
                 clientCommunication.JoinSpreadsheet(ssName, psword);
                 refreshSpreadsheet();
 
@@ -103,7 +106,19 @@ namespace SpreadsheetGUI
             RenewCells(set);
             contentsBox.Focus();
             contentsBox.Select(contentsBox.Text.Length, 0);
+            LocationHandling(spreadsheetPanel1);
         }
+
+                private void EmptySSPanel()
+        {
+            for(int i = 0; i < 99; i++)
+                for(int j = 00; j < 26; j++)
+                {
+                    spreadsheetPanel1.SetValue(((int)'A' + j) - 65, i, "");
+                }
+        }
+
+
 
 
         /// <summary>
@@ -112,7 +127,7 @@ namespace SpreadsheetGUI
         /// <param name="sender"></param>
         private void LocationHandling(SpreadsheetPanel sender)
         {
-            panel = sender;
+            SpreadsheetPanel panel = sender;
             panel.GetSelection(out rowSelected, out colSelected);
             string name = ((char)(rowSelected + 65)).ToString() + (colSelected + 1).ToString();
             object ject = spreadsheet.GetCellContents(name);
@@ -131,9 +146,9 @@ namespace SpreadsheetGUI
         }
 
 
+
         private void contentsBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-
             if (e.KeyChar == 13 && !ReferenceEquals(clientCommunication, null))
             {
                 object o = null;
@@ -193,11 +208,14 @@ namespace SpreadsheetGUI
                     else
                         number = s.ElementAt(1).ToString();
                     if (spreadsheet.GetCellValue(name) is FormulaError)
-                        spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1, ((FormulaError)spreadsheet.GetCellValue(name)).Reason);
+                        spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1,
+                            ((FormulaError)spreadsheet.GetCellValue(name)).Reason);
                     else
-                        spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1, spreadsheet.GetCellValue(name).ToString());
+                        spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1,
+                            spreadsheet.GetCellValue(name).ToString());
                 }
             }
+
         }
 
 
@@ -261,9 +279,11 @@ namespace SpreadsheetGUI
 
         private void newConnectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
             firstForm.ShowDialog();
         }
+        
 
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
