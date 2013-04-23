@@ -61,16 +61,22 @@ namespace SpreadsheetGUI
         /// <param name="psword"></param>
         private void CreateDelegate(string IPaddress, string port, string ssName, string psword)
         {
-            int num = 0;
-            if (Int32.TryParse(port, out num))
+            if (this.IsHandleCreated)
             {
-                if (!ReferenceEquals(clientCommunication, null))
-                    clientCommunication.Leave();
-                spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
-                clientCommunication = new ClientSocket(IPaddress, changeCell, Update, num, this.SendXML);
-                EmptySSPanel();
-                clientCommunication.CreateSpreadsheet(ssName, psword);
-                refreshSpreadsheet();
+                this.Invoke((MethodInvoker)delegate
+                    {
+                        int num = 0;
+                        if (Int32.TryParse(port, out num))
+                        {
+                            if (!ReferenceEquals(clientCommunication, null))
+                                clientCommunication.Leave();
+                            spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
+                            clientCommunication = new ClientSocket(IPaddress, changeCell, Update, num, this.SendXML);
+                            EmptySSPanel();
+                            clientCommunication.CreateSpreadsheet(ssName, psword);
+                            refreshSpreadsheet();
+                        }
+                    });
             }
         }
 
@@ -83,17 +89,23 @@ namespace SpreadsheetGUI
         /// <param name="psword"></param>
         private void JoinDelegate(string IPaddress, string port, string ssName, string psword)
         {
-            int num = 0;
-            if (Int32.TryParse(port, out num))
+            if (this.IsHandleCreated)
             {
-                if (!ReferenceEquals(clientCommunication, null))
-                    clientCommunication.Leave();
-                spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
-                clientCommunication = new ClientSocket(IPaddress, changeCell, Update, num, this.SendXML);
-                EmptySSPanel();
-                clientCommunication.JoinSpreadsheet(ssName, psword);
-                refreshSpreadsheet();
+                this.Invoke((MethodInvoker)delegate
+                    {
+                        int num = 0;
+                        if (Int32.TryParse(port, out num))
+                        {
+                            if (!ReferenceEquals(clientCommunication, null))
+                                clientCommunication.Leave();
+                            spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
+                            clientCommunication = new ClientSocket(IPaddress, changeCell, Update, num, this.SendXML);
+                            EmptySSPanel();
+                            clientCommunication.JoinSpreadsheet(ssName, psword);
+                            refreshSpreadsheet();
 
+                        }
+                    });
             }
         }
 
@@ -125,10 +137,13 @@ namespace SpreadsheetGUI
         /// </summary>
         public void refreshSpreadsheet()
         {
-            HashSet<string> set = new HashSet<string>();
-            foreach (string s in spreadsheet.GetNamesOfAllNonemptyCells())
-                set.Add(s);
-            RenewCells(set);
+            this.Invoke((MethodInvoker)delegate
+                 {
+                     HashSet<string> set = new HashSet<string>();
+                     foreach (string s in spreadsheet.GetNamesOfAllNonemptyCells())
+                         set.Add(s);
+                     RenewCells(set);
+                 });
             //contentsBox.Focus();
             //contentsBox.Select(contentsBox.Text.Length, 0);
         }
@@ -163,6 +178,7 @@ namespace SpreadsheetGUI
 
         private void SendXML(string xml)
         {
+
             spreadsheet.ReadXml(xml);
         }
 
