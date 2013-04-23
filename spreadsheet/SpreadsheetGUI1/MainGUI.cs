@@ -116,17 +116,19 @@ namespace SpreadsheetGUI
         /// <param name="contents"></param>
         public void changeCell(string name, string contents)
         {
-            Match m = Regex.Match(name, @"^([A-Z]+) *(\d)$");// separate cell name
-            if (m.Success)
-            {
-                // get the column letter and convert it to a number
-                string translated = m.Groups[1].Value;
-                int column = TranslateColumnNameToIndex(translated);
-                int rowNumber = Int32.Parse(m.Groups[2].Value) - 1;
-                //spreadsheetPanel1.SetSelection(column, rowNumber);
-                spreadsheetPanel1.SetValue(column, rowNumber, contents);
-                spreadsheet.SetContentsOfCell(name, contents);
-            }
+            char letter = name.ElementAt(0);
+            string number;
+            if (name.Length == 3)
+                number = name.ElementAt(1).ToString() + name.ElementAt(2).ToString();
+            else
+                number = name.ElementAt(1).ToString();
+            spreadsheet.SetContentsOfCell(name, contents);
+            if (spreadsheet.GetCellValue(name) is FormulaError)
+                spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1,
+                    ((FormulaError)spreadsheet.GetCellValue(name)).Reason);
+            else
+                spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1,
+                    spreadsheet.GetCellValue(name).ToString());
         }
 
         private int TranslateColumnNameToIndex(string name)
