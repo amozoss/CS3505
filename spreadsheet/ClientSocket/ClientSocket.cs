@@ -15,6 +15,9 @@ namespace Client
 
     public class ClientSocket
     {
+        /// <summary>
+        /// The payload that is used by most callbacks in the client
+        /// </summary>
         public struct Payload
         {
             public Payload(int num, bool passed)
@@ -26,6 +29,10 @@ namespace Client
             public int number;
         }
 
+        /// <summary>
+        /// The payload used by ChangeCellCallback, because the state is more complex when keeping track of wait messages as well.
+        /// When a wait message is sent we can just store the cell name and contents in a local callback for later use.
+        /// </summary>
         public struct ChangePayload
         {
             public string cell;
@@ -35,6 +42,10 @@ namespace Client
             public ChangeStatus availability;
         }
 
+        /// <summary>
+        /// The payload used by UndoCallback, the state is more complex when keeping track of wait messages.  Similar in function to
+        /// the changeCalback.
+        /// </summary>
         public struct UndoPayload
         {
             public Boolean valid;
@@ -46,6 +57,9 @@ namespace Client
             public string contents;
         }
 
+        /// <summary>
+        /// Used only with UpdateCallback; similar in function to UndoPayload.
+        /// </summary>
         public struct UpdatePayload
         {
             public Boolean valid;
@@ -57,22 +71,25 @@ namespace Client
             public string contents;
         }
 
-        enum SpecialStatus { UNDO_WAIT = 100, UNDO_END = 200, CHANGE_WAIT = 300 }
-        public enum ChangeStatus { CANSEND, WAITING_TO_SEND, CANT_SEND }
+        enum SpecialStatus { UNDO_WAIT = 100, UNDO_END = 200, CHANGE_WAIT = 300 }   // This enum allows extra state to be tracked in the undo and change payloads.
+        public enum ChangeStatus { CANSEND, WAITING_TO_SEND, CANT_SEND }            // This enum allows for 3 separate states to be maintained in the ChangeCallback;
+                                                                                    // when a change cannot be made, when a change can be made, and when a change must wait for
+                                                                                    // the version of the client to be updated.
 
-        public delegate void ClientToGUI_SS(String message, bool isError); // The message will be handled by a separate class 
-        private string ipAddress;
-        private string nameOfSpreadsheet; // name is the name for the new spreadsheet
-        private string password; // password is the password to use for the new spreadsheet
-        private SSOffical socket;
-        private static int SERVERPORT = 1984;
-        private ClientToGUI_SS clientGUI_SS;
-        private int version;
-        public delegate void EditCell(String name, String contents);
-        public delegate void SendXML(String name);
-        private ChangePayload changePayload;
-        private EditCell e_Cell;
-        private SendXML send_XML;
+        public delegate void EditCell(String name, String contents);        // 
+        public delegate void SendXML(String name);                          // 
+        public delegate void ClientToGUI_SS(String message, bool isError);  // The message will be handled by a separate class 
+
+        private string ipAddress;                                           // The IP address given by the client.
+        private string nameOfSpreadsheet;                                   // name is the name for the new spreadsheet
+        private string password;                                            // password is the password to use for the new spreadsheet
+        private SSOffical socket;                                           // The wrapper for the socket, handles strings terminated by linefeed, or \n.
+        private static int SERVERPORT = 1984;                               // The default port for the server, although we never use this.
+        private ClientToGUI_SS clientGUI_SS;                                
+        private int version;                                                // The version the client-side is. The spreadsheet sends updates to correct when the version is wrong.
+        private ChangePayload changePayload;                                // This struct is used to store data when we call beginreceive, helping keep track of state between callbacks.
+        private EditCell e_Cell;                                            // This method is called when edits to the spreadsheet need to be made.
+        private SendXML send_XML;                                           // XML from the server is sent here.
 
 
 
@@ -106,7 +123,11 @@ namespace Client
             }
         }
 
-
+        /// <summary>
+        /// This function is used when sending data, we didn't have any use for it.
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="o"></param>
         private void SendCallback(Exception e, object o) { }
 
 
@@ -578,7 +599,10 @@ namespace Client
             changePayload.contents = "";
         }
 
-
+        /// <summary>
+        /// This method is used to update the version of the client-side to the latest version.
+        /// </summary>
+        /// <param name="newV"></param>
         private void updateVersion(string newV)
         {
             int v;
