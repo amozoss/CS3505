@@ -21,7 +21,7 @@ namespace SpreadsheetGUI
         private int colSelected = 0;
         private Spreadsheet spreadsheet;
         private ClientSocket clientCommunication;
-        private Thread locationThread;
+        private object panelLock;
         /// <summary>
         /// Creates the Windows form.
         /// </summary>
@@ -38,6 +38,7 @@ namespace SpreadsheetGUI
             contentsBox.Focus();
             contentsBox.Select(contentsBox.Text.Length, 0);
             this.Shown += LoadStartupGUIConnection;
+            panelLock = new Object();
             //location
         }
 
@@ -116,19 +117,22 @@ namespace SpreadsheetGUI
         /// <param name="contents"></param>
         public void changeCell(string name, string contents)
         {
-            char letter = name.ElementAt(0);
-            string number;
-            if (name.Length == 3)
-                number = name.ElementAt(1).ToString() + name.ElementAt(2).ToString();
-            else
-                number = name.ElementAt(1).ToString();
-            spreadsheet.SetContentsOfCell(name, contents);
-            if (spreadsheet.GetCellValue(name) is FormulaError)
-                spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1,
-                    ((FormulaError)spreadsheet.GetCellValue(name)).Reason);
-            else
-                spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1,
-                    spreadsheet.GetCellValue(name).ToString());
+            lock (panelLock)
+            {
+                char letter = name.ElementAt(0);
+                string number;
+                if (name.Length == 3)
+                    number = name.ElementAt(1).ToString() + name.ElementAt(2).ToString();
+                else
+                    number = name.ElementAt(1).ToString();
+                spreadsheet.SetContentsOfCell(name, contents);
+                if (spreadsheet.GetCellValue(name) is FormulaError)
+                    spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1,
+                        ((FormulaError)spreadsheet.GetCellValue(name)).Reason);
+                else
+                    spreadsheetPanel1.SetValue(((int)letter) - 65, Int32.Parse(number) - 1,
+                        spreadsheet.GetCellValue(name).ToString());
+            }
         }
 
         private int TranslateColumnNameToIndex(string name)
