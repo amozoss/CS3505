@@ -121,7 +121,11 @@ namespace SpreadsheetGUI
             else
                 contentsBox.Text = ject.ToString();
             nameBox.Text = name;
-            valueBox.Text = spreadsheet.GetCellValue(name).ToString();
+            ject = spreadsheet.GetCellValue(name);
+            if (ject is FormulaError)
+                valueBox.Text = ((FormulaError)ject).Reason;
+            else
+                valueBox.Text = spreadsheet.GetCellValue(name).ToString();
             contentsBox.Focus();
             contentsBox.Select(contentsBox.Text.Length, 0);
         }
@@ -222,7 +226,6 @@ namespace SpreadsheetGUI
         /// <param name="e"></param>
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveToServer();
             this.Close();
         }
 
@@ -238,9 +241,7 @@ namespace SpreadsheetGUI
             if (yon == 1)
             {
                 object obj = null;
-                saveToolStripMenuItem_Click(obj, e);
-                if (!ReferenceEquals(clientCommunication, null))
-                    clientCommunication.Leave();
+                saveToServer();
             }
         }
 
