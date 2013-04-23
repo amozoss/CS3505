@@ -55,7 +55,7 @@ namespace SpreadsheetGUI
                 if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
                 spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
-                clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
+                clientCommunication = new ClientSocket(IPaddress, changeCell, Update, num, this.SendXML);
                 EmptySSPanel();
                 clientCommunication.CreateSpreadsheet(ssName, psword);
                 refreshSpreadsheet();
@@ -70,7 +70,7 @@ namespace SpreadsheetGUI
                 if (!ReferenceEquals(clientCommunication, null))
                     clientCommunication.Leave();
                 spreadsheet = new Spreadsheet(s => Regex.IsMatch(s, @"^[a-zA-Z]{1}[0-9]{1,2}$"), s => s.ToUpper(), "ps6");
-                clientCommunication = new ClientSocket(IPaddress, spreadsheet, Update, num);
+                clientCommunication = new ClientSocket(IPaddress, changeCell, Update, num, this.SendXML);
                 EmptySSPanel();
                 clientCommunication.JoinSpreadsheet(ssName, psword);
                 refreshSpreadsheet();
@@ -106,13 +106,44 @@ namespace SpreadsheetGUI
             RenewCells(set);
             contentsBox.Focus();
             contentsBox.Select(contentsBox.Text.Length, 0);
-            LocationHandling(spreadsheetPanel1);
+            //LocationHandling(spreadsheetPanel1);
         }
 
-                private void EmptySSPanel()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="contents"></param>
+        public void changeCell(string name, string contents)
         {
-            for(int i = 0; i < 99; i++)
-                for(int j = 00; j < 26; j++)
+            Match m = Regex.Match(name, @"^([A-Z]+) *(\d)$");// separate cell name
+            if (m.Success)
+            {
+                // get the column letter and convert it to a number
+                string translated = m.Groups[1].Value;
+                int column = TranslateColumnNameToIndex(translated);
+                int rowNumber = Int32.Parse(m.Groups[2].Value) - 1;
+                //spreadsheetPanel1.SetSelection(column, rowNumber);
+                spreadsheetPanel1.SetValue(column, rowNumber, contents);
+                spreadsheet.SetContentsOfCell(name, contents);
+            }
+        }
+
+        private int TranslateColumnNameToIndex(string name)
+        {
+            return (int)name[0] - 65;
+
+        }
+
+        private void SendXML(string xml)
+        {
+            spreadsheet.ReadXml(xml);
+        }
+
+        private void EmptySSPanel()
+        {
+            for (int i = 0; i < 99; i++)
+                for (int j = 00; j < 26; j++)
                 {
                     spreadsheetPanel1.SetValue(((int)'A' + j) - 65, i, "");
                 }
@@ -283,7 +314,7 @@ namespace SpreadsheetGUI
             CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
             firstForm.ShowDialog();
         }
-        
+
 
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {

@@ -104,10 +104,6 @@
       <Project>{6FD19AB9-F83A-4592-87C9-51A3C3B1E145}</Project>
       <Name>Spreadsheet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\string_socket\PS7\StringSocket.csproj">
-      <Project>{C97CFCB6-DDE2-4C61-BD26-AB9109A16E88}</Project>
-      <Name>StringSocket</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="invalidxmlfile1.xml" />
