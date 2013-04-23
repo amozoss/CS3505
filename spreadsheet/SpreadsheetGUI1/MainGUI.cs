@@ -240,7 +240,6 @@ namespace SpreadsheetGUI
             warn.ShowDialog();
             if (yon == 1)
             {
-                object obj = null;
                 saveToServer();
             }
         }
@@ -264,6 +263,12 @@ namespace SpreadsheetGUI
         {
             CreateOrJoin firstForm = new CreateOrJoin(CreateDelegate, JoinDelegate);
             firstForm.ShowDialog();
+        }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!ReferenceEquals(clientCommunication, null))
+                clientCommunication.Undo();
         }
     }
 }
