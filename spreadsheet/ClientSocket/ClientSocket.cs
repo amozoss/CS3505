@@ -204,6 +204,7 @@ namespace Client
                     else if (firstWord.Equals("CHANGE"))
                     {
                         //changes wait message
+                        
                         changePayload.valid = false;
                         changePayload.number = (int)SpecialStatus.CHANGE_WAIT;
                     }
@@ -248,7 +249,7 @@ namespace Client
                         break;
                     default: socket.BeginReceive(MasterCallback, payload); // If all else fails just call the master
                         Debug.WriteLine("Mastercallback: unrecognized command {0}", message);
-                        clientGUI_SS(message, true);
+                        //clientGUI_SS(message, true);
                         break;
                 }
             }
@@ -1068,6 +1069,7 @@ namespace Client
                         cellContent = " ";
 
                     changePayload.availability = ChangeStatus.CANT_SEND;
+                    
                     string sendString = "CHANGE\n" + "Name:" + nameOfSpreadsheet + "\n" + "Version:" + version.ToString() + "\n"
                         + "Cell:" + cellName + "\n" + "Length:" + cellContent.Length.ToString() + "\n" + cellContent + "\n";
                     Debug.WriteLine(sendString);
