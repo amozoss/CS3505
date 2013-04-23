@@ -482,7 +482,7 @@ namespace Client
                 if (colonSplitup.Length > 0)
                     colonFirstWord = colonSplitup[0].ToUpper().Trim();
 
-                if (load.availability == ChangeStatus.CANT_SEND)
+                if (load.availability == ChangeStatus.CANT_SEND && load.number <= (int)SpecialStatus.CHANGE_WAIT)
                 {
                     if (colonFirstWord.Equals("NAME") && load.number == 1)
                     {
