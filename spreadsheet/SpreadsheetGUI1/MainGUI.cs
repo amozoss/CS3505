@@ -334,7 +334,13 @@ namespace SpreadsheetGUI
             if (yon == 1)
             {
                 saveToServer();
+             
             }
+            if (!ReferenceEquals(clientCommunication, null))
+            {
+                clientCommunication.Leave();
+            }
+            Thread.Sleep(200);
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)

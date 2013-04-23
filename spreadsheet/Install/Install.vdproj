@@ -45,32 +45,32 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4F2B3DDD53BC4EC9AB7EBC595BA26C44"
+        "MsmKey" = "8:_4FC14BC3939FF12AAE4E043AD0EBC3B7"
+        "OwnerKey" = "8:_CB14D65A27F47425823190BE1D562D10"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4FC14BC3939FF12AAE4E043AD0EBC3B7"
+        "OwnerKey" = "8:_D2208507979D4CAA931773AB3AC63746"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_59B60C9D5B4351AC07582E28A708A0DB"
+        "OwnerKey" = "8:_CB14D65A27F47425823190BE1D562D10"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_59B60C9D5B4351AC07582E28A708A0DB"
+        "OwnerKey" = "8:_D2208507979D4CAA931773AB3AC63746"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5CD8FF99B5574E43BAE7A0DA76F637BD"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4FC14BC3939FF12AAE4E043AD0EBC3B7"
-        "OwnerKey" = "8:_CB14D65A27F47425823190BE1D562D10"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4FC14BC3939FF12AAE4E043AD0EBC3B7"
-        "OwnerKey" = "8:_D2208507979D4CAA931773AB3AC63746"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_59B60C9D5B4351AC07582E28A708A0DB"
-        "OwnerKey" = "8:_CB14D65A27F47425823190BE1D562D10"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_59B60C9D5B4351AC07582E28A708A0DB"
-        "OwnerKey" = "8:_D2208507979D4CAA931773AB3AC63746"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -374,26 +374,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4F2B3DDD53BC4EC9AB7EBC595BA26C44"
-            {
-            "SourcePath" = "8:\\\\chips.eng.utah.edu\\home\\dwilloug\\.win_desktop\\X Files Monster.ico"
-            "TargetName" = "8:X Files Monster.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_34DD1AA57C784A7F8EE8C4068B160B13"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4FC14BC3939FF12AAE4E043AD0EBC3B7"
             {
             "AssemblyRegister" = "3:1"
@@ -454,6 +434,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5CD8FF99B5574E43BAE7A0DA76F637BD"
+            {
+            "SourcePath" = "8:..\\X Files Monster.ico"
+            "TargetName" = "8:X Files Monster.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_34DD1AA57C784A7F8EE8C4068B160B13"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_CB14D65A27F47425823190BE1D562D10"
@@ -637,7 +637,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Spreadsheet "
         "ProductCode" = "8:{34AFA31D-B696-4585-AD2C-6D552FB33090}"
-        "PackageCode" = "8:{E465168B-B023-4F29-834A-697B859B03C3}"
+        "PackageCode" = "8:{498A3585-DF89-4573-9CDF-20CBCB469171}"
         "UpgradeCode" = "8:{4E6906CE-68B4-4DBB-8A63-D60B682176E5}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -757,7 +757,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_29C1315E7CB643639A6F785394E7082C"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_EF8DE1EA09644ABDBA789446EDBC6D9C"
             {
             "Name" = "8:Shortcut to Spreadsheet"
             "Arguments" = "8:"
@@ -768,7 +768,7 @@
             "Target" = "8:_D2208507979D4CAA931773AB3AC63746"
             "Folder" = "8:_5B161586FAE9465696AB478DE8AB27AA"
             "WorkingFolder" = "8:_34DD1AA57C784A7F8EE8C4068B160B13"
-            "Icon" = "8:_4F2B3DDD53BC4EC9AB7EBC595BA26C44"
+            "Icon" = "8:_5CD8FF99B5574E43BAE7A0DA76F637BD"
             "Feature" = "8:"
             }
         }
