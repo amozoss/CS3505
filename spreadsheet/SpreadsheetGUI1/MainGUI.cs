@@ -122,6 +122,8 @@ namespace SpreadsheetGUI
                 contentsBox.Text = ject.ToString();
             nameBox.Text = name;
             valueBox.Text = spreadsheet.GetCellValue(name).ToString();
+            contentsBox.Focus();
+            contentsBox.Select(contentsBox.Text.Length, 0);
         }
 
 
