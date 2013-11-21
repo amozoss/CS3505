@@ -178,7 +178,7 @@ void eval(char *cmdline)
 													// MAXJOBS = 16
 	int bg_or_fg = parseline(cmdline, argv);
 	builtin_cmd(argv);
-	printf("%s\n", argv[0]); 
+	 
   return;
 }
 

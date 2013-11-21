@@ -85,7 +85,7 @@ rtest16:
 	$(DRIVER) -t trace16.txt -s $(TSHREF) -a $(TSHARGS)
 
 # Run both the ref shell and student shell, pipe the output into separate files, and compare
-# the two files
+# the two files, then delete the files to avoid clutter.
 ctest01:
 	$(DRIVER) -t trace01.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace01.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
