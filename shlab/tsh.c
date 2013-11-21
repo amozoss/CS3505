@@ -174,7 +174,12 @@ int main(int argc, char **argv)
 /* Main routine that parses and interprets the command line. 70 lines */ 
 void eval(char *cmdline) 
 {
-    return;
+	char *argv[MAXARGS];    // This may not be the right way to declare argv.
+													// MAXJOBS = 16
+	int bg_or_fg = parseline(cmdline, argv);
+	builtin_cmd(argv);
+	printf("%s\n", argv[0]); 
+  return;
 }
 
 /* 
@@ -195,24 +200,24 @@ int parseline(const char *cmdline, char **argv)
     strcpy(buf, cmdline);
     buf[strlen(buf)-1] = ' ';  /* replace trailing '\n' with space */
     while (*buf && (*buf == ' ')) /* ignore leading spaces */
-	buf++;
+			buf++;
 
     /* Build the argv list */
     argc = 0;
     if (*buf == '\'') {
-	buf++;
-	delim = strchr(buf, '\'');
+			buf++;
+			delim = strchr(buf, '\'');
     }
     else {
-	delim = strchr(buf, ' ');
+			delim = strchr(buf, ' ');
     }
 
     while (delim) {
-	argv[argc++] = buf;
-	*delim = '\0';
-	buf = delim + 1;
+			argv[argc++] = buf;
+			*delim = '\0';
+			buf = delim + 1;
 	while (*buf && (*buf == ' ')) /* ignore spaces */
-	       buf++;
+	    buf++;
 
 	if (*buf == '\'') {
 	    buf++;
@@ -241,7 +246,22 @@ int parseline(const char *cmdline, char **argv)
 /* Recognizes and interprets the built-in commands: quit, fg bg and jobs. 25 lines */
 int builtin_cmd(char **argv) 
 {
-    return 0;     /* not a builtin command */
+	int returnvar = 0;
+	if(!strcmp("quit", argv[0]))
+		exit(0);
+	else if(!strcmp("fg", argv[0])
+	{
+		returnvar = 1;
+	}
+	else if(!strcmp("bg", argv[0])
+	{
+		returnvar = 1;
+	}
+	else if(!strcmp("jobs", argv[0])
+	{
+		returnvar = 1;
+	}
+  return returnvar;     /* not a builtin command */
 }
 
 /* 
@@ -328,12 +348,12 @@ void initjobs(struct job_t *jobs) {
 /* maxjid - Returns largest allocated job ID */
 int maxjid(struct job_t *jobs) 
 {
-    int i, max=0;
+  int i, max=0;
 
-    for (i = 0; i < MAXJOBS; i++)
-	if (jobs[i].jid > max)
+  for (i = 0; i < MAXJOBS; i++)
+		if (jobs[i].jid > max)
 	    max = jobs[i].jid;
-    return max;
+	return max;
 }
 
 /* addjob - Add a job to the job list */
