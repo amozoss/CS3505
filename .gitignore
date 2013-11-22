@@ -1,6 +1,7 @@
 .auto-go
 .actual.txt
 .expected.txt
+tsh
 # Compiled Object files
 *.slo
 *.lo
