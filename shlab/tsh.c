@@ -26,14 +26,14 @@
 #define ST 3    /* stopped */
 
 /* 
- * Jobs states: FG (foreground), BG (background), ST (stopped)
- * Job state transitions and enabling actions:
- *     FG -> ST  : ctrl-z
- *     ST -> FG  : fg command
- *     ST -> BG  : bg command
- *     BG -> FG  : fg command
- * At most 1 job can be in the FG state.
- */
+// * Jobs states: FG (foreground), BG (background), ST (stopped)
+// * Job state transitions and enabling actions:
+// *     FG -> ST  : ctrl-z
+// *     ST -> FG  : fg command
+// *     ST -> BG  : bg command
+// *     BG -> FG  : fg command
+// * At most 1 job can be in the FG state.
+// */
 
 /* Global variables */
 extern char **environ;      /* defined in libc */
@@ -174,6 +174,8 @@ int main(int argc, char **argv)
 /* Main routine that parses and interprets the command line. 70 lines */ 
 void eval(char *cmdline) 
 {
+	if(strlen(cmdline) > MAXLINE)
+		printf("");                             // We may not need an error for this, but there is a maximum length for a line.
 	char *argv[MAXARGS];    // This may not be the right way to declare argv.
 													// MAXJOBS = 16
 	int bg_or_fg = parseline(cmdline, argv);
@@ -234,9 +236,9 @@ int parseline(const char *cmdline, char **argv)
 
     /* should the job run in the background? */
     if ((bg = (*argv[argc-1] == '&')) != 0) {
-	argv[--argc] = NULL;
-    }
-    return bg;
+			argv[--argc] = NULL;
+	}
+	return bg;
 }
 
 /* 
@@ -247,15 +249,12 @@ int parseline(const char *cmdline, char **argv)
 int builtin_cmd(char **argv) 
 {
 	int returnvar = 0;
-	if(!strcmp("quit", argv[0]))
+	if(!strcmp("quit", argv[0]))  	// strcmp returns 0 if they are equal
 		exit(0);
-	else if(!strcmp("fg", argv[0]))
+	else if(!strcmp("bg", argv[0]) || !strcmp("fg", argv[0]))
 	{
 		returnvar = 1;
-	}
-	else if(!strcmp("bg", argv[0]))
-	{
-		returnvar = 1;
+		do_bgfg(argv);
 	}
 	else if(!strcmp("jobs", argv[0]))
 	{
@@ -296,6 +295,8 @@ void waitfg(pid_t pid)
 /* Catches SIGCHILD signals. 80 lines */ 
 void sigchld_handler(int sig) 
 {
+	if(1)
+		printf("sigchld_handler called\n");
     return;
 }
 
@@ -452,28 +453,29 @@ int pid2jid(pid_t pid)
 /* listjobs - Print the job list */
 void listjobs(struct job_t *jobs) 
 {
-    int i;
+  int i;
     
-    for (i = 0; i < MAXJOBS; i++) {
-	if (jobs[i].pid != 0) {
-	    printf("[%d] (%d) ", jobs[i].jid, jobs[i].pid);
-	    switch (jobs[i].state) {
-		case BG: 
-		    printf("Running ");
-		    break;
-		case FG: 
-		    printf("Foreground ");
-		    break;
-		case ST: 
-		    printf("Stopped ");
-		    break;
-	    default:
-		    printf("listjobs: Internal error: job[%d].state=%d ", 
-			   i, jobs[i].state);
-	    }
-	    printf("%s", jobs[i].cmdline);
-	}
-    }
+  for (i = 0; i < MAXJOBS; i++) 
+	{
+		if (jobs[i].pid != 0) {
+	  	printf("[%d] (%d) ", jobs[i].jid, jobs[i].pid);
+	  	switch (jobs[i].state) {
+				case BG: 
+		    	printf("Running ");
+		  	break;
+				case FG: 
+		    	printf("Foreground ");
+		  	break;
+				case ST: 
+		    	printf("Stopped ");
+		  	break;
+	    	default:
+		    	printf("listjobs: Internal error: job[%d].state=%d ", 
+			   		i, jobs[i].state);
+	  	}
+	  	printf("%s", jobs[i].cmdline);
+		}
+  }
 }
 /******************************
  * end job list helper routines

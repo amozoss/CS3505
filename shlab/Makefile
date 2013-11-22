@@ -90,84 +90,68 @@ ctest01:
 	$(DRIVER) -t trace01.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace01.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest02:
 	$(DRIVER) -t trace02.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace02.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt	
-	rm test.txt rtest.txt
 ctest03:	
 	$(DRIVER) -t trace03.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace03.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest04:
 	$(DRIVER) -t trace04.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace04.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest05:
 	$(DRIVER) -t trace05.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace05.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest06:	
 	$(DRIVER) -t trace06.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace06.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest07:
 	$(DRIVER) -t trace07.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace07.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest08:
 	$(DRIVER) -t trace08.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace08.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest09:
 	$(DRIVER) -t trace09.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace09.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest10:
 	$(DRIVER) -t trace10.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace10.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest11:
 	$(DRIVER) -t trace11.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace11.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest12:
 	$(DRIVER) -t trace12.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace12.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest13:
 	$(DRIVER) -t trace13.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace13.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest14:
 	$(DRIVER) -t trace14.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace14.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest15:
 	$(DRIVER) -t trace15.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace15.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 ctest016:
 	$(DRIVER) -t trace16.txt -s $(TSH) -a $(TSHARGS) > test.txt
 	$(DRIVER) -t trace16.txt -s $(TSHREF) -a $(TSHARGS) > rtest.txt
 	diff test.txt rtest.txt
-	rm test.txt rtest.txt
 # clean up
 clean:
 	rm -f $(FILES) *.o *~
-
+	rm test.txt rtest.txt
 
