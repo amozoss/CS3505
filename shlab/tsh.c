@@ -2,6 +2,7 @@
  * tsh - A tiny shell program with job control
  * 
  *  Dan Willoughby dwilloug
+ *  Michael Banks mbanks
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -341,7 +342,7 @@ void clearjob(struct job_t *job) {
 
 /* initjobs - Initialize the job list */
 void initjobs(struct job_t *jobs) {
-    int i;
+
 
     for (i = 0; i < MAXJOBS; i++)
 	clearjob(&jobs[i]);
