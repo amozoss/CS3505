@@ -180,20 +180,18 @@ void eval(char *cmdline)
   char *argv[MAXARGS];
 
 
+  int state = UNDEF;
   isBG = parseline(cmdline, argv);
+  //printf("parsed: isBG =  %d\n", isBG);
   if(!builtin_cmd(argv))					
   {
     if((pid = fork()) == 0)
     {
-      int state = UNDEF;
       if(!isBG)
         state = FG;
       else
         state = BG;
       
-      addjob(jobs, pid, state, cmdline);
-
-
       // if execve returns < 0 the command is not built in
       if(execve(argv[0], argv, environ) < 0)
       {
@@ -204,8 +202,18 @@ void eval(char *cmdline)
     }
     if(!isBG)
     {
-      printf("!bg\n");
+      //printf("!bg\n");
       waitfg(pid);	
+    }
+    else {
+      if(!isBG)
+        state = FG;
+      else
+        state = BG;
+
+      addjob(jobs, pid, state, cmdline);
+      int jid = pid2jid(pid);
+      printf("[%d] (%d) %s",jid, pid, cmdline);
     }
   }
   return;
@@ -326,7 +334,7 @@ void waitfg(pid_t pid)
 /* Catches SIGCHILD signals. 80 lines */ 
 void sigchld_handler(int sig) 
 {
-  printf("in sigchld_handler\n");
+  //printf("in sigchld_handler\n");
   int status;
   pid_t pid;
 /*   while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
