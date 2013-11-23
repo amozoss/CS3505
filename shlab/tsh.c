@@ -326,7 +326,7 @@ void sigchld_handler(int sig)
 	printf("in sigchld_handler\n");
 	int status;
 	pid_t pid;
-	while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
+	while((pid = waitpid(-1, &status, WUNTRACED | WNOHANG)))
 	{
 		struct job_t *ajob = getjobpid(jobs, pid);
 		printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
@@ -429,8 +429,8 @@ int deletejob(struct job_t *jobs, pid_t pid)
     if (pid < 1)
 	return 0;
 
-    for (i = 0; i < MAXJOBS; i++) {
-	if (jobs[i].pid == pid) {
+  for (i = 0; i < MAXJOBS; i++) {
+					if (jobs[i].pid == pid) {
 	    clearjob(&jobs[i]);
 	    nextjid = maxjid(jobs)+1;
 	    return 1;
