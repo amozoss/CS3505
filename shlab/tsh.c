@@ -327,12 +327,12 @@ void sigchld_handler(int sig)
   printf("in sigchld_handler\n");
   int status;
   pid_t pid;
-  while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
+/*   while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
   {
     struct job_t *ajob = getjobpid(jobs, pid);
     printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
     deletejob(jobs, pid);
-  }
+  }*/
 
   return;
 }
