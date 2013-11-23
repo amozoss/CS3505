@@ -175,21 +175,22 @@ int main(int argc, char **argv)
 /* Main routine that parses and interprets the command line. 70 lines */ 
 void eval(char *cmdline) 
 {
-  int bg_or_fg;
+  int isBG;
   pid_t pid;
   char *argv[MAXARGS];
 
 
-  bg_or_fg = parseline(cmdline, argv);
+  isBG = parseline(cmdline, argv);
   if(!builtin_cmd(argv))					
   {
     if((pid = fork()) == 0)
     {
       int state = UNDEF;
-      if(!bg_or_fg)
+      if(!isBG)
         state = FG;
       else
         state = BG;
+      
       addjob(jobs, pid, state, cmdline);
 
 
@@ -201,8 +202,9 @@ void eval(char *cmdline)
       } 
 
     }
-    if(!bg_or_fg)
+    if(!isBG)
     {
+      printf("!bg\n");
       waitfg(pid);	
     }
   }
@@ -283,7 +285,7 @@ int builtin_cmd(char **argv)
   }
   else if(!strcmp("jobs", argv[0]))
   {
-    //listjobs(jobs);
+    listjobs(jobs);
     returnvar = 1;
   }
   return returnvar;     /* not a builtin command */
