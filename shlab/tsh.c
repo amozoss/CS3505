@@ -175,13 +175,40 @@ int main(int argc, char **argv)
 /* Main routine that parses and interprets the command line. 70 lines */ 
 void eval(char *cmdline) 
 {
-	if(strlen(cmdline) > MAXLINE)
-		printf("");                             // We may not need an error for this, but there is a maximum length for a line.
-	char *argv[MAXARGS];    // This may not be the right way to declare argv.
-													// MAXJOBS = 16
-	int bg_or_fg = parseline(cmdline, argv);
-	builtin_cmd(argv);
-	 
+	int bg_or_fg;
+	pid_t pid;
+	char *argv[MAXARGS];
+//	job_t job;
+//	clearjob(job); 			// Create the job that will be storing the process info
+	
+
+	bg_or_fg = parseline(cmdline, argv);
+	if(!builtin_cmd(argv))					
+	{
+		if((pid = fork()) == 0)
+		{
+			int state = UNDEF;
+			if(!bg_or_fg)
+				state = FG;
+			else
+				state = BG;
+			addjob(jobs, pid, state, cmdline);
+
+
+			if(execve(argv[0], argv, environ) < 0)
+			{
+				printf("%s: Command not found.\n", argv[0]);
+				exit(0);
+			} 
+			
+		}
+		if(!bg_or_fg)
+		{
+			waitfg(pid);	
+		}
+		else
+			printf("%d %s", pid, cmdline);
+	}
   return;
 }
 
@@ -277,10 +304,13 @@ void do_bgfg(char **argv)
 /* 
  * waitfg - Block until process pid is no longer the foreground process
  */
-/* Waits for a foreground job to complete. 20 liens */ 
+/* Waits for a foreground job to complete. 20 lines */ 
 void waitfg(pid_t pid)
 {
-    return;
+	int status;
+	if(waitpid(pid, &status, 0) < 0)
+		unix_error("waitfg: waitpid error");
+  return;
 }
 
 /*****************
@@ -297,9 +327,8 @@ void waitfg(pid_t pid)
 /* Catches SIGCHILD signals. 80 lines */ 
 void sigchld_handler(int sig) 
 {
-	if(1)
-		printf("sigchld_handler called\n");
-    return;
+//	
+  return;
 }
 
 /* 
@@ -342,7 +371,7 @@ void clearjob(struct job_t *job) {
 
 /* initjobs - Initialize the job list */
 void initjobs(struct job_t *jobs) {
-
+	int i;
 
     for (i = 0; i < MAXJOBS; i++)
 	clearjob(&jobs[i]);
@@ -362,27 +391,27 @@ int maxjid(struct job_t *jobs)
 /* addjob - Add a job to the job list */
 int addjob(struct job_t *jobs, pid_t pid, int state, char *cmdline) 
 {
-    int i;
+  int i;
     
-    if (pid < 1)
-	return 0;
+  if (pid < 1)
+		return 0;
 
-    for (i = 0; i < MAXJOBS; i++) {
-	if (jobs[i].pid == 0) {
+  for (i = 0; i < MAXJOBS; i++) {
+		if (jobs[i].pid == 0) {
 	    jobs[i].pid = pid;
 	    jobs[i].state = state;
 	    jobs[i].jid = nextjid++;
 	    if (nextjid > MAXJOBS)
-		nextjid = 1;
+				nextjid = 1;
 	    strcpy(jobs[i].cmdline, cmdline);
-  	    if(verbose){
-	        printf("Added job [%d] %d %s\n", jobs[i].jid, jobs[i].pid, jobs[i].cmdline);
-            }
-            return 1;
-	}
-    }
-    printf("Tried to create too many jobs\n");
-    return 0;
+  	  if(verbose){
+	      printf("Added job [%d] %d %s\n", jobs[i].jid, jobs[i].pid, jobs[i].cmdline);
+      }
+      return 1;
+		}	
+  }
+  printf("Tried to create too many jobs\n");
+  return 0;
 }
 
 /* deletejob - Delete a job whose PID=pid from the job list */
