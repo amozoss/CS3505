@@ -178,8 +178,6 @@ void eval(char *cmdline)
 	int bg_or_fg;
 	pid_t pid;
 	char *argv[MAXARGS];
-//	job_t job;
-//	clearjob(job); 			// Create the job that will be storing the process info
 	
 
 	bg_or_fg = parseline(cmdline, argv);
@@ -206,8 +204,6 @@ void eval(char *cmdline)
 		{
 			waitfg(pid);	
 		}
-		else
-			printf("%d %s", pid, cmdline);
 	}
   return;
 }
@@ -286,7 +282,7 @@ int builtin_cmd(char **argv)
 	}
 	else if(!strcmp("jobs", argv[0]))
 	{
-    listjobs(jobs);
+    //listjobs(jobs);
 		returnvar = 1;
 	}
   return returnvar;     /* not a builtin command */
@@ -327,19 +323,29 @@ void waitfg(pid_t pid)
 /* Catches SIGCHILD signals. 80 lines */ 
 void sigchld_handler(int sig) 
 {
-//	
+	printf("in sigchld_handler\n");
+	int status;
+	pid_t pid;
+	while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
+	{
+		struct job_t *ajob = getjobpid(jobs, pid);
+		printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
+		deletejob(jobs, pid);
+	}
+	
   return;
 }
 
 /* 
- * sigint_handler - The kernel sends a SIGINT to the shell whenver the
+ * sigint_handler - The kernel sends a SIGINT to the shell whenever the
  *    user types ctrl-c at the keyboard.  Catch it and send it along
  *    to the foreground job.  
  */
 /* Catches SIGTSTP (ctrl-z) signals. 15 lines */
 void sigint_handler(int sig) 
 {
-    return;
+	printf("in sigint_handler\n");
+	return;
 }
 
 /*
@@ -350,6 +356,7 @@ void sigint_handler(int sig)
 /* Catches SIGINT (ctrl-c) signals. 15 lines */
 void sigtstp_handler(int sig) 
 {
+	printf("in sigtstp_handler\n");
     return;
 }
 
