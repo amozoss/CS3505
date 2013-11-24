@@ -180,6 +180,14 @@ void eval(char *cmdline)
   char *argv[MAXARGS];
 
 
+  int state = UNDEF;
+  int cmd_not_found = -1;
+  isBG = parseline(cmdline, argv);
+  state = (!isBG) ? FG : BG;
+  
+  if(!builtin_cmd(argv))					
+  { 
+
   sigset_t mask;
   if (sigemptyset(&mask) < 0)
     unix_error("Sigemptyset error");
@@ -190,15 +198,8 @@ void eval(char *cmdline)
   if (sigprocmask(SIG_BLOCK, &mask, NULL) < 0)
       unix_error("Sigprocmask error");
 
-
-
-  int state = UNDEF;
-  isBG = parseline(cmdline, argv);
-  state = (!isBG) ? FG : BG;
-  
-  if(!builtin_cmd(argv))					
-  { 
-    if((pid = fork()) == 0)
+          
+   if((pid = fork()) == 0)
     {
       setpgid(0, 0);
 
@@ -207,7 +208,7 @@ void eval(char *cmdline)
       if (sigprocmask(SIG_UNBLOCK, &mask, NULL) < 0)
         unix_error("Sigprocmask error");
 
-      if(execve(argv[0], argv, environ) < 0)
+      if((cmd_not_found = execve(argv[0], argv, environ)) < 0)
       {
         printf("%s: Command not found.\n", argv[0]);
         fflush(stdout);
@@ -221,7 +222,7 @@ void eval(char *cmdline)
     }
 
     addjob(jobs, pid, state, cmdline);
-    if(!isBG)
+    if(!isBG && cmd_not_found >= 0)
     {
       //printf("!bg\n");
       waitfg(pid);	
@@ -330,8 +331,10 @@ void do_bgfg(char **argv)
 void waitfg(pid_t pid)
 {
   int status;
+  printf("waitfg, running %d\n", pid);
   if(waitpid(pid, &status, 0) < 0)
     unix_error("waitfg: waitpid error");
+  printf("waitfg, %d stopped", pid);
   return;
 }
 
