@@ -180,38 +180,53 @@ void eval(char *cmdline)
   char *argv[MAXARGS];
 
 
+  sigset_t mask;
+  if (sigemptyset(&mask) < 0)
+    unix_error("Sigemptyset error");
+
+  if (sigaddset(&mask, SIGCHLD) < 0)
+      unix_error("Sigaddset error");
+
+  if (sigprocmask(SIG_BLOCK, &mask, NULL) < 0)
+      unix_error("Sigprocmask error");
+
+
+
   int state = UNDEF;
   isBG = parseline(cmdline, argv);
-  //printf("parsed: isBG =  %d\n", isBG);
+  state = (!isBG) ? FG : BG;
+  
   if(!builtin_cmd(argv))					
-  {
+  { 
     if((pid = fork()) == 0)
     {
-      if(!isBG)
-        state = FG;
-      else
-        state = BG;
+      setpgid(0, 0);
+
       
       // if execve returns < 0 the command is not built in
+      if (sigprocmask(SIG_UNBLOCK, &mask, NULL) < 0)
+        unix_error("Sigprocmask error");
+
       if(execve(argv[0], argv, environ) < 0)
       {
         printf("%s: Command not found.\n", argv[0]);
+        fflush(stdout);
         exit(0);
       } 
 
     }
+    else {
+      if (sigprocmask(SIG_UNBLOCK, &mask, NULL) < 0) /* Unblock SIGCHLD */
+        unix_error("Sigprocmask error");
+    }
+
+    addjob(jobs, pid, state, cmdline);
     if(!isBG)
     {
       //printf("!bg\n");
       waitfg(pid);	
     }
     else {
-      if(!isBG)
-        state = FG;
-      else
-        state = BG;
-
-      addjob(jobs, pid, state, cmdline);
       int jid = pid2jid(pid);
       printf("[%d] (%d) %s",jid, pid, cmdline);
     }
@@ -334,15 +349,22 @@ void waitfg(pid_t pid)
 /* Catches SIGCHILD signals. 80 lines */ 
 void sigchld_handler(int sig) 
 {
-  //printf("in sigchld_handler\n");
+  if(verbose)
+    printf("in sigchld_handler\n");
+
+  //deletejob(jobs, pid);
   int status;
-  pid_t pid;
-/*   while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
+  pid_t pid = getpid();
+  
+  
+  while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
   {
-    struct job_t *ajob = getjobpid(jobs, pid);
-    printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
+    //struct job_t *ajob = getjobpid(jobs, pid);
+   // printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
     deletejob(jobs, pid);
-  }*/
+  }
+ 
+ 
 
   return;
 }
@@ -352,10 +374,30 @@ void sigchld_handler(int sig)
  *    user types ctrl-c at the keyboard.  Catch it and send it along
  *    to the foreground job.  
  */
-/* Catches SIGTSTP (ctrl-z) signals. 15 lines */
+/* Catches SIGINT (ctrl-c) signals. 15 lines */
 void sigint_handler(int sig) 
 {
-  printf("in sigint_handler\n");
+  if(verbose)
+    printf("in sigint_handler\n");
+
+  pid_t pid = fgpid(jobs);
+  int jid = pid2jid(pid);
+  int rc; 
+
+  //printf("getpid() = %d\n", getpid());
+
+
+  //printf("sig= %d pid =%d",sig,pid);
+  deletejob(jobs, pid);
+  if(sig == 2) {
+    printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, sig);
+  }
+
+  if ((rc = kill(pid, SIGINT)) < 0)
+    unix_error("Kill error");
+
+
+
   return;
 }
 
@@ -364,10 +406,11 @@ void sigint_handler(int sig)
  *     the user types ctrl-z at the keyboard. Catch it and suspend the
  *     foreground job by sending it a SIGTSTP.  
  */
-/* Catches SIGINT (ctrl-c) signals. 15 lines */
+/* Catches SIGTSTP (ctrl-z) signals. 15 lines */
 void sigtstp_handler(int sig) 
 {
-  printf("in sigtstp_handler\n");
+  if(verbose)
+    printf("in sigtstp_handler\n");
   return;
 }
 
@@ -436,6 +479,10 @@ int addjob(struct job_t *jobs, pid_t pid, int state, char *cmdline)
 int deletejob(struct job_t *jobs, pid_t pid) 
 {
   int i;
+  if(verbose) {
+    printf("delete pid = %d\n", pid);
+    fflush(stdout);
+  }
 
   if (pid < 1)
     return 0;
