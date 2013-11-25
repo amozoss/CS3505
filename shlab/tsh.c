@@ -96,6 +96,10 @@ void app_error(char *msg);
 typedef void handler_t(int); 
 handler_t *Signal(int signum, handler_t *handler);
 
+/* ****************************************************** */
+/* Custom helpers */
+void changejobstate(pid_t pid, int state);
+
 /*
  * main - The shell's main routine 
  */
@@ -162,6 +166,8 @@ int main(int argc, char **argv)
 
   exit(0); /* control never reaches here */
 }
+
+
 
 /* 
  * eval - Evaluate the command line that the user has just typed in
@@ -319,6 +325,21 @@ int builtin_cmd(char **argv)
 /* Implements the bg and fg built-in commands. 50 lines */
 void do_bgfg(char **argv) 
 {
+  if(debug)
+    printf("%s: %s %c\n", __func__, argv[0], argv[1][1]);
+
+  struct job_t *ajob;
+  if(argv[1][0] == '%') {
+    int jid = argv[1][1]; //@todo: need to support double digit jobs
+    ajob = getjobjid(jobs, jid);
+    pid_t pid = (* ajob).pid;
+    if(ajob != NULL) {
+      changejobstate(pid, BG);
+
+      printf("[%d] (%d)",jid, pid);
+    }
+  }
+
   return;
 }
 
@@ -448,15 +469,14 @@ void sigtstp_handler(int sig)
   pid_t pid = fgpid(jobs);
   int jid = pid2jid(pid);
 
-  struct job_t *ajob = getjobpid(jobs, pid);
-  ajob[0].state = ST;
+  changejobstate(pid, ST);
+
   //@todo send the stop signal to the process
   Kill(pid, SIGTSTP); // send the kill signal
   printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, sig);
 
   if(debug) {
     printf("  sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
-    printf("  sigtstp_handler [%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
   }
 
   return;
@@ -469,6 +489,14 @@ void sigtstp_handler(int sig)
 /***********************************************
  * Helper routines that manipulate the job list
  **********************************************/
+void changejobstate(pid_t pid, int state) {
+  struct job_t *ajob = getjobpid(jobs, pid);
+  if(ajob != NULL) 
+    (* ajob).state = state;
+  if(debug)
+    printf("  sigtstp_handler [%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
+
+}
 
 /* clearjob - Clear the entries in a job struct */
 void clearjob(struct job_t *job) {
