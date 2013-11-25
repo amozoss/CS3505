@@ -13,6 +13,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include "csapp.h"
 
 /* Misc manifest constants */
 #define MAXLINE    1024   /* max line size */
@@ -198,7 +199,7 @@ void eval(char *cmdline)
   
   if(!builtin_cmd(argv))					
   { 
-    if((pid = fork()) == 0)
+    if((pid = Fork()) == 0)
     {
       setpgid(0, 0);
 
