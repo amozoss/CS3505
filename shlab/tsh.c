@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
 #include <string.h>
 #include <ctype.h>
 #include <signal.h>
@@ -223,12 +224,13 @@ void eval(char *cmdline)
     {
       waitfg(pid);	
 
-      //@todo: this breaks the terminated signal
       struct job_t *ajob = getjobpid(jobs, pid);
+      //@todo: this breaks the terminated signal
       if(ajob != NULL && ajob[0].state != ST) {
         //@todo: not sure if this should be here, delete the job when finished
         deletejob(jobs, pid);
       }
+
     }
     else {
       int jid = pid2jid(pid); // this should be after addjob
@@ -319,6 +321,14 @@ int builtin_cmd(char **argv)
   return returnvar;     /* not a builtin command */
 }
 
+/* Returns the jid 1-16 if it is legit, or 0 if the input isn't ok */
+int get_id(char *argv)
+{
+  return (argv[0] == '%') ? atoi(argv+1) : atoi(argv);
+}
+
+
+
 /* 
  * do_bgfg - Execute the builtin bg and fg commands
  */
@@ -329,24 +339,24 @@ void do_bgfg(char **argv)
     printf("%s: %s %c\n", __func__, argv[0], argv[1][1]);
 
   struct job_t *ajob;
-  if(argv[1][0] == '%') {
-    int jid = argv[1][1] - '0'; //@todo: need to support double digit jobs
-    if(jid == 1)
-      if(argv[1][2] >= '0' && argv[1][2] <= 9)
-      {
-        jid = 10 + argv[1][2] - '0';
-      }
+  int jid;
+
+  jid = get_id(argv[1]);
+  
+  int state = (!strcmp(argv[0], "bg")) ? BG : FG;
+
+
     ajob = getjobjid(jobs, jid);
     pid_t pid = (* ajob).pid;
-    if(ajob != NULL) {
-      changejobstate(pid, BG);
+    if (ajob != NULL) {
+      changejobstate(pid, state);
+      if (state == BG)
+        printf("[%d] (%d) %s",jid, pid, (* ajob).cmdline);
+      else
+        waitfg(pid);
 
-
-      printf("[%d] (%d) %s",jid, pid, (* ajob).cmdline);
       fflush(stdout);
     }
-
-  }
 
   return;
 }
@@ -369,7 +379,7 @@ void waitfg(pid_t pid)
       break;
     }
 
-    if((waitpid(pid, &status, WUNTRACED )) < 0)   
+    if((waitpid(pid, &status, WUNTRACED)) < 0)   
       unix_error("waitfg: waitpid error\n");
 
     if(ajob != NULL || ajob[0].state != ST)     // If the job isn't null and != state,
@@ -380,6 +390,7 @@ void waitfg(pid_t pid)
   }
   if(debug)
     printf("waitfg, %d stopped\n", pid);
+
 
   return;
 }
