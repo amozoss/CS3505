@@ -336,18 +336,18 @@ void waitfg(pid_t pid)
 
   while(1) {
     ajob = getjobpid(jobs, pid);
-    if(ajob == NULL) {
+    if(ajob == NULL) {        // Ensure that the job isn't null before looping.
       break;
     }
 
-    if((waitpid(pid, &status, WUNTRACED )) < 0)
+    if((waitpid(pid, &status, WUNTRACED )) < 0)   
       unix_error("waitfg: waitpid error\n");
 
-    if(ajob != NULL || ajob[0].state != ST)
-      break;
-
+    if(ajob != NULL || ajob[0].state != ST)     // If the job isn't null and != state,
+      break;                                    // we delete it. This function is only
+                                                // ever called when a non-built in process
+                                                // is running.
     sleep(0.001);
-
   }
   if(debug)
     printf("waitfg, %d stopped\n", pid);
