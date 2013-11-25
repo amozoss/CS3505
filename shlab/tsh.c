@@ -330,14 +330,22 @@ void do_bgfg(char **argv)
 
   struct job_t *ajob;
   if(argv[1][0] == '%') {
-    int jid = argv[1][1]; //@todo: need to support double digit jobs
+    int jid = argv[1][1] - '0'; //@todo: need to support double digit jobs
+    if(jid == 1)
+      if(argv[1][2] >= '0' && argv[1][2] <= 9)
+      {
+        jid = 10 + argv[1][2] - '0';
+      }
     ajob = getjobjid(jobs, jid);
     pid_t pid = (* ajob).pid;
     if(ajob != NULL) {
       changejobstate(pid, BG);
 
-      printf("[%d] (%d)",jid, pid);
+
+      printf("[%d] (%d) %s",jid, pid, (* ajob).cmdline);
+      fflush(stdout);
     }
+
   }
 
   return;
