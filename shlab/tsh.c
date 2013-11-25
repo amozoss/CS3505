@@ -13,7 +13,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <errno.h>
-#include "csapp.h"
+#include "csapp.c"
 
 /* Misc manifest constants */
 #define MAXLINE    1024   /* max line size */
@@ -92,8 +92,8 @@ void listjobs(struct job_t *jobs);
 void usage(void);
 void unix_error(char *msg);
 void app_error(char *msg);
-typedef void handler_t(int);
-handler_t *Signal(int signum, handler_t *handler);
+typedef void handler_t(int); Declared in csapp.h
+handler_t *Signal(int signum, handler_t *handler); Declared in csapp.h
 
 /*
  * main - The shell's main routine 
@@ -128,12 +128,12 @@ int main(int argc, char **argv)
   /* Install the signal handlers */
 
   /* These are the ones you will need to implement */
-  Signal(SIGINT,  sigint_handler);   /* ctrl-c */
-  Signal(SIGTSTP, sigtstp_handler);  /* ctrl-z */
-  Signal(SIGCHLD, sigchld_handler);  /* Terminated or stopped child */
+  //Signal(SIGINT,  sigint_handler);   /* ctrl-c */
+  //Signal(SIGTSTP, sigtstp_handler);  /* ctrl-z */
+ // Signal(SIGCHLD, sigchld_handler);  /* Terminated or stopped child */
 
   /* This one provides a clean way to kill the shell */
-  Signal(SIGQUIT, sigquit_handler); 
+  //Signal(SIGQUIT, sigquit_handler); 
 
   /* Initialize the job list */
   initjobs(jobs);
@@ -181,6 +181,14 @@ void eval(char *cmdline)
   char *argv[MAXARGS];
 
 
+  int state = UNDEF;
+  int cmd_not_found = -1;
+  isBG = parseline(cmdline, argv);
+  state = (!isBG) ? FG : BG;
+  
+  if(!builtin_cmd(argv))					
+  { 
+
   sigset_t mask;
   if (sigemptyset(&mask) < 0)
     unix_error("Sigemptyset error");
@@ -191,24 +199,16 @@ void eval(char *cmdline)
   if (sigprocmask(SIG_BLOCK, &mask, NULL) < 0)
       unix_error("Sigprocmask error");
 
-
-
-  int state = UNDEF;
-  isBG = parseline(cmdline, argv);
-  state = (!isBG) ? FG : BG;
-  
-  if(!builtin_cmd(argv))					
-  { 
-    if((pid = Fork()) == 0)
-    {
-      setpgid(0, 0);
+  if((pid = Fork()) == 0)
+  {
+    setpgid(0, 0);
 
       
       // if execve returns < 0 the command is not built in
       if (sigprocmask(SIG_UNBLOCK, &mask, NULL) < 0)
         unix_error("Sigprocmask error");
 
-      if(execve(argv[0], argv, environ) < 0)
+      if((cmd_not_found = execve(argv[0], argv, environ)) < 0)
       {
         printf("%s: Command not found.\n", argv[0]);
         fflush(stdout);
@@ -222,7 +222,7 @@ void eval(char *cmdline)
     }
 
     addjob(jobs, pid, state, cmdline);
-    if(!isBG)
+    if(!isBG && cmd_not_found >= 0)
     {
       //printf("!bg\n");
       waitfg(pid);	
@@ -331,8 +331,10 @@ void do_bgfg(char **argv)
 void waitfg(pid_t pid)
 {
   int status;
+  printf("waitfg, running %d\n", pid);
   if(waitpid(pid, &status, 0) < 0)
     unix_error("waitfg: waitpid error");
+  printf("waitfg, %d stopped", pid);
   return;
 }
 

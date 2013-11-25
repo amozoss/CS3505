@@ -52,15 +52,15 @@ extern int h_errno;    /* defined by BIND for DNS errors */
 extern char **environ; /* defined by libc */
 
 /* Misc constants */
-#define	MAXLINE	 8192  /* max text line length */
+//#define	MAXLINE	 8192  /* max text line length */
 #define MAXBUF   8192  /* max I/O buffer size */
 #define LISTENQ  1024  /* second argument to listen() */
 
 /* Our own error-handling functions */
-void unix_error(char *msg);
+//void unix_error(char *msg);
 void posix_error(int code, char *msg);
-void dns_error(char *msg);
-void app_error(char *msg);
+//void dns_error(char *msg);
+//void app_error(char *msg);
 
 /* Process control wrappers */
 pid_t Fork(void);
@@ -75,8 +75,8 @@ void Setpgid(pid_t pid, pid_t pgid);
 pid_t Getpgrp();
 
 /* Signal wrappers */
-typedef void handler_t(int);
-handler_t *Signal(int signum, handler_t *handler);
+//typedef void handler_t(int);
+//handler_t *Signal(int signum, handler_t *handler);
 void Sigprocmask(int how, const sigset_t *set, sigset_t *oldset);
 void Sigemptyset(sigset_t *set);
 void Sigfillset(sigset_t *set);

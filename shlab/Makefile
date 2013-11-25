@@ -3,12 +3,12 @@
 TEAM = NOBODY
 VERSION = 1
 DRIVER = ./sdriver.pl
-TSH = ./tsh
+TSH = ./tsh 
 TSHREF = ./tshref
 TSHARGS = "-p"
 CC = gcc
-CFLAGS = -Wall -O2 -g
-FILES = $(TSH) ./myspin ./mysplit ./mystop ./myint
+CFLAGS = -Wall -O2 -g -pthread csapp.h
+FILES =  $(TSH) ./myspin ./mysplit ./mystop ./myint 
 
 all: $(FILES)
 
