@@ -40,8 +40,8 @@
 /* Global variables */
 extern char **environ;      /* defined in libc */
 char prompt[] = "tsh> ";    /* command line prompt (DO NOT CHANGE) */
-int verbose = 0;            /* if true, print additional output */
-int debug = 0;
+int verbose = 1;            /* if true, print additional output */
+int debug = 1;
 int nextjid = 1;            /* next job ID to allocate */
 char sbuf[MAXLINE];         /* for composing sprintf messages */
 
@@ -190,9 +190,9 @@ void eval(char *cmdline)
 
   if(!builtin_cmd(argv))					
   { 
-  Sigemptyset(&mask);
-  Sigaddset(&mask, SIGCHLD);
-  Sigprocmask(SIG_BLOCK, &mask, NULL); /* Block SIGCHLD */
+    Sigemptyset(&mask);
+    Sigaddset(&mask, SIGCHLD);
+    Sigprocmask(SIG_BLOCK, &mask, NULL); /* Block SIGCHLD */
 
     if((pid = Fork()) == 0)
     {
@@ -330,7 +330,7 @@ void waitfg(pid_t pid)
 {
   int status;
   if(debug)
-    printf("waitfg, running %d\n", pid);
+    printf("%s, running %d\n", __func__, pid);
 
   struct job_t *ajob;
 
@@ -370,20 +370,20 @@ void waitfg(pid_t pid)
 void sigchld_handler(int sig) 
 {
   if(debug)
-    printf("in sigchld_handler\n");
+    printf("%s: %d\n", __func__, __LINE__);
 
   pid_t pid = getpid();
   int status;
   
   
- /* 
+  
   while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
   {
     struct job_t *ajob = getjobpid(jobs, pid);
     printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
     deletejob(jobs, pid);
   }
-  */
+  
  
  
 
@@ -399,15 +399,15 @@ void sigchld_handler(int sig)
 void sigint_handler(int sig) 
 {
   if(debug)
-    printf("in sigint_handler\n");
+    printf("%s: %d\n",__func__, __LINE__ );
 
   pid_t pid = fgpid(jobs);
   int jid = pid2jid(pid);
 
   if(debug)
-    printf("sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
+    printf("  sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
 
-  if(sig == 2) {
+  if(sig == 2 && pid != 0) {
     deletejob(jobs, pid); //@todo not sure if deletejob should be here
     printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, sig);
     Kill(pid, SIGINT); // send the kill signal
@@ -428,7 +428,7 @@ void sigint_handler(int sig)
 void sigtstp_handler(int sig) 
 {
   if(debug)
-    printf("in sigtstp_handler\n");
+    printf("%s: %s\n", __func__, __LINE__);
 
   pid_t pid = fgpid(jobs);
   int jid = pid2jid(pid);
@@ -440,8 +440,8 @@ void sigtstp_handler(int sig)
   printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, sig);
 
   if(debug) {
-    printf("sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
-    printf("sigtstp_handler [%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
+    printf("  sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
+    printf("  sigtstp_handler [%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
   }
 
   return;
