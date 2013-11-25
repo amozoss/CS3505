@@ -428,7 +428,7 @@ void sigint_handler(int sig)
 void sigtstp_handler(int sig) 
 {
   if(debug)
-    printf("%s: %s\n", __func__, __LINE__);
+    printf("%s: %d\n", __func__, __LINE__);
 
   pid_t pid = fgpid(jobs);
   int jid = pid2jid(pid);
