@@ -218,10 +218,11 @@ void eval(char *cmdline)
       waitfg(pid);	
 
       //@todo: this breaks the terminated signal
-      //struct job_t *ajob = getjobpid(jobs, pid);
-      //if(ajob[0].state != ST)
+      struct job_t *ajob = getjobpid(jobs, pid);
+      if(ajob != NULL && ajob[0].state != ST) {
         //@todo: not sure if this should be here, delete the job when finished
-      deletejob(jobs, pid);
+        deletejob(jobs, pid);
+      }
     }
     else {
       int jid = pid2jid(pid); // this should be after addjob
@@ -330,8 +331,24 @@ void waitfg(pid_t pid)
   int status;
   if(debug)
     printf("waitfg, running %d\n", pid);
-  if(waitpid(pid, &status, 0) < 0)
-    unix_error("waitfg: waitpid error");
+
+  struct job_t *ajob;
+
+  while(1) {
+    ajob = getjobpid(jobs, pid);
+    if(ajob == NULL) {
+      break;
+    }
+
+    if((waitpid(pid, &status, WUNTRACED )) < 0)
+      unix_error("waitfg: waitpid error");
+
+    if(ajob != NULL && ajob[0].state != ST)
+      break;
+
+    sleep(0.001);
+
+  }
   if(debug)
     printf("waitfg, %d stopped\n", pid);
 
@@ -413,20 +430,20 @@ void sigtstp_handler(int sig)
   if(debug)
     printf("in sigtstp_handler\n");
 
-  /*pid_t pid = fgpid(jobs);
+  pid_t pid = fgpid(jobs);
   int jid = pid2jid(pid);
 
   struct job_t *ajob = getjobpid(jobs, pid);
   ajob[0].state = ST;
   //@todo send the stop signal to the process
-  Kill(-pid, SIGTSTP); // send the kill signal
+  Kill(pid, SIGTSTP); // send the kill signal
   printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, sig);
 
   if(debug) {
     printf("sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
     printf("sigtstp_handler [%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
   }
-*/
+
   return;
 }
 
