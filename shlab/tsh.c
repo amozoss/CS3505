@@ -341,9 +341,9 @@ void waitfg(pid_t pid)
     }
 
     if((waitpid(pid, &status, WUNTRACED )) < 0)
-      unix_error("waitfg: waitpid error");
+      unix_error("waitfg: waitpid error\n");
 
-    if(ajob != NULL && ajob[0].state != ST)
+    if(ajob != NULL || ajob[0].state != ST)
       break;
 
     sleep(0.001);
@@ -355,6 +355,21 @@ void waitfg(pid_t pid)
   return;
 }
 
+/* Job states */
+//#define UNDEF 0 /* undefined */
+//#define FG 1    /* running in foreground */
+//#define BG 2    /* running in background */
+//#define ST 3    /* stopped */
+
+/* 
+// * Jobs states: FG (foreground), BG (background), ST (stopped)
+// * Job state transitions and enabling actions:
+// *     FG -> ST  : ctrl-z
+// *     ST -> FG  : fg command
+// *     ST -> BG  : bg command
+// *     BG -> FG  : fg command
+// * At most 1 job can be in the FG state.
+// */
 /*****************
  * Signal handlers
  *****************/
@@ -377,7 +392,7 @@ void sigchld_handler(int sig)
   
   
   
-  while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
+  while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)) != 0)
   {
     struct job_t *ajob = getjobpid(jobs, pid);
     printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
