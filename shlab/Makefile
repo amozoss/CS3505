@@ -22,7 +22,7 @@ test01:
 test02:
 	$(DRIVER) -t trace02.txt -s $(TSH) -a $(TSHARGS)
 test03:
-	$(DRIVER) -t trace03.txt -s $(TSH) -a $(TSHARGS)
+	$(DRIVER) -t trace03.txt -s $(TSH) -v -a $(TSHARGS)
 test04:
 	$(DRIVER) -t trace04.txt -s $(TSH) -a $(TSHARGS)
 test05:
@@ -153,5 +153,4 @@ ctest016:
 # clean up
 clean:
 	rm -f $(FILES) *.o *~
-	rm test.txt rtest.txt
 

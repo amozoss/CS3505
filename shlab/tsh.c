@@ -41,6 +41,7 @@
 extern char **environ;      /* defined in libc */
 char prompt[] = "tsh> ";    /* command line prompt (DO NOT CHANGE) */
 int verbose = 0;            /* if true, print additional output */
+int debug = 0;
 int nextjid = 1;            /* next job ID to allocate */
 char sbuf[MAXLINE];         /* for composing sprintf messages */
 
@@ -128,12 +129,12 @@ int main(int argc, char **argv)
   /* Install the signal handlers */
 
   /* These are the ones you will need to implement */
-  //Signal(SIGINT,  sigint_handler);   /* ctrl-c */
-  //Signal(SIGTSTP, sigtstp_handler);  /* ctrl-z */
- // Signal(SIGCHLD, sigchld_handler);  /* Terminated or stopped child */
+  Signal(SIGINT,  sigint_handler);   /* ctrl-c */
+  Signal(SIGTSTP, sigtstp_handler);  /* ctrl-z */
+  Signal(SIGCHLD, sigchld_handler);  /* Terminated or stopped child */
 
   /* This one provides a clean way to kill the shell */
-  //Signal(SIGQUIT, sigquit_handler); 
+  Signal(SIGQUIT, sigquit_handler); 
 
   /* Initialize the job list */
   initjobs(jobs);
@@ -182,49 +183,31 @@ void eval(char *cmdline)
 
 
   int state = UNDEF;
-  int cmd_not_found = -1;
+  int cmd_not_found = 0;
   isBG = parseline(cmdline, argv);
   state = (!isBG) ? FG : BG;
-  
+
   if(!builtin_cmd(argv))					
   { 
-
-  sigset_t mask;
-  if (sigemptyset(&mask) < 0)
-    unix_error("Sigemptyset error");
-
-  if (sigaddset(&mask, SIGCHLD) < 0)
-      unix_error("Sigaddset error");
-
-  if (sigprocmask(SIG_BLOCK, &mask, NULL) < 0)
-      unix_error("Sigprocmask error");
-
-  if((pid = Fork()) == 0)
-  {
-    setpgid(0, 0);
-
+    if((pid = Fork()) == 0)
+    {
+      // workaround, puts the child in a new process group,
+      // ensures only one process in foreground group
+      setpgid(0, 0);
       
       // if execve returns < 0 the command is not built in
-      if (sigprocmask(SIG_UNBLOCK, &mask, NULL) < 0)
-        unix_error("Sigprocmask error");
-
       if((cmd_not_found = execve(argv[0], argv, environ)) < 0)
       {
         printf("%s: Command not found.\n", argv[0]);
         fflush(stdout);
         exit(0);
       } 
-
-    }
-    else {
-      if (sigprocmask(SIG_UNBLOCK, &mask, NULL) < 0) /* Unblock SIGCHLD */
-        unix_error("Sigprocmask error");
     }
 
+    // the state will be either bg or fg depending on the isBG bool above
     addjob(jobs, pid, state, cmdline);
-    if(!isBG && cmd_not_found >= 0)
+    if(!isBG)
     {
-      //printf("!bg\n");
       waitfg(pid);	
     }
     else {
@@ -331,10 +314,12 @@ void do_bgfg(char **argv)
 void waitfg(pid_t pid)
 {
   int status;
-  printf("waitfg, running %d\n", pid);
+  if(debug)
+    printf("waitfg, running %d\n", pid);
   if(waitpid(pid, &status, 0) < 0)
     unix_error("waitfg: waitpid error");
-  printf("waitfg, %d stopped", pid);
+  if(debug)
+    printf("waitfg, %d stopped\n", pid);
   return;
 }
 
@@ -352,7 +337,7 @@ void waitfg(pid_t pid)
 /* Catches SIGCHILD signals. 80 lines */ 
 void sigchld_handler(int sig) 
 {
-  if(verbose)
+  if(debug)
     printf("in sigchld_handler\n");
 
   //deletejob(jobs, pid);
@@ -360,12 +345,12 @@ void sigchld_handler(int sig)
   pid_t pid = getpid();
   
   
-  while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
-  {
+  //while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
+  //{
     //struct job_t *ajob = getjobpid(jobs, pid);
    // printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
     deletejob(jobs, pid);
-  }
+  //}
  
  
 
