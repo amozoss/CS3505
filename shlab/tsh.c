@@ -179,24 +179,31 @@ void eval(char *cmdline)
 {
   int isBG;
   pid_t pid;
+  sigset_t mask;
+
   char *argv[MAXARGS];
 
 
   int state = UNDEF;
-  int cmd_not_found = 0;
   isBG = parseline(cmdline, argv);
   state = (!isBG) ? FG : BG;
 
   if(!builtin_cmd(argv))					
   { 
+  Sigemptyset(&mask);
+  Sigaddset(&mask, SIGCHLD);
+  Sigprocmask(SIG_BLOCK, &mask, NULL); /* Block SIGCHLD */
+
     if((pid = Fork()) == 0)
     {
       // workaround, puts the child in a new process group,
       // ensures only one process in foreground group
       setpgid(0, 0);
-      
+
+      Sigprocmask(SIG_UNBLOCK, &mask, NULL); /* Unblock SIGCHLD */
+
       // if execve returns < 0 the command is not built in
-      if((cmd_not_found = execve(argv[0], argv, environ)) < 0)
+      if((execve(argv[0], argv, environ)) < 0)
       {
         printf("%s: Command not found.\n", argv[0]);
         fflush(stdout);
@@ -204,14 +211,21 @@ void eval(char *cmdline)
       } 
     }
 
-    // the state will be either bg or fg depending on the isBG bool above
     addjob(jobs, pid, state, cmdline);
+    // the state will be either bg or fg depending on the isBG bool above
     if(!isBG)
     {
       waitfg(pid);	
+
+      //@todo: this breaks the terminated signal
+      //struct job_t *ajob = getjobpid(jobs, pid);
+      //if(ajob[0].state != ST)
+        //@todo: not sure if this should be here, delete the job when finished
+      deletejob(jobs, pid);
     }
     else {
-      int jid = pid2jid(pid);
+      int jid = pid2jid(pid); // this should be after addjob
+      Sigprocmask(SIG_UNBLOCK, &mask, NULL); /* Unblock SIGCHLD */
       printf("[%d] (%d) %s",jid, pid, cmdline);
     }
   }
@@ -320,6 +334,7 @@ void waitfg(pid_t pid)
     unix_error("waitfg: waitpid error");
   if(debug)
     printf("waitfg, %d stopped\n", pid);
+
   return;
 }
 
@@ -340,17 +355,18 @@ void sigchld_handler(int sig)
   if(debug)
     printf("in sigchld_handler\n");
 
-  //deletejob(jobs, pid);
-  int status;
   pid_t pid = getpid();
+  int status;
   
   
-  //while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
-  //{
-    //struct job_t *ajob = getjobpid(jobs, pid);
-   // printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
+ /* 
+  while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)))
+  {
+    struct job_t *ajob = getjobpid(jobs, pid);
+    printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
     deletejob(jobs, pid);
-  //}
+  }
+  */
  
  
 
@@ -365,24 +381,21 @@ void sigchld_handler(int sig)
 /* Catches SIGINT (ctrl-c) signals. 15 lines */
 void sigint_handler(int sig) 
 {
-  if(verbose)
+  if(debug)
     printf("in sigint_handler\n");
 
   pid_t pid = fgpid(jobs);
   int jid = pid2jid(pid);
-  int rc; 
 
-  //printf("getpid() = %d\n", getpid());
+  if(debug)
+    printf("sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
 
-
-  //printf("sig= %d pid =%d",sig,pid);
-  deletejob(jobs, pid);
   if(sig == 2) {
+    deletejob(jobs, pid); //@todo not sure if deletejob should be here
     printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, sig);
+    Kill(pid, SIGINT); // send the kill signal
   }
 
-  if ((rc = kill(pid, SIGINT)) < 0)
-    unix_error("Kill error");
 
 
 
@@ -397,8 +410,23 @@ void sigint_handler(int sig)
 /* Catches SIGTSTP (ctrl-z) signals. 15 lines */
 void sigtstp_handler(int sig) 
 {
-  if(verbose)
+  if(debug)
     printf("in sigtstp_handler\n");
+
+  /*pid_t pid = fgpid(jobs);
+  int jid = pid2jid(pid);
+
+  struct job_t *ajob = getjobpid(jobs, pid);
+  ajob[0].state = ST;
+  //@todo send the stop signal to the process
+  Kill(-pid, SIGTSTP); // send the kill signal
+  printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, sig);
+
+  if(debug) {
+    printf("sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
+    printf("sigtstp_handler [%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
+  }
+*/
   return;
 }
 
@@ -468,7 +496,7 @@ int deletejob(struct job_t *jobs, pid_t pid)
 {
   int i;
   if(verbose) {
-    printf("delete pid = %d\n", pid);
+    printf("delete job[%d]\n", pid);
     fflush(stdout);
   }
 
