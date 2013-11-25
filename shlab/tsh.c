@@ -330,14 +330,22 @@ void do_bgfg(char **argv)
 
   struct job_t *ajob;
   if(argv[1][0] == '%') {
-    int jid = argv[1][1]; //@todo: need to support double digit jobs
+    int jid = argv[1][1] - '0'; //@todo: need to support double digit jobs
+    if(jid == 1)
+      if(argv[1][2] >= '0' && argv[1][2] <= 9)
+      {
+        jid = 10 + argv[1][2] - '0';
+      }
     ajob = getjobjid(jobs, jid);
     pid_t pid = (* ajob).pid;
     if(ajob != NULL) {
       changejobstate(pid, BG);
 
-      printf("[%d] (%d)",jid, pid);
+
+      printf("[%d] (%d) %s",jid, pid, (* ajob).cmdline);
+      fflush(stdout);
     }
+
   }
 
   return;
@@ -357,18 +365,18 @@ void waitfg(pid_t pid)
 
   while(1) {
     ajob = getjobpid(jobs, pid);
-    if(ajob == NULL) {
+    if(ajob == NULL) {        // Ensure that the job isn't null before looping.
       break;
     }
 
-    if((waitpid(pid, &status, WUNTRACED )) < 0)
+    if((waitpid(pid, &status, WUNTRACED )) < 0)   
       unix_error("waitfg: waitpid error\n");
 
-    if(ajob != NULL || ajob[0].state != ST)
-      break;
-
+    if(ajob != NULL || ajob[0].state != ST)     // If the job isn't null and != state,
+      break;                                    // we delete it. This function is only
+                                                // ever called when a non-built in process
+                                                // is running.
     sleep(0.001);
-
   }
   if(debug)
     printf("waitfg, %d stopped\n", pid);
