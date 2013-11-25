@@ -6,11 +6,11 @@
  **************************/
 /* $begin errorfuns */
 /* $begin unixerror */
-void unix_error(char *msg) /* unix-style error */
-{
-    fprintf(stderr, "%s: %s\n", msg, strerror(errno));
-    exit(0);
-}
+//void unix_error(char *msg) /* unix-style error */
+//{
+//    fprintf(stderr, "%s: %s\n", msg, strerror(errno));
+//    exit(0);
+//}
 /* $end unixerror */
 
 void posix_error(int code, char *msg) /* posix-style error */
@@ -25,11 +25,11 @@ void dns_error(char *msg) /* dns-style error */
     exit(0);
 }
 
-void app_error(char *msg) /* application error */
-{
-    fprintf(stderr, "%s\n", msg);
-    exit(0);
-}
+//void app_error(char *msg) /* application error */
+//{
+//    fprintf(stderr, "%s\n", msg);
+//    exit(0);
+//}
 /* $end errorfuns */
 
 /*********************************************

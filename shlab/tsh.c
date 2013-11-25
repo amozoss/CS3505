@@ -92,8 +92,8 @@ void listjobs(struct job_t *jobs);
 void usage(void);
 void unix_error(char *msg);
 void app_error(char *msg);
-typedef void handler_t(int); Declared in csapp.h
-handler_t *Signal(int signum, handler_t *handler); Declared in csapp.h
+typedef void handler_t(int); 
+handler_t *Signal(int signum, handler_t *handler);
 
 /*
  * main - The shell's main routine 
