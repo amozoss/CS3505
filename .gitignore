@@ -1,7 +1,12 @@
 .auto-go
 .actual.txt
 .expected.txt
+.nfs*
 tsh
+myint
+mysplit
+myspin
+mystop
 # Compiled Object files
 *.slo
 *.lo
