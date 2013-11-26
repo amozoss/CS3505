@@ -37,13 +37,13 @@ if [ $testAll -eq 1 ]; then
   echo 
   echo "**************Previous Tests**********************"
   for((i=1; i <= $TEST; i++)) do
-    echo "test $i"
-
     if [ $i -gt 9 ]; then
       testVar="$i"
     else
       testVar="0$i"
     fi
+    echo "Testing trace$testVar.txt"
+
 
     make test$testVar > .actual.txt
     perl -pne 's/\(\d{2,}\)/XXX/' .actual.txt > .actual1
