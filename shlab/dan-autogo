@@ -5,20 +5,26 @@ clear
 make
 
 testAll=1
-TEST="09"
+TEST=9
 
-echo "*****************Trace$TEST**************"
-cat trace$TEST.txt
+if [ $TEST -gt 9 ]; then
+  testVar="$TEST"
+else
+  testVar="0$TEST"
+fi
+
+echo "*****************Trace$testVar**************"
+cat trace$testVar.txt
 
 echo
 echo "*****************Actual**************"
-make test$TEST > .actual.txt
+make test$testVar > .actual.txt
 perl -pne 's/\(\d{2,}\)/XXX/' .actual.txt > .actual1
 cat .actual.txt
 
 echo
 echo "**************Expected**************"
-make rtest$TEST > .expected.txt
+make rtest$testVar > .expected.txt
 perl -pne 's/\(\d{2,}\)/XXX/' .expected.txt > .expected1
 cat .expected.txt
 
@@ -30,11 +36,18 @@ sdiff -I "^.\/sdriver.pl" -s .actual1 .expected1
 if [ $testAll -eq 1 ]; then
   echo 
   echo "**************Previous Tests**********************"
-  for((i=1; i <= ${TEST#0}; i++)) do
+  for((i=1; i <= $TEST; i++)) do
     echo "test $i"
-    make test0$i > .actual.txt
+
+    if [ $i -gt 9 ]; then
+      testVar="$i"
+    else
+      testVar="0$i"
+    fi
+
+    make test$testVar > .actual.txt
     perl -pne 's/\(\d{2,}\)/XXX/' .actual.txt > .actual1
-    make rtest0$i > .expected.txt
+    make rtest$testVar > .expected.txt
     perl -pne 's/\(\d{2,}\)/XXX/' .expected.txt > .expected1
     sdiff -I "^.\/sdriver.pl" -s .actual1 .expected1
   done
