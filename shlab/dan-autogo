@@ -3,6 +3,7 @@ set -e
 
 clear
 make
+testAll=1
 TEST="09"
 echo "*****************Trace$TEST**************"
 cat trace$TEST.txt
@@ -12,7 +13,7 @@ make test$TEST > .actual.txt
 perl -pne 's/\(\d{2,}\)/XXX/' .actual.txt > .actual1
 cat .actual.txt
 make rtest$TEST > .expected.txt
-perl -pne 's/\(\d{3,}\)/XXX/' .expected.txt > .expected1
+perl -pne 's/\(\d{2,}\)/XXX/' .expected.txt > .expected1
 echo
 echo "**************Expected**************"
 cat .expected.txt
@@ -21,3 +22,16 @@ echo
 echo "**************Diff output*************************"
 # -I ingnore the first line
 sdiff -I "^.\/sdriver.pl" -s .actual1 .expected1
+
+if [ $testAll -eq 1 ]; then
+  echo 
+  echo "**************Previous Tests**********************"
+  for((i=1; i <= ${TEST#0}; i++)) do
+    echo "test $i"
+    make test0$i > .actual.txt
+    perl -pne 's/\(\d{2,}\)/XXX/' .actual.txt > .actual1
+    make rtest0$i > .expected.txt
+    perl -pne 's/\(\d{2,}\)/XXX/' .expected.txt > .expected1
+    sdiff -I "^.\/sdriver.pl" -s .actual1 .expected1
+  done
+fi
