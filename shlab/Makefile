@@ -5,7 +5,7 @@ VERSION = 1
 DRIVER = ./sdriver.pl
 TSH = ./tsh 
 TSHREF = ./tshref
-TSHARGS = "-p"
+TSHARGS = -p
 CC = gcc
 CFLAGS = -Wall -O2 -g -pthread csapp.h
 FILES =  $(TSH) ./myspin ./mysplit ./mystop ./myint 
@@ -22,15 +22,15 @@ test01:
 test02:
 	$(DRIVER) -t trace02.txt -s $(TSH) -a $(TSHARGS)
 test03:
-	$(DRIVER) -t trace03.txt -s $(TSH) -v -a $(TSHARGS)
+	$(DRIVER) -t trace03.txt -s $(TSH) -a $(TSHARGS)
 test04:
 	$(DRIVER) -t trace04.txt -s $(TSH) -a $(TSHARGS)
 test05:
 	$(DRIVER) -t trace05.txt -s $(TSH) -a $(TSHARGS)
 test06:
-	$(DRIVER) -t trace06.txt -s $(TSH) -v -a $(TSHARGS)
+	$(DRIVER) -t trace06.txt -s $(TSH) -a $(TSHARGS)
 test07:
-	$(DRIVER) -t trace07.txt -s $(TSH) -v -a $(TSHARGS)
+	$(DRIVER) -t trace07.txt -s $(TSH) -a $(TSHARGS)
 test08:
 	$(DRIVER) -t trace08.txt -s $(TSH) -a $(TSHARGS)
 test09:
@@ -62,9 +62,9 @@ rtest04:
 rtest05:
 	$(DRIVER) -t trace05.txt -s $(TSHREF) -a $(TSHARGS)
 rtest06:
-	$(DRIVER) -t trace06.txt -s $(TSHREF) -v -a $(TSHARGS)
+	$(DRIVER) -t trace06.txt -s $(TSHREF) -a $(TSHARGS)
 rtest07:
-	$(DRIVER) -t trace07.txt -s $(TSHREF) -v -a $(TSHARGS)
+	$(DRIVER) -t trace07.txt -s $(TSHREF) -a $(TSHARGS)
 rtest08:
 	$(DRIVER) -t trace08.txt -s $(TSHREF) -a $(TSHARGS)
 rtest09:
