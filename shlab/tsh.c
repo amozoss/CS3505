@@ -401,7 +401,7 @@ void waitfg(pid_t pid)
       break;                                    // we delete it. This function is only
                                                 // ever called when a non-built in process
                                                 // is running.
-    sleep(0.001);
+    //sleep(0.001);
   }
   if(debug)
   {
@@ -452,7 +452,7 @@ void sigchld_handler(int sig)
   
   
   
-  while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG)) != 0)
+  while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG )) != 0)
   {
     struct job_t *ajob = getjobpid(jobs, pid);
     printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);

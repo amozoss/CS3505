@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+clear
+make
+TEST="09"
+echo "*****************Trace$TEST**************"
+cat trace$TEST.txt
+echo
+echo "*****************Actual**************"
+make test$TEST > .actual.txt
+perl -pne 's/\(\d{2,}\)/XXX/' .actual.txt > .actual1
+cat .actual.txt
+make rtest$TEST > .expected.txt
+perl -pne 's/\(\d{3,}\)/XXX/' .expected.txt > .expected1
+echo
+echo "**************Expected**************"
+cat .expected.txt
+
+echo
+echo "**************Diff output*************************"
+# -I ingnore the first line
+sdiff -I "^.\/sdriver.pl" -s .actual1 .expected1

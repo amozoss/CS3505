@@ -1,6 +1,8 @@
 .auto-go
 .actual.txt
 .expected.txt
+.actual1
+.expected1
 .nfs*
 tsh
 myint
