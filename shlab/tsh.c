@@ -41,8 +41,8 @@
 /* Global variables */
 extern char **environ;      /* defined in libc */
 char prompt[] = "tsh> ";    /* command line prompt (DO NOT CHANGE) */
-int verbose = 0;            /* if true, print additional output */
-int debug = 0;
+int verbose = 1;            /* if true, print additional output */
+int debug = 1;
 int nextjid = 1;            /* next job ID to allocate */
 char sbuf[MAXLINE];         /* for composing sprintf messages */
 
@@ -167,8 +167,11 @@ int main(int argc, char **argv)
 
   exit(0); /* control never reaches here */
 }
-
-
+/* Print stars has no \n, it creates a bunch of stars to split up debugging*/
+void print_stars()
+{
+  printf("*************************************");
+}
 
 /* 
  * eval - Evaluate the command line that the user has just typed in
@@ -318,7 +321,7 @@ int builtin_cmd(char **argv)
     listjobs(jobs);
     returnvar = 1;
   }
-  return returnvar;     /* not a builtin command */
+  return returnvar;     /* Return whether or not the command was built in */
 }
 
 /* Returns the jid 1-16 if it is legit, or 0 if the input isn't ok */
@@ -335,28 +338,38 @@ int get_id(char *argv)
 /* Implements the bg and fg built-in commands. 50 lines */
 void do_bgfg(char **argv) 
 {
-  if(debug)
+  if(debug){
+    print_stars();
     printf("%s: %s %c\n", __func__, argv[0], argv[1][1]);
-
+  }
   struct job_t *ajob;
   int jid;
 
   jid = get_id(argv[1]);
-  
+
   int state = (!strcmp(argv[0], "bg")) ? BG : FG;
 
 
-    ajob = getjobjid(jobs, jid);
-    pid_t pid = (* ajob).pid;
-    if (ajob != NULL) {
-      changejobstate(pid, state);
-      if (state == BG)
-        printf("[%d] (%d) %s",jid, pid, (* ajob).cmdline);
-      else
-        waitfg(pid);
-
-      fflush(stdout);
+  ajob = getjobjid(jobs, jid);
+  pid_t pid = (* ajob).pid;
+  if (ajob != NULL) {
+    changejobstate(pid, state);
+    if (state == BG)
+      printf("[%d] (%d) %s",jid, pid, (* ajob).cmdline);
+    else{
+      waitfg(pid); 
+      if(ajob != NULL && ajob[0].state != ST) {
+        //@todo: not sure if this should be here, delete the job when finished
+        deletejob(jobs, pid);
+        if(debug)
+        {
+          print_stars();
+          printf("Line %d: job fg job finished\n", __LINE__);
+        }
+      }
     }
+    fflush(stdout);
+  }
 
   return;
 }
@@ -368,9 +381,11 @@ void do_bgfg(char **argv)
 void waitfg(pid_t pid)
 {
   int status;
-  if(debug)
+  if (debug)
+  {
+    print_stars();
     printf("%s, running %d\n", __func__, pid);
-
+  }
   struct job_t *ajob;
 
   while(1) {
@@ -389,8 +404,10 @@ void waitfg(pid_t pid)
     sleep(0.001);
   }
   if(debug)
+  {
+    print_stars();
     printf("waitfg, %d stopped\n", pid);
-
+  }
 
   return;
 }
@@ -425,7 +442,10 @@ void waitfg(pid_t pid)
 void sigchld_handler(int sig) 
 {
   if(debug)
+  {
+    print_stars();
     printf("%s: %d\n", __func__, __LINE__);
+  }
 
   pid_t pid = getpid();
   int status;
@@ -454,14 +474,18 @@ void sigchld_handler(int sig)
 void sigint_handler(int sig) 
 {
   if(debug)
+  {
+    print_stars();
     printf("%s: %d\n",__func__, __LINE__ );
-
+  }
   pid_t pid = fgpid(jobs);
   int jid = pid2jid(pid);
 
   if(debug)
-    printf("  sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
-
+  { 
+    print_stars();
+    printf("sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
+  }
   if(sig == 2 && pid != 0) {
     deletejob(jobs, pid); //@todo not sure if deletejob should be here
     printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, sig);
@@ -483,7 +507,10 @@ void sigint_handler(int sig)
 void sigtstp_handler(int sig) 
 {
   if(debug)
+  {
+    print_stars();
     printf("%s: %d\n", __func__, __LINE__);
+  }
 
   pid_t pid = fgpid(jobs);
   int jid = pid2jid(pid);
@@ -495,7 +522,8 @@ void sigtstp_handler(int sig)
   printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, sig);
 
   if(debug) {
-    printf("  sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
+    print_stars();
+    printf("sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
   }
 
   return;
@@ -513,8 +541,10 @@ void changejobstate(pid_t pid, int state) {
   if(ajob != NULL) 
     (* ajob).state = state;
   if(debug)
-    printf("  sigtstp_handler [%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
-
+  {
+    print_stars();
+    printf("%s [%d] (%d) %s\n",__func__,  ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
+  }
 }
 
 /* clearjob - Clear the entries in a job struct */
