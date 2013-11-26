@@ -3,19 +3,23 @@ set -e
 
 clear
 make
+
 testAll=1
 TEST="09"
+
 echo "*****************Trace$TEST**************"
 cat trace$TEST.txt
+
 echo
 echo "*****************Actual**************"
 make test$TEST > .actual.txt
 perl -pne 's/\(\d{2,}\)/XXX/' .actual.txt > .actual1
 cat .actual.txt
-make rtest$TEST > .expected.txt
-perl -pne 's/\(\d{2,}\)/XXX/' .expected.txt > .expected1
+
 echo
 echo "**************Expected**************"
+make rtest$TEST > .expected.txt
+perl -pne 's/\(\d{2,}\)/XXX/' .expected.txt > .expected1
 cat .expected.txt
 
 echo
