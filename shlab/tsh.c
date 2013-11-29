@@ -41,8 +41,8 @@
 /* Global variables */
 extern char **environ;      /* defined in libc */
 char prompt[] = "tsh> ";    /* command line prompt (DO NOT CHANGE) */
-int verbose = 0;            /* if true, print additional output */
-int debug = 0;
+int verbose = 1;            /* if true, print additional output */
+int debug = 1;
 int nextjid = 1;            /* next job ID to allocate */
 char sbuf[MAXLINE];         /* for composing sprintf messages */
 
@@ -192,26 +192,24 @@ void eval(char *cmdline)
   pid_t pid;
   sigset_t mask;
 
-  if (debug)
-  {
+  if (debug) {
     print_stars();
     printf("%s: Line %d --> %s\n", __func__, __LINE__, cmdline);
   }
   char *argv[MAXARGS];
 
-
   int state = UNDEF;
   isBG = parseline(cmdline, argv);
   state = (!isBG) ? FG : BG;
 
-  if(!builtin_cmd(argv))					
-  { 
-    Sigemptyset(&mask);
-    Sigaddset(&mask, SIGCHLD);
-    Sigprocmask(SIG_BLOCK, &mask, NULL); /* Block SIGCHLD */
+  Sigemptyset(&mask);
+  Sigaddset(&mask, SIGCHLD);
+  Sigprocmask(SIG_BLOCK, &mask, NULL); /* Block SIGCHLD */
 
-    if((pid = Fork()) == 0)
-    {
+  if(!builtin_cmd(argv)) { 
+
+
+    if((pid = Fork()) == 0) {
       // workaround, puts the child in a new process group,
       // ensures only one process in foreground group
       setpgid(0, 0);
@@ -219,8 +217,7 @@ void eval(char *cmdline)
       Sigprocmask(SIG_UNBLOCK, &mask, NULL); /* Unblock SIGCHLD */
 
       // if execve returns < 0 the command is not built in
-      if((execve(argv[0], argv, environ)) < 0)
-      {
+      if((execve(argv[0], argv, environ)) < 0) {
         printf("%s: Command not found.\n", argv[0]);
         fflush(stdout);
         exit(0);
@@ -230,8 +227,7 @@ void eval(char *cmdline)
     addjob(jobs, pid, state, cmdline);
 
     // the state will be either bg or fg depending on the isBG bool above
-    if(!isBG)
-    {
+    if(!isBG) {
       waitfg(pid);	
     }
     else {
@@ -311,22 +307,18 @@ int parseline(const char *cmdline, char **argv)
 int builtin_cmd(char **argv) 
 {
   int returnvar = 0;
-  if(debug)
-  {
+  if(debug) {
     print_stars();
     printf("%s: %d\n", __func__, __LINE__);
   }
 
   if(!strcmp("quit", argv[0]))  	// strcmp returns 0 if they are equal
     exit(0);
-  else if(!strcmp("bg", argv[0]) || !strcmp("fg", argv[0]))
-  {
-    returnvar = 1;
+  else if(!strcmp("bg", argv[0]) || !strcmp("fg", argv[0])) {
     do_bgfg(argv);
-    
+    returnvar = 1;
   }
-  else if(!strcmp("jobs", argv[0]))
-  {
+  else if(!strcmp("jobs", argv[0])) {
     listjobs(jobs);
     returnvar = 1;
   }
@@ -347,7 +339,7 @@ int get_id(char *argv)
 /* Implements the bg and fg built-in commands. 50 lines */
 void do_bgfg(char **argv) 
 {
-  if(debug){
+  if(debug) {
     print_stars();
     printf("%s: %s %c\n", __func__, argv[0], argv[1][1]);
   }
@@ -363,42 +355,35 @@ void do_bgfg(char **argv)
   ajob = getjobjid(jobs, jid);
   pid_t pid = (* ajob).pid;
 
-  if(debug)
-  {
+  if(debug) {
     print_stars();
     printf("%s pid = %d\n", __func__, pid);
   }
 
 
- /*  sigset_t mask;
-  Sigemptyset(&mask);
-  Sigaddset(&mask, SIGTSTP);
-  Sigprocmask(SIG_BLOCK, &mask, NULL);*/  /* Block SIGTSTP */
-  if (ajob != NULL) 
-  {
+  if (ajob != NULL) {
     
     changejobstate(pid, state);
-    if (state == BG)
-    {
+    Kill(-(pid), SIGCONT); // send signal to process
+
+    if (state == BG) {
       fflush(stdout);
       printf("[%d] (%d) %s",jid, pid, (* ajob).cmdline);
     }
-    else if (state == FG)
-    {
-      if(debug)
-      {
+    else if (state == FG) {
+
+      if(debug) {
         print_stars();
         printf("Running waitfg()\n");
       }
+
       waitfg(pid); 
 
-      if(ajob != NULL && ajob[0].state != ST) 
-      {
+      if(ajob != NULL && ajob[0].state != ST) {
         //@todo: not sure if this should be here, delete the job when finished
         //deletejob(jobs, pid);
 
-        if(debug)
-        {
+        if(debug) {
           print_stars();
           printf("Line %d: job fg job finished\n", __LINE__);
         }
@@ -423,7 +408,7 @@ void do_bgfg(char **argv)
 void waitfg(pid_t pid)
 {
   while(pid == fgpid(jobs))
-    sleep(0);
+    sleep(1);
 }
 
 
@@ -463,11 +448,26 @@ void sigchld_handler(int sig)
   }
 
   pid_t pid = getpid();
+  int jid = pid2jid(pid);
   //int status;
   
   
-  while ((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) /* Reap a zombie child */
-    deletejob(jobs, pid); /* Delete the child from the job list */
+  while ((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) { /* Reap a zombie child */
+
+    fflush(stdout);
+    int status;
+
+    if(WIFEXITED(status)) // child exited normally
+      deletejob(jobs,pid);
+    else if(WIFSIGNALED(status) && WTERMSIG(status)==2) {
+      printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, 2);
+      deletejob(jobs,pid);
+    }
+    else if(WIFSIGNALED(status) && WIFSTOPPED(status)) {    
+      changejobstate(pid, ST);
+      printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, WSTOPSIG(status));
+    }
+  }
 
   if (errno != ECHILD)
     unix_error("waitpid error");
@@ -502,8 +502,8 @@ void sigint_handler(int sig)
     printf("%s: %d\n",__func__, __LINE__ );
     fflush(stdout);
   }
+
   pid_t pid = fgpid(jobs);
-  int jid = pid2jid(pid);
 
   if(debug)
   { 
@@ -512,9 +512,7 @@ void sigint_handler(int sig)
   }
   if(sig == 2 && pid != 0) {
     //deletejob(jobs, pid); //@todo not sure if deletejob should be here
-    fflush(stdout);
-    printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, sig);
-    //Kill(pid, SIGINT); // send the kill signal
+    Kill(pid, SIGINT); // send the kill signal
   }
 
 
@@ -537,15 +535,17 @@ void sigtstp_handler(int sig)
     printf("%s: %d\n", __func__, __LINE__);
   }
 
+  int fg_pid = fgpid(jobs); 
+
+  if(fg_pid  == 0)
+    return;
+
   pid_t pid = fgpid(jobs);
-  int jid = pid2jid(pid);
 
-  changejobstate(pid, ST);
 
-  //@todo send the stop signal to the process
-  //Kill(pid, SIGTSTP); // send the kill signal
   fflush(stdout);
-  printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, sig);
+
+  kill(-(fg_pid), SIGTSTP);
 
   if(debug) {
     print_stars();

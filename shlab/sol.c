@@ -370,7 +370,7 @@ void do_bgfg(char **argv)
     kill(-(jobp->pid), SIGCONT); //continue the process
   
     waitfg(jobp->pid); //wait for process to terminate
-  }=
+  }
 }
 
 /* 
@@ -403,20 +403,20 @@ void sigchld_handler(int sig)
         
         if(pid>0) // check if a child's state changed
         {
-            if(WIFEXITED(status)) // child exited normally
-                deletejob(jobs,pid);
-            else {
-        if(WIFSIGNALED(status)){  /* child exited because a signal is not caught */
-          if(WTERMSIG(status)==2) /* if signal that caused child to terminate is 2, it was terminated
-                       by a different process */
-            printf("Job [%d] (%d) terminated by signal %d\n", pid2jid(pid), pid, WTERMSIG(status));
-          deletejob(jobs,pid);
-        }
-        else if(WIFSTOPPED(status)){    /* child stopped by receipt of a signal */
-          getjobpid(jobs, pid)->state=ST;
-          printf("Job [%d] (%d) stopped by signal %d\n", pid2jid(pid), pid, WSTOPSIG(status));
-        }
-      }
+          if(WIFEXITED(status)) // child exited normally
+            deletejob(jobs,pid);
+          else {
+            if(WIFSIGNALED(status)){  /* child exited because a signal is not caught */
+              if(WTERMSIG(status)==2) /* if signal that caused child to terminate is 2, it was terminated
+                                         by a different process */
+                printf("Job [%d] (%d) terminated by signal %d\n", pid2jid(pid), pid, WTERMSIG(status));
+              deletejob(jobs,pid);
+            }
+            else if(WIFSTOPPED(status)){    /* child stopped by receipt of a signal */
+              getjobpid(jobs, pid)->state=ST;
+              printf("Job [%d] (%d) stopped by signal %d\n", pid2jid(pid), pid, WSTOPSIG(status));
+            }
+          }
         }        
     } 
 }
