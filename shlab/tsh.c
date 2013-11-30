@@ -41,8 +41,8 @@
 /* Global variables */
 extern char **environ;      /* defined in libc */
 char prompt[] = "tsh> ";    /* command line prompt (DO NOT CHANGE) */
-int verbose = 1;            /* if true, print additional output */
-int debug = 1;
+int verbose = 0;            /* if true, print additional output */
+int debug = 0;
 int nextjid = 1;            /* next job ID to allocate */
 char sbuf[MAXLINE];         /* for composing sprintf messages */
 
@@ -225,6 +225,7 @@ void eval(char *cmdline)
     }
 
     addjob(jobs, pid, state, cmdline);
+    Sigprocmask(SIG_UNBLOCK, &mask, NULL); /* Unblock SIGCHLD */
 
     // the state will be either bg or fg depending on the isBG bool above
     if(!isBG) {
@@ -237,7 +238,6 @@ void eval(char *cmdline)
     }
 
 
-    Sigprocmask(SIG_UNBLOCK, &mask, NULL); /* Unblock SIGCHLD */
   }
   return;
 }
@@ -332,7 +332,6 @@ int get_id(char *argv)
 }
 
 
-
 /* 
  * do_bgfg - Execute the builtin bg and fg commands
  */
@@ -408,7 +407,7 @@ void do_bgfg(char **argv)
 void waitfg(pid_t pid)
 {
   while(pid == fgpid(jobs))
-    sleep(1);
+    sleep(0);
 }
 
 
@@ -447,43 +446,35 @@ void sigchld_handler(int sig)
     printf("%s: %d\n", __func__, __LINE__);
   }
 
-  pid_t pid = getpid();
-  int jid = pid2jid(pid);
-  //int status;
+  pid_t pid = 1;
+  int status;
   
   
-  while ((pid = waitpid(-1, NULL, WNOHANG|WUNTRACED)) > 0) { /* Reap a zombie child */
+  while (pid > 0) { // Reap a zombie child 
+    pid = waitpid(-1, &status, WNOHANG|WUNTRACED) ;
 
     fflush(stdout);
-    int status;
+    int jid = pid2jid(pid);
 
-    if(WIFEXITED(status)) // child exited normally
-      deletejob(jobs,pid);
-    else if(WIFSIGNALED(status) && WTERMSIG(status)==2) {
-      printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, 2);
-      deletejob(jobs,pid);
-    }
-    else if(WIFSIGNALED(status) && WIFSTOPPED(status)) {    
-      changejobstate(pid, ST);
-      printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, WSTOPSIG(status));
+    if(pid > 0) {
+
+      if(WIFEXITED(status)) // child exited normally
+        deletejob(jobs,pid);
+      else {
+        if(WIFSIGNALED(status) && WTERMSIG(status)==2) {
+          printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, 2);
+          deletejob(jobs,pid);
+        }
+        else if(WIFSIGNALED(status) && WIFSTOPPED(status)) {    
+          changejobstate(pid, ST);
+          printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, WSTOPSIG(status));
+        }
+      }
     }
   }
 
   if (errno != ECHILD)
     unix_error("waitpid error");
-
- /* 
-  while((pid = waitpid(-1,&status, WUNTRACED | WNOHANG )) != 0)
-  {
-    struct job_t *ajob = getjobpid(jobs, pid);
-    fflush(stdout);
-    printf("[%d] (%d) %s\n", ajob[0].jid, ajob[0].pid, ajob[0].cmdline);
-    deletejob(jobs, pid);
-  }
-  */
-  
- 
- 
 
   return;
 }
@@ -511,8 +502,7 @@ void sigint_handler(int sig)
     printf("sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
   }
   if(sig == 2 && pid != 0) {
-    //deletejob(jobs, pid); //@todo not sure if deletejob should be here
-    Kill(pid, SIGINT); // send the kill signal
+    Kill(-(pid), SIGINT); // send the kill signal
   }
 
 
@@ -535,17 +525,12 @@ void sigtstp_handler(int sig)
     printf("%s: %d\n", __func__, __LINE__);
   }
 
-  int fg_pid = fgpid(jobs); 
-
-  if(fg_pid  == 0)
-    return;
-
   pid_t pid = fgpid(jobs);
 
+  if(pid  == 0)
+    return;
 
-  fflush(stdout);
-
-  kill(-(fg_pid), SIGTSTP);
+  Kill(-(pid), SIGTSTP);
 
   if(debug) {
     print_stars();
