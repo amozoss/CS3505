@@ -208,7 +208,6 @@ void eval(char *cmdline)
 
   if(!builtin_cmd(argv)) { 
 
-
     Sigprocmask(SIG_BLOCK, &mask, NULL); // Block SIGCHLD 
     if((pid = Fork()) == 0) {
       // workaround, puts the child in a new process group,
@@ -219,7 +218,7 @@ void eval(char *cmdline)
 
       // if execve returns < 0 the command is not built in
       if((execve(argv[0], argv, environ)) < 0) {
-        printf("%s: Command not found.\n", argv[0]);
+        printf("%s: Command not found\n", argv[0]);
         fflush(stdout);
         exit(0);
       } 
@@ -339,6 +338,10 @@ int get_id(char *argv)
 /* Implements the bg and fg built-in commands. 50 lines */
 void do_bgfg(char **argv) 
 {
+  if(argv[1] == NULL) {  // handle no argument case
+    printf("%s command requires PID or %%jobid argument\n", argv[0]);  
+    return;  
+  }   
   if(debug) {
     print_stars();
     printf("%s: %s %c\n", __func__, argv[0], argv[1][1]);
@@ -389,9 +392,9 @@ void do_bgfg(char **argv)
   else                      // if ajob == NULL, the job is not in the job list.
   {
     if(argv[1][0] == '%')
-      printf("%d: No such job\n", jid);
+      printf("%%%d: No such job\n", id);
     else
-      printf("(%d): No such process\n", pid);
+      printf("(%d): No such process\n", id);
   }
 
   if(debug)
