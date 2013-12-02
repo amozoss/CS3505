@@ -178,15 +178,6 @@ pid_t Fork(void)
   return pid;
 }
 
-/* killwrapper from csapp.c */
-void Kill(pid_t pid, int signum) 
-{
-  int rc;
-
-  if ((rc = kill(pid, signum)) < 0)
-    unix_error("Kill error");
-}
-
 /* 
  * eval - Evaluate the command line that the user has just typed in
  * 
@@ -226,9 +217,9 @@ void eval(char *cmdline)
     if (sigprocmask(SIG_BLOCK, &mask, NULL) < 0) // Block SIGCHLD 
       unix_error("Sigprocmask error");
 
-    if((pid = Fork()) == 0) {
-      // workaround, puts the child in a new process group,
-      // ensures only one process in foreground group
+    if((pid = Fork()) == 0) { // Fork is a helper method from csapp.c included above
+
+      // setpgid is a workaround that puts the child in a new process group, ensures only one process in foreground group
       setpgid(0, 0);
 
       if (sigprocmask(SIG_UNBLOCK, &mask, NULL) < 0) // Unblock SIGCHLD 
@@ -325,6 +316,7 @@ int parseline(const char *cmdline, char **argv)
 int builtin_cmd(char **argv) 
 {
   int returnvar = 0;
+
   if(debug) {
     print_stars();
     printf("%s: %d\n", __func__, __LINE__);
@@ -348,7 +340,6 @@ int get_id(char *argv)
 {
   return (argv[0] == '%') ? atoi(argv+1) : atoi(argv);
 }
-
 
 /* 
  * do_bgfg - Execute the builtin bg and fg commands
@@ -389,7 +380,8 @@ void do_bgfg(char **argv)
     pid_t pid = (* ajob).pid;
 
     changejobstate(pid, state);
-    Kill(-(pid), SIGCONT); // send signal to process
+    if (kill(-(pid), SIGCONT) < 0) // send signal to process
+      unix_error("kill error");
 
     if (state == BG) {                // If it was the 'bg' command, print crap about it.
       printf("[%d] (%d) %s",jid, pid, (* ajob).cmdline);
@@ -508,7 +500,8 @@ void sigint_handler(int sig)
   if(sig == SIGINT && pid != 0) {  // Make sure there was a foreground job, and also make
                               // sure the signal is SIGINT.
     fflush(stdout);
-    Kill(-(pid), SIGINT); // send the kill signal
+    if (kill(-(pid), SIGINT) < 0) // send the kill signal
+      unix_error("kill error");
   }
 
   if(debug) { 
@@ -541,7 +534,8 @@ void sigtstp_handler(int sig)
   if(pid  == 0)                 // If the pid == 0, that means there isn't a foreground job.
     return;
 
-  Kill(-(pid), SIGTSTP);        // Send the SIGTSTP signal to the process.
+  if (kill(-(pid), SIGTSTP) < 0) // Send the SIGTSTP signal to the process
+    unix_error("kill error");
 
   if(debug) {
     print_stars();
