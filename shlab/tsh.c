@@ -190,31 +190,32 @@ void eval(char *cmdline)
 {
   int isBG;
   pid_t pid;
-  sigset_t mask;
 
   if (debug) {
     print_stars();
     printf("%s: Line %d --> %s\n", __func__, __LINE__, cmdline);
   }
+
   char *argv[MAXARGS];
 
   int state = UNDEF;
   isBG = parseline(cmdline, argv);
   state = (!isBG) ? FG : BG;
 
+  sigset_t mask;
   Sigemptyset(&mask);
   Sigaddset(&mask, SIGCHLD);
-  Sigprocmask(SIG_BLOCK, &mask, NULL); /* Block SIGCHLD */
 
   if(!builtin_cmd(argv)) { 
 
 
+    Sigprocmask(SIG_BLOCK, &mask, NULL); // Block SIGCHLD 
     if((pid = Fork()) == 0) {
       // workaround, puts the child in a new process group,
       // ensures only one process in foreground group
       setpgid(0, 0);
 
-      Sigprocmask(SIG_UNBLOCK, &mask, NULL); /* Unblock SIGCHLD */
+      Sigprocmask(SIG_UNBLOCK, &mask, NULL); // Unblock SIGCHLD 
 
       // if execve returns < 0 the command is not built in
       if((execve(argv[0], argv, environ)) < 0) {
@@ -225,7 +226,7 @@ void eval(char *cmdline)
     }
 
     addjob(jobs, pid, state, cmdline);
-    Sigprocmask(SIG_UNBLOCK, &mask, NULL); /* Unblock SIGCHLD */
+    Sigprocmask(SIG_UNBLOCK, &mask, NULL); // Unblock SIGCHLD 
 
     // the state will be either bg or fg depending on the isBG bool above
     if(!isBG) {
@@ -460,9 +461,11 @@ void sigchld_handler(int sig)
     if(WIFEXITED(status)) // child exited normally
       deletejob(jobs,pid);
 
-    else if(WIFSIGNALED(status) && WTERMSIG(status) == 2)  // Checks if termination was caused by SIGINT.
-    {
-      printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, 2);
+    else if(WIFSIGNALED(status)) //  the child exited because a signal was not caught.
+    { 
+      if (WTERMSIG(status) == 2)  // Checks if termination was caused by SIGINT and 
+        printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, 2);
+      
       deletejob(jobs,pid);
     }
     else if(WIFSTOPPED(status))    // Determines if the child that caused the return is currently stopped. 
