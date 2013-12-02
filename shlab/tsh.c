@@ -341,60 +341,60 @@ void do_bgfg(char **argv)
   if(debug) {
     print_stars();
     printf("%s: %s %c\n", __func__, argv[0], argv[1][1]);
+    fflush(stdout);
   }
   struct job_t *ajob;
-  int jid;
-
-  jid = get_id(argv[1]);
-  if(jid <= 0)
+  int id;
+  // Get the jid or pid of the command line.
+  id = get_id(argv[1]);
+  
+  if (id <= 0) // Return if not valid
+  {
+    printf("%s: argument must be a PID or %%jobid\n", argv[0]);
     return;
+  }
+  else if (argv[1][0] == '%')  // id was a jid
+    ajob = getjobjid(jobs, id);
+  else                        // id was a pid
+    ajob = getjobpid(jobs, id);
+  
   int state = (!strcmp(argv[0], "bg")) ? BG : FG;
 
-
-  ajob = getjobjid(jobs, jid);
+  int jid = (* ajob).jid; 
   pid_t pid = (* ajob).pid;
 
   if(debug) {
     print_stars();
     printf("%s pid = %d\n", __func__, pid);
+    fflush(stdout);
   }
 
 
-  if (ajob != NULL) {
-    
+  if (ajob != NULL) {       // If ajob != NULL, the job is in the job list.
+
     changejobstate(pid, state);
     Kill(-(pid), SIGCONT); // send signal to process
 
-    if (state == BG) {
-      fflush(stdout);
+    if (state == BG) {                // If it was the 'bg' command, print crap about it.
       printf("[%d] (%d) %s",jid, pid, (* ajob).cmdline);
     }
-    else if (state == FG) {
-
-      if(debug) {
-        print_stars();
-        printf("Running waitfg()\n");
-      }
-
+    else if (state == FG) {           // If it was the 'fg' command, wait for it to die.
       waitfg(pid); 
-
-      if(ajob != NULL && ajob[0].state != ST) {
-        //@todo: not sure if this should be here, delete the job when finished
-        //deletejob(jobs, pid);
-
-        if(debug) {
-          print_stars();
-          printf("Line %d: job fg job finished\n", __LINE__);
-        }
-      }
     }
-    fflush(stdout);
+  }
+  else                      // if ajob == NULL, the job is not in the job list.
+  {
+    if(argv[1][0] == '%')
+      printf("%d: No such job\n", jid);
+    else
+      printf("(%d): No such process\n", pid);
   }
 
   if(debug)
   {
     print_stars();
     printf("%s: %d, end of function\n", __func__, __LINE__);
+    fflush(stdout);
   }
 
   return;
@@ -448,28 +448,31 @@ void sigchld_handler(int sig)
 
   pid_t pid = 1;
   int status;
+  int jid = 0; 
   
-  
-  while (pid > 0) { // Reap a zombie child 
-    pid = waitpid(-1, &status, WNOHANG|WUNTRACED) ;
+  while ((pid = waitpid(-1, &status, WNOHANG | WUNTRACED)) > 0) { // Reap a zombie child 
 
-    fflush(stdout);
-    int jid = pid2jid(pid);
+    jid = pid2jid(pid);
 
-    if(pid > 0) {
+    if(WIFEXITED(status)) // child exited normally
+      deletejob(jobs,pid);
 
-      if(WIFEXITED(status)) // child exited normally
+    else 
+    {
+
+      if(WIFSIGNALED(status) && WTERMSIG(status) == 2)  // Checks if termination was caused by SIGINT.
+      {
+        printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, 2);
+
         deletejob(jobs,pid);
-      else {
-        if(WIFSIGNALED(status) && WTERMSIG(status)==2) {
-          printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, 2);
-          deletejob(jobs,pid);
-        }
-        else if(WIFSIGNALED(status) && WIFSTOPPED(status)) {    
-          changejobstate(pid, ST);
-          printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, WSTOPSIG(status));
-        }
       }
+
+      else if(WIFSIGNALED(status) && WIFSTOPPED(status))    // Determines if the child that caused the return is currently stopped. 
+      {    
+        changejobstate(pid, ST);
+        printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, WSTOPSIG(status));
+      }
+      fflush(stdout);
     }
   }
 
@@ -500,8 +503,11 @@ void sigint_handler(int sig)
   { 
     print_stars();
     printf("sig= %d pid =%d getpid() = %d\n",sig,pid,getpid());
+    fflush(stdout);
   }
-  if(sig == 2 && pid != 0) {
+  if(sig == SIGINT && pid != 0) {  // Make sure there was a foreground job, and also make
+                              // sure the signal is SIGINT.
+    fflush(stdout);
     Kill(-(pid), SIGINT); // send the kill signal
   }
 
@@ -523,14 +529,15 @@ void sigtstp_handler(int sig)
   {
     print_stars();
     printf("%s: %d\n", __func__, __LINE__);
+    fflush(stdout);
   }
 
-  pid_t pid = fgpid(jobs);
+  pid_t pid = fgpid(jobs);      // Retrieve the pid of the job running in the foreground.
 
-  if(pid  == 0)
+  if(pid  == 0)                 // If the pid == 0, that means there isn't a foreground job.
     return;
 
-  Kill(-(pid), SIGTSTP);
+  Kill(-(pid), SIGTSTP);        // Send the SIGTSTP signal to the process.
 
   if(debug) {
     print_stars();
