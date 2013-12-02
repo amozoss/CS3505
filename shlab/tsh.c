@@ -360,8 +360,8 @@ void do_bgfg(char **argv)
   
   int state = (!strcmp(argv[0], "bg")) ? BG : FG;
 
-  int jid = (* ajob).jid; 
-  pid_t pid = (* ajob).pid;
+  int jid; 
+  pid_t pid;
 
   if(debug) {
     print_stars();
@@ -371,6 +371,9 @@ void do_bgfg(char **argv)
 
 
   if (ajob != NULL) {       // If ajob != NULL, the job is in the job list.
+
+    jid = (* ajob).jid; 
+    pid = (* ajob).pid;
 
     changejobstate(pid, state);
     Kill(-(pid), SIGCONT); // send signal to process
@@ -457,24 +460,19 @@ void sigchld_handler(int sig)
     if(WIFEXITED(status)) // child exited normally
       deletejob(jobs,pid);
 
-    else 
+    else if(WIFSIGNALED(status) && WTERMSIG(status) == 2)  // Checks if termination was caused by SIGINT.
     {
-
-      if(WIFSIGNALED(status) && WTERMSIG(status) == 2)  // Checks if termination was caused by SIGINT.
-      {
-        printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, 2);
-
-        deletejob(jobs,pid);
-      }
-
-      else if(WIFSIGNALED(status) && WIFSTOPPED(status))    // Determines if the child that caused the return is currently stopped. 
-      {    
-        changejobstate(pid, ST);
-        printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, WSTOPSIG(status));
-      }
-      fflush(stdout);
+      printf("Job [%d] (%d) terminated by signal %d\n", jid, pid, 2);
+      deletejob(jobs,pid);
     }
+    else if(WIFSTOPPED(status))    // Determines if the child that caused the return is currently stopped. 
+    {    
+      changejobstate(pid, ST);
+      printf("Job [%d] (%d) stopped by signal %d\n", jid, pid, WSTOPSIG(status));
+    }
+    fflush(stdout);
   }
+
 
   if (errno != ECHILD)
     unix_error("waitpid error");
